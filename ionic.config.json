@@ -1,0 +1,7 @@
+{
+  "name": "proyectoC02",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
