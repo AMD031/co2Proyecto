@@ -1,13 +1,23 @@
-import { Injectable } from '@angular/core';
+import { Injectable} from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-
+import { Store } from '@ngrx/store';
+import * as loginActions from 'src/store/actions';
+import { AppState } from 'src/store/app.reducer';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService implements CanActivate {
-  private permiso = false;
-  constructor(  private router: Router,) { }
+   private permiso;
+  constructor(   private router: Router, private store: Store<AppState>) { }
+
+  init(){
+    this.store.select('login')
+    .subscribe( login => {
+        this.permiso = login.login;
+         this.permiso = true;
+    });
+  }
 
   canActivate(route: ActivatedRouteSnapshot): boolean{
     if (!this.permiso) {
@@ -17,14 +27,18 @@ export class LoginService implements CanActivate {
      return true;
   }
 
-  public isLogged(dato :any = { usuario : '',  password : ''}): boolean {
+
+  public iniciarLogin(dato :any = { usuario : '',  password : ''}) /*: boolean */{
     if (dato.usuario === 'usuario' && dato.password === 'usuario'){
-      this.permiso = true;
-      return this.permiso;
+      this.store.dispatch( new loginActions.login());
     } else {
-      this.permiso = false;
-      return this.permiso;
-    }
+      this.store.dispatch( new loginActions.logOut());
+      }
   }
 
+
+  estaLogeado(){
+    return this.permiso;
+  }
+  
 }

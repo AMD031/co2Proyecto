@@ -82,7 +82,6 @@ export class Co2Service {
    *   en 10 minutos no están activas. IMPORTANTE: en header es
    *   necesario incluir apikey.  
    */
-
   getAllCurrentActive() {
     const endPoint = environment.endPoint + `/all/currentActive`;
     return this.http.get(endPoint, { headers: this.header });
@@ -93,7 +92,6 @@ export class Co2Service {
    *  estaciones. Activas o no. IMPORTANTE: en header es
    *  necesario incluir apikey.
    */
-
   getAllLast(): Observable<any> {
     const endPoint = environment.endPoint + '/all/last';
     return this.http.get(endPoint, { headers: this.header });
@@ -103,15 +101,12 @@ export class Co2Service {
    *  @description Francisco de los Ríos - Inserta una nueva entrada.
    *  IMPORTANTE: en header es necesario incluir apikey.
    */
-
   postStations(name: any, data: any): Observable<any> {
     const endPoint = environment.endPoint + `/stations/${name}`;
     return this.http.post(endPoint, { data }, { headers: this.header });
   }
 
-
   /**
-   * 
    * @description Francisco de los Ríos - Inserta una nueva entrada.
    * IMPORTANTE: en header es necesario incluir apikey.
    */
@@ -130,10 +125,6 @@ export class Co2Service {
     const endPoint = environment.endPoint + `/stations/${id}`;
     return this.http.delete(endPoint, { headers: this.header });
   }
-
-
-
-
 
   /***
    *  Francisco de los Ríos - Elmina todas las entradas de una

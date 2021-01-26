@@ -1,16 +1,53 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-        Listado
+      Listado
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-grid>
+      <ion-row style="text-align: center;">
+        <ion-col size="3"><b>Estación</b></ion-col>
+        <ion-col size="3"><b>Última lectura</b></ion-col>
+        <ion-col size="2"><b>Estado sensor</b></ion-col>
+        <ion-col size="2"><b>Valoración aula</b></ion-col>
+        <ion-col size="2"><b>Detalles</b></ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-row *ngFor="let estacion of this.estaciones" style="text-align: center;">
+      <ion-col size="3">
+         {{ estacion.station}}
+      </ion-col>
 
-  <!-- <ion-item *ngFor="let item of items">
-    <ion-label>Awesome Label</ion-label>
-  </ion-item> -->
+      <ion-col size="3">
+        {{ estacion.time}}
+      </ion-col>
 
- 
+      <ion-col size="2">
+        <ion-button disabled="true" fill="clear">
+          <ion-icon slot="icon-only" name="star"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col size="2">
+        <ion-button disabled="true" fill="clear">
+          <ion-icon slot="icon-only" name="star"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col size="2">
+         <ion-button (click)="this.presentModal(estacion.id)">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+
+
+
 </ion-content>

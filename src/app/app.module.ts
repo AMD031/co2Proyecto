@@ -7,31 +7,54 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { LoginPage } from './pages/login/login.page';
-// import { HomePage } from './pages/home/home.page';
-// import { GraficaPage } from './pages/grafica/grafica.page';
-// import { DetallesPage } from './pages/detalles/detalles.page';
+import { HomePage } from './pages/home/home.page';
+import { GraficaPage } from './pages/grafica/grafica.page';
+import { DetallesPage } from './pages/detalles/detalles.page';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Co2Service } from './services/co2.service';
+
+
+// NgRx
+
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
+import { effectsArr } from '../store/effects';
+import { StoreModule } from '@ngrx/store';
+import { appReducers } from 'src/store/app.reducer';
+
+// Environment
+import { environment } from '../environments/environment';
+
+
+// Rutas
+import { AppRoutingModule } from './app-routing.module';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginPage,
-    // HomePage,
-    // GraficaPage,
-    // DetallesPage,
+    HomePage,
+    GraficaPage,
+    DetallesPage,
   ],
-  entryComponents: [],
+  entryComponents: [GraficaPage, DetallesPage],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    EffectsModule.forRoot(effectsArr),
+    StoreModule.forRoot(appReducers),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
   ],
   providers: [
     StatusBar,
@@ -42,4 +65,4 @@ import { Co2Service } from './services/co2.service';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
