@@ -19,7 +19,7 @@ const estadoInicial: EstacionesState = {
 
 export function estacionesReducer( state = estadoInicial, action: fromEstaciones.EstacionAcciones ): EstacionesState {
     switch ( action.type ) {
-        case fromEstaciones.CARGAR_ESTACIONES:
+        case fromEstaciones.CARGAR_ESTACIONES_All_ACTIVE:
             return {
                 ...state,
                 loading: true,
@@ -39,7 +39,7 @@ export function estacionesReducer( state = estadoInicial, action: fromEstaciones
                 ...state,
                 loaded: false,
                 loading: false,
-                error:{ ...action.payload.error}
+                error:{ ...action.payload}
             };
 
 

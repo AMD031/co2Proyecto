@@ -4,9 +4,11 @@ import { Store } from '@ngrx/store';
 import { Co2Service } from 'src/app/services/co2.service';
 import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
 import { UtilesService } from 'src/app/services/utiles.service';
-import { CargarEstacion, CargarEstaciones } from 'src/store/actions';
+import { CargarEstacionesAllCurrentActive} from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
+import * as fromEstacion from '../../../store/actions' 
 import { DetallesPage } from '../detalles/detalles.page';
+
 
 @Component({
   selector: 'app-home',
@@ -21,21 +23,20 @@ export class HomePage implements OnInit {
     private store: Store<AppState>,
     private alerta: MensajesalertasService,
     private modal: ModalController,
-    private utiles: UtilesService
+    private util: UtilesService
   ) {
 
    
   }
   ngOnInit(): void {
-    this.store.dispatch(new CargarEstaciones());
-    this.store.select('estaciones').subscribe(
+    this.store.dispatch(new CargarEstacionesAllCurrentActive());
+    this.store.select('estacionesActivas').subscribe(
       (estaciones) => {
-        console.log(estaciones.Estaciones);
+       // console.log(estaciones.Estaciones);
         this.estaciones = estaciones.Estaciones;
       }
     )
-
-    //this.store.dispatch(new CargarEstacion(15989));
+     this.store.dispatch(new fromEstacion.CargarEstacionEntradasName('aulatest 1' ,1));
   }
 
 

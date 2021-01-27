@@ -15,7 +15,7 @@ export class LoginService implements CanActivate {
     this.store.select('login')
     .subscribe( login => {
         this.permiso = login.login;
-         //this.permiso = true;
+         this.permiso = true;
     });
   }
 
@@ -26,7 +26,6 @@ export class LoginService implements CanActivate {
     }
      return true;
   }
-
 
   public iniciarLogin(dato :any = { usuario : '',  password : ''}) /*: boolean */{
     if (dato.usuario === 'usuario' && dato.password === 'usuario'){

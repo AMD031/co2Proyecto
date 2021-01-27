@@ -13,9 +13,9 @@ export class EstacionEffects {
     ) {}
 
     @Effect()
-    cargarEstacion$ = this.actions$
+    cargarEstacionId$ = this.actions$
         .pipe(
-            ofType( estacionActions.CARGAR_ESTACION ),
+            ofType( estacionActions.CARGAR_ESTACION_ID ),
             switchMap( action => {
                 const id = action['id'];
                     return this.co2.getStationsId(id)
@@ -25,6 +25,22 @@ export class EstacionEffects {
                     );
             })
         );
+        
+    // @Effect()
+    // cargarEstacionName$ = this.actions$
+    //     .pipe(
+    //         ofType( estacionActions.CARGAR_ESTACION_NAME),
+    //         switchMap( action => {
+    //             const name = action['name'];
+    //                 return this.co2.getStationsName(name)
+    //                 .pipe(
+    //                     map( estacion => new estacionActions.CargarEstacionSuccess(estacion) ),
+    //                     catchError( error => of(new estacionActions.CargarEstacionFail(error))  )
+    //                 );
+    //         })
+    //     );
+
+
 
 
 

@@ -13,11 +13,10 @@ export class EstacionesEffects {
         private actions$: Actions,
         public co2: Co2Service
     ) { }
-
     @Effect()
     cargarEstaciones$ = this.actions$
         .pipe(
-            ofType(estacionesActions.CARGAR_ESTACIONES),
+            ofType(estacionesActions.CARGAR_ESTACIONES_All_ACTIVE),
             switchMap(() => {
                 return this.co2.getAllCurrentActive()
                     .pipe(
@@ -26,6 +25,7 @@ export class EstacionesEffects {
                     );
             })
         );
+
 
 
 

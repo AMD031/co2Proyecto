@@ -1,12 +1,12 @@
 import { Action } from '@ngrx/store';
 
-
-export const CARGAR_ESTACIONES = '[Estaciones] Cargar Estaciones';
+//obtener
+export const CARGAR_ESTACIONES_All_ACTIVE = '[Estaciones] Cargar Estaciones All_ACTIVE';
 export const CARGAR_ESTACIONES_FAIL = '[Estaciones] Cargar Estaciones FAIL';
 export const CARGAR_ESTACIONES_SUCCESS = '[Estaciones] Cargar Estaciones SUCCESS';
 
-export class CargarEstaciones implements Action {
-    readonly type = CARGAR_ESTACIONES;
+export class CargarEstacionesAllCurrentActive implements Action {
+    readonly type = CARGAR_ESTACIONES_All_ACTIVE;
 }
 
 export class CargarEstacionesFail implements Action {
@@ -20,6 +20,6 @@ export class CargarEstacionesSuccess implements Action {
 }
 
 
-export type EstacionAcciones = CargarEstaciones |
+export type EstacionAcciones = CargarEstacionesAllCurrentActive |
                                CargarEstacionesFail |
                                CargarEstacionesSuccess;

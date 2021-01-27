@@ -1,50 +1,41 @@
-import * as fromEstacion from '../actions';
+import * as fromEstacionPaginada from '../actions';
 
 
 
-export interface EstacionState {
-    Estacion: any;
+export interface EntradasPaginadaState {
+    Entradas: any;
     loaded: boolean;
     loading: boolean;
     error: any;
 }
 
-const estadoInicial: EstacionState = {
-    Estacion: null,
+const estadoInicial: EntradasPaginadaState = {
+    Entradas: null,
     loaded: false,
     loading: false,
     error: null
 };
 
 
-export function estacionReducer(state = estadoInicial, action: fromEstacion.estacionAcciones): EstacionState {
+export function estacionPaginadaReducer(state = estadoInicial, action: fromEstacionPaginada.estacionEntradasPaginadasAcciones): EntradasPaginadaState  {
     switch (action.type) {
 
-        case fromEstacion.CARGAR_ESTACION_ID:
+        case fromEstacionPaginada.CARGAR_ENTRADAS_ESTACION_PAGINADAS:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
 
-        // case fromEstacion.CARGAR_ESTACION_NAME:
-        //     return {
-        //         ...state,
-        //         loading: true,
-        //         error: null
-        //     };
-
-
-     
-        case fromEstacion.CARGAR_ESTACION_SUCCESS:
+        case fromEstacionPaginada.CARGAR_ENTRADAS_ESTACION_PAGINADAS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 loaded: true,
-                Estacion: { ...action.estacion }
+                Entradas: [ ...action.entradas ]
             };
 
-        case fromEstacion.CARGAR_ESTACION_FAIL:
+        case fromEstacionPaginada.CARGAR_ENTRADAS_ESTACION_PAGINADAS_FAIL:
             return {
                 ...state,
                 loaded: false,
@@ -53,7 +44,6 @@ export function estacionReducer(state = estadoInicial, action: fromEstacion.esta
                     ...action.payload
                 }
             };
-
 
         default:
             return state;

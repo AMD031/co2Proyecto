@@ -7,23 +7,31 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-grid>
-    <ion-grid>
-      <ion-row style="text-align: center;">
-        <ion-col size="3"><b>Estación</b></ion-col>
-        <ion-col size="3"><b>Última lectura</b></ion-col>
-        <ion-col size="2"><b>Estado sensor</b></ion-col>
-        <ion-col size="2"><b>Valoración aula</b></ion-col>
-        <ion-col size="2"><b>Detalles</b></ion-col>
-      </ion-row>
-    </ion-grid>
+
+  <ion-grid fixed="true">
+
+    <ion-row style="text-align: center;">
+      <ion-col size="2"><b>Estación</b></ion-col>
+      <ion-col size="3"><b>Última lectura</b></ion-col>
+      <ion-col size="2"><b>Estado estación</b></ion-col>
+      <ion-col size="2"><b>Valoración aula</b></ion-col>
+      <ion-col size="2"><b>Detalles</b></ion-col>
+    </ion-row>
     <ion-row *ngFor="let estacion of this.estaciones" style="text-align: center;">
-      <ion-col size="3">
-         {{ estacion.station}}
+      <ion-col size="2">
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+            {{estacion.id}}
+          </ion-label>
+        </ion-item>
       </ion-col>
 
       <ion-col size="3">
-        {{ estacion.time}}
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+            {{estacion.time}}
+          </ion-label>
+        </ion-item>
       </ion-col>
 
       <ion-col size="2">
@@ -39,10 +47,11 @@
       </ion-col>
 
       <ion-col size="2">
-         <ion-button (click)="this.presentModal(estacion.id)">
+        <ion-button (click)="this.presentModal(estacion.id)" >
           <ion-icon slot="icon-only" name="add"></ion-icon>
         </ion-button>
       </ion-col>
+
     </ion-row>
   </ion-grid>
 

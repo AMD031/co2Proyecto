@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import {  Subscription } from 'rxjs';
-import { CargarEstacion } from 'src/store/actions';
+import { UtilesService } from 'src/app/services/utiles.service';
+import { CargarEstacionId } from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
 
 
@@ -13,21 +14,27 @@ import { AppState } from 'src/store/app.reducer';
 })
 export class DetallesPage implements OnInit {
   
-  @Input('id')id;
+  @Input('id') id;
+  private estacion: any;
+  private ob$: Subscription
   constructor(
     private store: Store<AppState>, 
-    private modal: ModalController) { }
-    private estacion: any;
-    private ob$: Subscription
+    private modal: ModalController,
+    private util: UtilesService
+    ) { }
+  
 
   ngOnInit() {
     if(this.id !== -1){
-       this.store.dispatch( new CargarEstacion(this.id));
+       this.store.dispatch( new CargarEstacionId(this.id));
         this.ob$ = this.store.select('estacion').subscribe(
          (estacion) =>{
            this.estacion = estacion.Estacion;
          });
     }
+
+    // this.store.dispatch( new CargarEstacionName('aulatest 1'));
+
 
   }
 
