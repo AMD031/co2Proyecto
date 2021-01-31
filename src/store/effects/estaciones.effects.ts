@@ -16,12 +16,12 @@ export class EstacionesEffects {
     @Effect()
     cargarEstaciones$ = this.actions$
         .pipe(
-            ofType(estacionesActions.CARGAR_ESTACIONES_All_ACTIVE),
+            ofType(estacionesActions.CARGAR_ESTACIONES_All_LAST),
             switchMap(() => {
-                return this.co2.getAllCurrentActive()
+                return this.co2.getAllLast()
                     .pipe(
-                        map(estaciones => new estacionesActions.CargarEstacionesSuccess(estaciones as any)),
-                        catchError(error => of(new estacionesActions.CargarEstacionesFail(error)))
+                        map(estaciones => new estacionesActions.CargarEstacionesAlllastSuccess(estaciones as any)),
+                        catchError(error => of(new estacionesActions.CargarEstacionesAlllastFail(error)))
                     );
             })
         );

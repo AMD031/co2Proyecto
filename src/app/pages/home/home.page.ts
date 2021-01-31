@@ -4,9 +4,9 @@ import { Store } from '@ngrx/store';
 import { Co2Service } from 'src/app/services/co2.service';
 import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
 import { UtilesService } from 'src/app/services/utiles.service';
-import { CargarEstacionesAllCurrentActive} from 'src/store/actions';
+import { CargarEstacionesAlllast } from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
-import * as fromEstacion from '../../../store/actions' 
+import * as fromEstacion from '../../../store/actions'
 import { DetallesPage } from '../detalles/detalles.page';
 
 
@@ -18,6 +18,8 @@ import { DetallesPage } from '../detalles/detalles.page';
 export class HomePage implements OnInit {
 
   private estaciones = [];
+  private loading: boolean;
+  private loaded: boolean;
   constructor(
     private co2: Co2Service,
     private store: Store<AppState>,
@@ -26,17 +28,21 @@ export class HomePage implements OnInit {
     private util: UtilesService
   ) {
 
-   
+
   }
-  ngOnInit(): void {
-    this.store.dispatch(new CargarEstacionesAllCurrentActive());
-    this.store.select('estacionesActivas').subscribe(
-      (estaciones) => {
-       // console.log(estaciones.Estaciones);
+ async ngOnInit() {
+    this.store.dispatch(new CargarEstacionesAlllast());
+  
+    this.store.select('estacionesLastAll').subscribe(
+      async (estaciones) => {
+        this.loading &&  await this.alerta.presentLoading('... cargando');
         this.estaciones = estaciones.Estaciones;
+        this.loading = estaciones.loading;
+        this.loaded = estaciones.loaded;
+        this.loaded  && this.alerta.hideLoading();
       }
     )
-     this.store.dispatch(new fromEstacion.CargarEstacionEntradasName('aulatest 1' ,1));
+    this.store.dispatch(new fromEstacion.CargarEstacionEntradasName('aulatest 1', 1));
   }
 
 
@@ -46,10 +52,13 @@ export class HomePage implements OnInit {
       cssClass: 'my-custom-class',
       componentProps: {
         'id': id,
-       }
+      }
     });
     return await modal.present();
   }
+
+
+
 
 
 

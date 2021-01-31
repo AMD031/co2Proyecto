@@ -34,7 +34,7 @@ export function estacionPaginadaReducer(state = estadoInicial, action: fromEstac
                 loaded: true,
                 Entradas: [ ...action.entradas ]
             };
-
+            
         case fromEstacionPaginada.CARGAR_ENTRADAS_ESTACION_PAGINADAS_FAIL:
             return {
                 ...state,

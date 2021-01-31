@@ -16,8 +16,9 @@ import { DetallesPage } from './pages/detalles/detalles.page';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Co2Service } from './services/co2.service';
 
+import { VistagraficaComponent } from './components/vistagrafica/vistagrafica.component';
 
-// NgRx
+
 
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -26,11 +27,10 @@ import { effectsArr } from '../store/effects';
 import { StoreModule } from '@ngrx/store';
 import { appReducers } from 'src/store/app.reducer';
 
-// Environment
 import { environment } from '../environments/environment';
 
 
-// Rutas
+
 import { AppRoutingModule } from './app-routing.module';
 
 
@@ -41,6 +41,7 @@ import { AppRoutingModule } from './app-routing.module';
     HomePage,
     GraficaPage,
     DetallesPage,
+    VistagraficaComponent
   ],
   entryComponents: [GraficaPage, DetallesPage],
   imports: [

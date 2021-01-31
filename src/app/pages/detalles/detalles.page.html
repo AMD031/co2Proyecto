@@ -1,16 +1,17 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>detalles</ion-title>
+    <ion-title>Detalles</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid >
+  
+  <ion-grid *ngIf="!ampliar" class="centrar">
     <ion-row>
       <ion-col size="12">
         <div style="text-align: center;">
           <ion-label>
-            <b>Id: {{ this.estacion && this.estacion[0].id }}</b>
+            <b>Id: {{ this.entrada && this.entrada.id }}</b>
           </ion-label>
         </div>
       </ion-col>
@@ -21,31 +22,53 @@
     </ion-row>
     <ion-row>
       <ion-col size="6"><b>CO2</b></ion-col>
-      <ion-col size="6"> {{this.estacion && this.estacion[0].data.CO2 }} </ion-col>
+      <ion-col size="6"> {{this.co2}}</ion-col>
+      <!-- <ion-col size="6"> {{this.estacion && this.estacion[0].data.CO2 }} </ion-col> -->
     </ion-row>
     <ion-row>
       <ion-col size="6"><b>Temp</b></ion-col>
-      <ion-col size="6">   {{this.estacion && this.estacion[0].data.temp }}        </ion-col>
+      <ion-col size="6">{{this.temp}}</ion-col>
+      <!-- <ion-col size="6">   {{this.estacion && this.estacion[0].data.temp }}        </ion-col> -->
     </ion-row>
     <ion-row>
       <ion-col size="6"><b>Humid</b></ion-col>
-      <ion-col size="6">{{this.estacion && this.estacion[0].data.humid }} </ion-col>
+      <ion-col size="6">{{this.humid}}</ion-col>
+      <!-- <ion-col size="6">{{this.estacion && this.estacion[0].data.humid }} </ion-col> -->
     </ion-row>
     <ion-row>
       <ion-col size="6"><b>Press</b></ion-col>
-      <ion-col size="6">{{this.estacion && this.estacion[0].data.press }}</ion-col>
+      <ion-col size="6">{{this.press}}</ion-col>
+      <!-- <ion-col size="6">{{this.estacion && this.estacion[0].data.press }}</ion-col> -->
     </ion-row>
     <ion-row>
-      <ion-col size="6"><b>Noisee</b></ion-col>
-      <ion-col size="6">{{this.estacion && this.estacion[0].data.noise }}</ion-col>
+      <ion-col size="6"><b>Noise</b></ion-col>
+      <ion-col size="6">{{this.noise}}</ion-col>
+      <!-- <ion-col size="6">{{this.estacion && this.estacion[0].data.noise }}</ion-col> -->
     </ion-row>
 
     <ion-row>
       <ion-col size="6"><b>Lectura</b></ion-col>
-      <ion-col size="6">{{this.estacion && this.estacion[0].time }}</ion-col>
+      <ion-col size="6">{{ this.entrada && this.entrada.time }}</ion-col>
+      <!-- <ion-col size="6">{{this.estacion && this.estacion[0].time }}</ion-col> -->
     </ion-row>
  
   </ion-grid>
+ 
+
+  <div style="text-align: right;">
+
+
+    <ion-button (click)="ampliarGrafica()"  fill="outline" shape="round">
+      <span *ngIf="!ampliar" > 
+        Ampliar gráfica
+      </span>
+      <span *ngIf="ampliar" > 
+         Ver detalles
+      </span>
+    </ion-button>
+    <app-vistagrafica [nueva]="false" [data]="this.entradasEstacion" ></app-vistagrafica>
+  </div>
+
 
 
 </ion-content>

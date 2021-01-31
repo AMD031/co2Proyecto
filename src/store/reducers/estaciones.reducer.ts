@@ -17,16 +17,16 @@ const estadoInicial: EstacionesState = {
 };
 
 
-export function estacionesReducer( state = estadoInicial, action: fromEstaciones.EstacionAcciones ): EstacionesState {
+export function estacionesReducer( state = estadoInicial, action: fromEstaciones.EstacionAccionesAlllast ): EstacionesState {
     switch ( action.type ) {
-        case fromEstaciones.CARGAR_ESTACIONES_All_ACTIVE:
+        case fromEstaciones.CARGAR_ESTACIONES_All_LAST:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
 
-        case fromEstaciones.CARGAR_ESTACIONES_SUCCESS:
+        case fromEstaciones.CARGAR_ESTACIONES_All_LAST_SUCCESS:
             return {
                 ...state,
                 loading: false,
@@ -34,7 +34,7 @@ export function estacionesReducer( state = estadoInicial, action: fromEstaciones
                 Estaciones: [...action.Estaciones]
             };
 
-        case fromEstaciones.CARGAR_ESTACIONES_FAIL:
+        case fromEstaciones.CARGAR_ESTACIONES_All_LAST_FAIL:
             return {
                 ...state,
                 loaded: false,
