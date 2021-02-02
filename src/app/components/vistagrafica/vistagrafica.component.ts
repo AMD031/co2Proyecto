@@ -4,18 +4,28 @@ import * as moment from 'moment';
 // import * as d3 from 'd3-selection';
 // import * as d3Scale from 'd3-scale';
 // import * as d3Array from 'd3-array';
-import * as d3Axis from 'd3-axis';
-import * as d3TimeFormat from 'd3-time-format';
+// import * as d3Scale from 'd3-scale';
+// import * as d3Shape from 'd3-shape';
+// import * as d3Axis from 'd3-axis';
+// import * as d3Zoom from 'd3-zoom';
+// import * as d3Brush from 'd3-brush';
+// import * as d3Array from 'd3-array';
 import * as d3 from "d3";
-
+import { CargarEstacionEntradasName } from 'src/store/actions';
+import { AppState } from 'src/store/app.reducer';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 @Component({
   selector: 'app-vistagrafica',
   templateUrl: './vistagrafica.component.html',
   styleUrls: ['./vistagrafica.component.scss'],
 })
-export class VistagraficaComponent  {
-  @Input('data') data:any = [];
-  @Input('nueva')nueva:boolean
+export class VistagraficaComponent {
+  //@Input('data') data:any = [];
+  @Input('nombre') nombre: string;
+  @Input('pagina') pagina: number;
   width: number;
   height: number;
   margin = { top: 20, right: 20, bottom: 30, left: 40 };
@@ -25,181 +35,118 @@ export class VistagraficaComponent  {
   g: any;
   myColor: any;
   dataReady: any = [];
-  // public data = [
-  //   {
-  //     "id": 20456,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 489,
-  //       "temp": 16,
-  //       "humid": 43,
-  //       "press": 957,
-  //       "noise": 117
-  //     },
-  //     "time": "2021-01-30T12:42:50.269Z"
-  //   },
-  //   {
-  //     "id": 20452,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 493,
-  //       "temp": 15,
-  //       "humid": 43,
-  //       "press": 948,
-  //       "noise": 126
-  //     },
-  //     "time": "2021-01-30T12:37:49.490Z"
-  //   },
-  //   {
-  //     "id": 20448,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 495,
-  //       "temp": 16,
-  //       "humid": 42,
-  //       "press": 949,
-  //       "noise": 133
-  //     },
-  //     "time": "2021-01-30T12:32:48.809Z"
-  //   },
-  //   {
-  //     "id": 20444,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 494,
-  //       "temp": 16,
-  //       "humid": 42,
-  //       "press": 946,
-  //       "noise": 126
-  //     },
-  //     "time": "2021-01-30T12:27:48.060Z"
-  //   },
-  //   {
-  //     "id": 20440,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 494,
-  //       "temp": 17,
-  //       "humid": 43,
-  //       "press": 945,
-  //       "noise": 121
-  //     },
-  //     "time": "2021-01-30T12:22:46.963Z"
-  //   },
-  //   {
-  //     "id": 20436,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 498,
-  //       "temp": 17,
-  //       "humid": 44,
-  //       "press": 942,
-  //       "noise": 113
-  //     },
-  //     "time": "2021-01-30T12:17:46.233Z"
-  //   },
-  //   {
-  //     "id": 20432,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 488,
-  //       "temp": 18,
-  //       "humid": 43,
-  //       "press": 938,
-  //       "noise": 118
-  //     },
-  //     "time": "2021-01-30T12:12:45.536Z"
-  //   },
-  //   {
-  //     "id": 20428,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 498,
-  //       "temp": 19,
-  //       "humid": 42,
-  //       "press": 937,
-  //       "noise": 120
-  //     },
-  //     "time": "2021-01-30T12:07:44.759Z"
-  //   },
-  //   {
-  //     "id": 20424,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 489,
-  //       "temp": 18,
-  //       "humid": 42,
-  //       "press": 943,
-  //       "noise": 114
-  //     },
-  //     "time": "2021-01-30T12:02:44.066Z"
-  //   },
-  //   {
-  //     "id": 20420,
-  //     "station": "aulatest 1",
-  //     "data": {
-  //       "CO2": 497,
-  //       "temp": 18,
-  //       "humid": 42,
-  //       "press": 939,
-  //       "noise": 105
-  //     },
-  //     "time": "2021-01-30T11:57:43.353Z"
-  //   }
-  // ]
-
-  
-  //  "CO2": 498,
-  //   "temp": 14,
-  //   "humid": 42,
-  //   "press": 968,
-  //   "noise": 111
+  data: any = [];
+  page: number = 1;
+  mostrarTexto:boolean = true; 
+  tamagnoFuente: number  = 10;
+  ob$: Subscription;
+  altoEjeY: number = 1250;
+  inicio: string;
+  fin: string;
 
 
   private allGroup: any = ["CO2", "temp", "humid", "press", "noise"];
 
-  constructor() {
-    this.width = 800 - this.margin.left - this.margin.right;
+  
+
+  
+  constructor(
+    private store: Store<AppState>,
+    private mensajeAlerta: MensajesalertasService
+    ) {
+    this.width = 900 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
   }
 
 
+  disminuir() {
+    try {
+      if (this.page > 1) {
+        this.page--;
+        if (this.data && this.data.length > 0) {
+          this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+
+
+  aumentar() {
+    if (this.page >= 1) {
+      this.page++;
+      if (this.data && this.data.length > 0) {
+        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+      } else {
+        this.page = 1;
+        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+        this.ob$.unsubscribe;
+        this.iniciarCarga();
+      }
+    }
+  }
+
+
+
+  // visualizarValores() {
+  //   //this.altoEjeY = 200;
+  //   this.allGroup = ["CO2"];
+  //   if (this.data && this.data.length > 0) {
+  //     this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+  //   }
+  // }
+
+  borraGrafica(){
+    d3.selectAll(".linealChart > *").remove();
+  }
+
+  iniciarCarga() {
+    try {
+      this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+      this.ob$ = this.store.select('EntradasPaginadas').pipe().subscribe(
+        (datos) => {
+          this.data = datos.Entradas;
+          if (this.data && this.data.length > 0) {
+            this.borraGrafica();
+            this.inicarGrafica()
+          }
+        })
+    } catch (error) {
+
+    }
+
+  }
 
   ngOnInit(): void {
-    // console.log("datos:"+ JSON.stringify(this.data));
-      this.initSvg();
-      this.reformatData();
-      this.colorScale();
-      this.initAxis();
-      this.addLines();
-      this.addPoints();
-      this.addLabels();
-      this.leyenEndline();
+    this.iniciarCarga();
+  }
 
+
+  private inicarGrafica() {
+    this.initSvg();
+    this.reformatData();
+    this.colorScale();
+    this.initAxis();
+    this.addLines();
+    this.addPoints();
+    this.mostrarTexto && this.addLabels();
+    this.leyenEndline();
   }
 
 
   initSvg() {
-    if(!this.nueva){
-      this.svg = d3.select(".linealChart")
+
+    this.svg = d3.select(".linealChart")
       .append("svg")
       .attr('width', '100%')
       .attr('height', '100%')
-      .attr('viewBox', '0 0 900 400')
+      .attr('viewBox', `0 0 ${900} ${400}`)
       .append("g")
       .attr("transform",
         "translate(" + this.margin.left + "," + this.margin.top + ")");
-    }else{
-      this.svg = d3.select(".linealChart2")
-      .append("svg")
-      .attr('width', '100%')
-      .attr('height', '100%')
-      .attr('viewBox', '0 0 900 400')
-      .append("g")
-      .attr("transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")");
-    }
-   
   }
 
   reformatData() {
@@ -211,39 +158,43 @@ export class VistagraficaComponent  {
         })
       };
     });
-    console.log(this.dataReady);
+    //console.log(this.dataReady);
   }
 
   colorScale() {
     this.myColor = d3.scaleOrdinal()
       .domain(this.allGroup)
       .range(d3.schemeSet2);
-    //  .range( ["#FAA","#00F"]);
+    //  .range( ["#FAA","#00F"]); 
   }
 
 
   initAxis() {
-    const fin: string = moment(this.data[0].time).add(2, 'minutes').toISOString();
-    const inicio: string = moment(this.data[this.data.length - 1].time).subtract(2, 'minutes').toISOString();
+    
+    this.inicio= moment(this.data[this.data.length - 1].time).subtract(5, 'minutes').toISOString();
+    this.fin= moment(this.data[0].time).add(5, 'minutes').toISOString();
+
+    
+
+    // Add X axis
     this.x = d3.scaleTime()
       .domain(d3.extent(
         [
-          d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(inicio),
-          d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(fin)
+          d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(this.inicio),
+          d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(this.fin)
         ],
         (d) => { return d; }))
       .range([0, this.width]);
 
     this.svg.append("g")
       .attr("transform", "translate(0," + this.height + ")")
-      .call(d3.axisBottom(this.x));
-
+      .call(d3.axisBottom(this.x)).style("font-size", 15);
     // Add Y axis
     this.y = d3.scaleLinear()
-      .domain([0, 1200])
+      .domain([0, this.altoEjeY])
       .range([this.height, 0]);
     this.svg.append("g")
-      .call(d3.axisLeft(this.y));
+      .call(d3.axisLeft(this.y)).style("font-size", 13);
   }
 
   addLines() {
@@ -295,8 +246,9 @@ export class VistagraficaComponent  {
       .data(this.dataReady)
       .enter()
       .append('g')
-      .style("fill", (d) => { 
-        return this.myColor(d.name) })
+      .style("fill", (d) => {
+        return this.myColor(d.name)
+      })
       .selectAll("b") // Second we need to enter in the 'values' part of this group
       .data((d) => { return d.values })
       .enter()
@@ -307,12 +259,12 @@ export class VistagraficaComponent  {
           + "," + this.y(d.value) + ")";
       }) // Put the text at the position of the last point
       .attr("x", 0) // shift the text a bit more right
-      .attr("y", -2)
-      .text((d) => {  
+      .attr("y", -11)
+      .text((d) => {
         return '' + d.value + ' '
       })
-      .style("fill", (d) => { return '#000000' })
-      .style("font-size", 10)
+      // .style("fill", (d) => { return d.name })
+      .style("font-size", this.tamagnoFuente)
 
 
 
@@ -338,9 +290,89 @@ export class VistagraficaComponent  {
         return '' + d.name + ' '
       })
       .style("fill", (d) => { return this.myColor(d.name) })
-      .style("font-size", 8)
+      .style("font-size", this.tamagnoFuente)
   }
 
- 
+
+
+ //------------------------------------------------------------ 
+
+ existe(valor: any){
+    return  this.marcdos.indexOf(valor) !== -1? true : false; 
+  }
+
+
+
+
+  async casillasVerificacion(){
+    this.marcdos  =  await this.mensajeAlerta.presentAlertCheckbox("Parámetros", this.elementos);
+    this.elementos[0].checked = this.existe('CO2');
+    this.elementos[1].checked = this.existe('temp');
+    this.elementos[2].checked = this.existe('humid');
+    this.elementos[3].checked = this.existe('press');
+    this.elementos[4].checked = this.existe('noise');
+    this.elementos[5].checked = this.existe('texto');
+    this.mostrarTexto = this.existe('texto');
+
+   
+    this.allGroup = this.marcdos.filter( (valor)  => valor !== 'texto')
+    this.borraGrafica();
+    this.inicarGrafica();
+ }
+
+
+  private marcdos: any = [];
+  public elementos:any = [
+    {
+      name: 'checkbox0',
+      type: 'checkbox',
+      label: 'CO2',
+      value: 'CO2',
+      checked: true,
+    },
+    {
+      name: 'checkbox1',
+      type: 'checkbox',
+      label: 'Temperatura',
+      value: 'temp',
+      checked: true
+    },
+    {
+      name: 'checkbox2',
+      type: 'checkbox',
+      label: 'Humedad',
+      value: 'humid',
+      checked: true
+    },
+    {
+      name: 'checkbox3',
+      type: 'checkbox',
+      label: 'Presión',
+      value: 'press',
+      checked: true
+    },
+    {
+      name: 'checkbox4',
+      type: 'checkbox',
+      label: 'Ruido',
+      value: 'noise',
+      checked: true
+    },
+    {
+      name: 'checkbox5',
+      type: 'checkbox',
+      label: 'Texto',
+      value: 'texto',
+      checked: true
+    },
+
+  ]
+
+
+  cambiarTamagnoletra(event){
+     this.tamagnoFuente = event.target.value;
+      this.borraGrafica();
+      this.inicarGrafica();
+  }
 
 }

@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 
 //obtencion
-export const CARGAR_ENTRADAS_ESTACION_PAGINADAS = '[EntradasPaginada] Cargar estacion entradas paginada ID';
+export const CARGAR_ENTRADAS_ESTACION_PAGINADAS = '[EntradasPaginada] Cargar estacion entradas paginada Name';
 export const CARGAR_ENTRADAS_ESTACION_PAGINADAS_FAIL = '[EntradasPaginada] Cargar estacion entradas paginada FAIL';
 export const CARGAR_ENTRADAS_ESTACION_PAGINADAS_SUCCESS = '[EntradasPaginada] Cargar estacion entradas paginada SUCCESS';
 

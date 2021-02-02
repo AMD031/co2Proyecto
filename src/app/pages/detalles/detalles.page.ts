@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { UtilesService } from 'src/app/services/utiles.service';
-import { CargarEstacionEntradasName, CargarEstacionesAlllast, CargarEstacionId } from 'src/store/actions';
+import { CargarEstacionId } from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
 import { GraficaPage } from '../grafica/grafica.page';
 
@@ -19,15 +19,14 @@ export class DetallesPage implements OnInit {
   private entrada: any;
   private entradasEstacion: any = [];
   private ob$: Subscription;
-  private ob2$: Subscription;
-  private ampliar: boolean = false;
-
+  private ampliar: boolean = true;
+  public finCarga:boolean ;
   private co2: Number = 0;
   private temp: Number = 0;
   private humid: Number = 0;
   private press: Number = 0;
   private noise: Number = 0;
-  private nombreEstacion: string = '';
+  private nombreEstacion: string;
 
   constructor(
     private store: Store<AppState>,
@@ -41,8 +40,7 @@ export class DetallesPage implements OnInit {
       try {
         this.store.dispatch(new CargarEstacionId(this.id));
         this.ob$ = this.store.select('estacion').subscribe(
-          (estacion) => {
-            //this.estacion = estacion.Estacion;
+          (estacion) => {  
             if (estacion.Estacion) {
               this.entrada = estacion.Estacion[0];
               this.co2 = this.entrada.data.CO2
@@ -51,19 +49,11 @@ export class DetallesPage implements OnInit {
               this.press = this.entrada.data.press
               this.noise = this.entrada.data.noise
               this.nombreEstacion = this.entrada.station;
-              this.store.dispatch(new CargarEstacionEntradasName(this.nombreEstacion, 1));
+              this.finCarga = !estacion.loading;
             }
-          });
-
-        this.ob2$ = this.store.select('EntradasPaginadas').subscribe(
-          (datos) => {
-            this.entradasEstacion = datos.Entradas;
-            //console.log(this.entradasEstacion);
-            
           });
       } catch (error) {
         console.log(error);
-
       }
     }
   }
@@ -72,14 +62,19 @@ export class DetallesPage implements OnInit {
 
     this.ampliar = !this.ampliar;
     // console.log("mando "+this.nombreEstacion);
-    // const modal = await this._modal.create({
-    //   component: GraficaPage,
-    //   cssClass: 'my-custom-class',
-    //   componentProps: {
-    //     'nombre': this.nombreEstacion,
-    //   }
-    // });
-    // return await modal.present();
+    const modal = await this._modal.create({
+      component: GraficaPage,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        'nombre': this.nombreEstacion,
+      }
+    });
+    modal.onDidDismiss()
+    .then(() => {
+      this.ampliar = !this.ampliar;
+    });
+
+    return await modal.present();
   }
 
 
@@ -92,7 +87,6 @@ export class DetallesPage implements OnInit {
     this.press = 0;
     this.noise = 0;
     this.ob$.unsubscribe();
-    this.ob2$.unsubscribe();
 
   }
 

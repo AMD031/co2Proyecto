@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { promise } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +129,49 @@ export class MensajesalertasService {
     });
   }
 
+
+
+  async presentAlertCheckbox(
+    cabecera: string = 'Alert',
+    elementos: Array<any> = [],
+    textoCancelar: string = 'cancelar',
+    textoAceptar: string = 'aceptar',
+   // mensaje: string = 'Elige'
+  ) {
+
+
+    return new Promise<any>( async(resolve, reject) => {
+      const alert = await this.alertController.create({
+        cssClass: 'my-custom-class',
+        header: cabecera,
+        //message: mensaje,
+        inputs: [
+         ...elementos as any
+        ],
+        buttons: [
+          {
+            text: textoCancelar,
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+ 
+            }
+          }, {
+            text: textoAceptar,
+            handler: (value) => {
+              resolve(value);
+            }
+          }
+        ]
+      }).then(
+        (alert) =>{
+          alert.present();
+        }
+      )
+
+
+    })
+  }
 
 
 

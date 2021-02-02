@@ -15,16 +15,7 @@ export class GraficaPage implements OnInit {
   private ob$: Subscription;
   public entradasEstacion: any = [];
   ngOnInit() {
-    console.log("nombre: "+this.nombre);
     
-    if (this.nombre !== '') {
-      this.ob$ = this.store.select('EntradasPaginadas').subscribe(
-        (datos) => {
-          this.entradasEstacion = datos.Entradas;
-          console.log(this.entradasEstacion);
-        });
-    }
-
   }
 
 }

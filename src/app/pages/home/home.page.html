@@ -14,7 +14,7 @@
       <ion-col size="2"><b>Estación</b></ion-col>
       <ion-col size="3"><b>Última lectura</b></ion-col>
       <ion-col size="2"><b>Estado estación</b></ion-col>
-      <ion-col size="2"><b>Valoración aula</b></ion-col>
+      <ion-col size="2"><b>CO2</b></ion-col>
       <ion-col size="2"><b>Detalles</b></ion-col>
     </ion-row>
     <ion-row *ngFor="let estacion of this.estaciones" style="text-align: center;">
@@ -41,9 +41,16 @@
       </ion-col>
 
       <ion-col size="2">
-        <ion-button disabled="true" fill="clear">
+        <!-- <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+            {{ estacion.data &&  util.jsonParse(estacion.data).CO2 }}
+          </ion-label>
+        </ion-item> -->
+        
+       <ion-button disabled="true" fill="clear">
           <ion-icon slot="icon-only" name="star"></ion-icon>
         </ion-button>
+        
       </ion-col>
 
       <ion-col size="2">
@@ -51,7 +58,6 @@
           <ion-icon slot="icon-only" name="add"></ion-icon>
         </ion-button>
       </ion-col>
-
     </ion-row>
   </ion-grid>
 

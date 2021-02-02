@@ -1,1 +1,54 @@
-<div  style="width: 90% ; margin: auto; padding-top: 0.1em;" class="linealChart"></div>
+
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start" >
+            <ion-button   (click)="disminuir()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>   
+            <ion-label> Página{{this.page}}</ion-label>
+           
+            <ion-button (click)="aumentar()">
+                <ion-icon name="arrow-forward"></ion-icon>
+            </ion-button>
+
+
+            <!-- <ion-button (click)="visualizarValores()" expand="block" fill="clear" shape="round">
+                Click me
+            </ion-button> -->
+
+            <ion-button   (click)="casillasVerificacion()" expand="block" fill="clear" shape="round">
+                Mostrar
+            </ion-button>
+
+        </ion-buttons>
+
+        <ion-buttons slot="end">
+            <ion-item lines="none">
+                <ion-label>Tamaño</ion-label>
+                <ion-select value="10" (ionChange)="cambiarTamagnoletra($event)" >
+                    <ion-select-option value="5">5</ion-select-option>
+                    <ion-select-option value="10">10</ion-select-option>
+                    <ion-select-option value="15">15</ion-select-option>
+                    <ion-select-option value="20">20</ion-select-option>
+                </ion-select>
+            </ion-item>
+        </ion-buttons>
+
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-item>
+   <ion-grid fixed>
+       <ion-row>
+           <ion-col size="2"></ion-col>
+           <ion-col size="4">Fecha inicio: {{this.inicio}}</ion-col>
+           <ion-col size="2"></ion-col>
+           <ion-col size="4">Fecha fin: {{this.fin}}</ion-col>
+           <ion-col size="2"></ion-col>
+       </ion-row>
+   </ion-grid>
+</ion-item>
+
+        <div  style="width: 80%;  margin: auto; padding-top: 0.1em;" class="linealChart"></div>
+

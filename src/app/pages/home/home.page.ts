@@ -25,7 +25,8 @@ export class HomePage implements OnInit {
     private store: Store<AppState>,
     private alerta: MensajesalertasService,
     private modal: ModalController,
-    private util: UtilesService
+    private util: UtilesService,
+
   ) {
 
 
@@ -39,10 +40,10 @@ export class HomePage implements OnInit {
         this.estaciones = estaciones.Estaciones;
         this.loading = estaciones.loading;
         this.loaded = estaciones.loaded;
-        this.loaded  && this.alerta.hideLoading();
+        this.loaded  && this.alerta.hideLoading();        
       }
     )
-    this.store.dispatch(new fromEstacion.CargarEstacionEntradasName('aulatest 1', 1));
+    //this.store.dispatch(new fromEstacion.CargarEstacionEntradasName('aulatest 1', 1));
   }
 
 
