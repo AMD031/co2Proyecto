@@ -8,6 +8,7 @@ import { CargarEstacionesAlllast } from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
 import * as fromEstacion from '../../../store/actions'
 import { DetallesPage } from '../detalles/detalles.page';
+import * as d3 from "d3";
 
 
 @Component({
@@ -20,6 +21,14 @@ export class HomePage implements OnInit {
   private estaciones = [];
   private loading: boolean;
   private loaded: boolean;
+  svg: any;
+  x: any;
+  y: any
+
+
+
+
+
   constructor(
     private co2: Co2Service,
     private store: Store<AppState>,
@@ -31,20 +40,35 @@ export class HomePage implements OnInit {
 
 
   }
- async ngOnInit() {
+  async ngOnInit() {
     this.store.dispatch(new CargarEstacionesAlllast());
-  
+
     this.store.select('estacionesLastAll').subscribe(
       async (estaciones) => {
-        this.loading &&  await this.alerta.presentLoading('... cargando');
+        this.loading && await this.alerta.presentLoading('... cargando');
         this.estaciones = estaciones.Estaciones;
         this.loading = estaciones.loading;
         this.loaded = estaciones.loaded;
-        this.loaded  && this.alerta.hideLoading();        
+        this.loaded && this.alerta.hideLoading();
       }
     )
     //this.store.dispatch(new fromEstacion.CargarEstacionEntradasName('aulatest 1', 1));
+    this.iniciarGrafica();
   }
+  iniciarGrafica() {
+    const line = d3.line()
+          .x(function(d, i) {
+                return 0
+            })
+            .y(function(d) {
+                return 0
+            })
+            .curve(d3.curveLinear);
+  }
+
+
+
+
 
 
   async presentModal(id: any = -1) {
@@ -57,7 +81,6 @@ export class HomePage implements OnInit {
     });
     return await modal.present();
   }
-
 
 
 

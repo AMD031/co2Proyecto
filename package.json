@@ -29,7 +29,6 @@
     "@ngrx/store-devtools": "^10.1.2",
     "d3": "^6.5.0",
     "moment": "^2.29.1",
-    "rickshaw": "^1.7.1",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

@@ -16,7 +16,8 @@ import { AppState } from 'src/store/app.reducer';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+
+
 @Component({
   selector: 'app-vistagrafica',
   templateUrl: './vistagrafica.component.html',
@@ -37,23 +38,23 @@ export class VistagraficaComponent {
   dataReady: any = [];
   data: any = [];
   page: number = 1;
-  mostrarTexto:boolean = true; 
-  tamagnoFuente: number  = 10;
+  mostrarTexto: boolean = true;
+  tamagnoFuente: number = 15;
   ob$: Subscription;
   altoEjeY: number = 1250;
   inicio: string;
   fin: string;
+  mostrar: boolean = true;
+  zoom: any;
+  private allGroup: any = ["CO2" /*, "temp", "humid", "press", "noise"*/];
 
 
-  private allGroup: any = ["CO2", "temp", "humid", "press", "noise"];
 
-  
 
-  
   constructor(
     private store: Store<AppState>,
     private mensajeAlerta: MensajesalertasService
-    ) {
+  ) {
     this.width = 900 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
   }
@@ -72,7 +73,22 @@ export class VistagraficaComponent {
     }
   }
 
+  // animacion(){
 
+  // d3.select('.linealChart')
+  //   .style('font-size', '0px')
+  //   .interrupt()
+  //   .transition()
+  //     .ease(d3.easePoly)
+  //     .duration(200)
+  //     .style('width', '20px')
+  //   .transition()
+  //     .ease(d3.easeBounce)
+  //     .duration(300)
+  //     .style('font-size', '12px')
+  //     .style('width', '100px');
+
+  // }
 
 
   aumentar() {
@@ -91,15 +107,8 @@ export class VistagraficaComponent {
 
 
 
-  // visualizarValores() {
-  //   //this.altoEjeY = 200;
-  //   this.allGroup = ["CO2"];
-  //   if (this.data && this.data.length > 0) {
-  //     this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
-  //   }
-  // }
 
-  borraGrafica(){
+  borraGrafica() {
     d3.selectAll(".linealChart > *").remove();
   }
 
@@ -115,17 +124,22 @@ export class VistagraficaComponent {
           }
         })
     } catch (error) {
-
+      console.log('error');
+      
     }
 
   }
 
   ngOnInit(): void {
     this.iniciarCarga();
+    
   }
 
 
+
+
   private inicarGrafica() {
+
     this.initSvg();
     this.reformatData();
     this.colorScale();
@@ -134,19 +148,32 @@ export class VistagraficaComponent {
     this.addPoints();
     this.mostrarTexto && this.addLabels();
     this.leyenEndline();
+
+    
   }
 
 
-  initSvg() {
+  zoomed({transform} ) {
+    this.g.attr("transform", transform);
+  }
 
+  initSvg() {
+    
     this.svg = d3.select(".linealChart")
       .append("svg")
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('viewBox', `0 0 ${900} ${400}`)
-      .append("g")
+      .call(d3.zoom()
+      .extent([[0, 0], [this.width, this.height]])
+      .scaleExtent([1, 8])
+      .on("zoom", ({transform})=> this.zoomed({transform}) )) ;
+
+     this.g = this.svg.append("g")
       .attr("transform",
         "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+      
   }
 
   reformatData() {
@@ -170,30 +197,32 @@ export class VistagraficaComponent {
 
 
   initAxis() {
-    
-    this.inicio= moment(this.data[this.data.length - 1].time).subtract(5, 'minutes').toISOString();
-    this.fin= moment(this.data[0].time).add(5, 'minutes').toISOString();
 
-    
+    this.inicio = moment(this.data[this.data.length - 1].time).toISOString();
+    this.fin = moment(this.data[0].time).toISOString();
+    const inicioMargen = moment(this.data[this.data.length - 1].time).subtract(5, 'minutes').toISOString();
+    const finMargen = moment(this.data[0].time).add(10, 'minutes').toISOString();
+
 
     // Add X axis
     this.x = d3.scaleTime()
       .domain(d3.extent(
         [
-          d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(this.inicio),
-          d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(this.fin)
+          d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(inicioMargen),
+          d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(finMargen)
         ],
         (d) => { return d; }))
       .range([0, this.width]);
 
-    this.svg.append("g")
+    this.g.append("g")
       .attr("transform", "translate(0," + this.height + ")")
       .call(d3.axisBottom(this.x)).style("font-size", 15);
+
     // Add Y axis
     this.y = d3.scaleLinear()
       .domain([0, this.altoEjeY])
       .range([this.height, 0]);
-    this.svg.append("g")
+    this.g.append("g")
       .call(d3.axisLeft(this.y)).style("font-size", 13);
   }
 
@@ -204,7 +233,7 @@ export class VistagraficaComponent {
         return this.x(time2)
       })
       .y((d) => { return this.y(d.value) })
-    this.svg.selectAll("myLines")
+    this.g.selectAll("myLines")
       .data(this.dataReady)
       .enter()
       .append("path")
@@ -219,7 +248,7 @@ export class VistagraficaComponent {
 
 
   addPoints() {
-    this.svg
+    this.g
       // First we need to enter in a group
       .selectAll("myDots")
       .data(this.dataReady)
@@ -240,7 +269,7 @@ export class VistagraficaComponent {
   }
 
   addLabels() {
-    this.svg
+    this.g
       // First we need to enter in a group
       .selectAll("a")
       .data(this.dataReady)
@@ -271,7 +300,7 @@ export class VistagraficaComponent {
   }
 
   leyenEndline() {
-    this.svg
+    this.g
       .selectAll("myLabels")
       .data(this.dataReady)
       .enter()
@@ -295,17 +324,15 @@ export class VistagraficaComponent {
 
 
 
- //------------------------------------------------------------ 
+  //------------------------------------------------------------ 
 
- existe(valor: any){
-    return  this.marcdos.indexOf(valor) !== -1? true : false; 
+  existe(valor: any) {
+    return this.marcdos.indexOf(valor) !== -1 ? true : false;
   }
 
 
-
-
-  async casillasVerificacion(){
-    this.marcdos  =  await this.mensajeAlerta.presentAlertCheckbox("Parámetros", this.elementos);
+  async casillasVerificacion() {
+    this.marcdos = await this.mensajeAlerta.presentAlertCheckbox("Parámetros", this.elementos);
     this.elementos[0].checked = this.existe('CO2');
     this.elementos[1].checked = this.existe('temp');
     this.elementos[2].checked = this.existe('humid');
@@ -314,15 +341,15 @@ export class VistagraficaComponent {
     this.elementos[5].checked = this.existe('texto');
     this.mostrarTexto = this.existe('texto');
 
-   
-    this.allGroup = this.marcdos.filter( (valor)  => valor !== 'texto')
+
+    this.allGroup = this.marcdos.filter((valor) => valor !== 'texto')
     this.borraGrafica();
     this.inicarGrafica();
- }
+  }
 
 
   private marcdos: any = [];
-  public elementos:any = [
+  public elementos: any = [
     {
       name: 'checkbox0',
       type: 'checkbox',
@@ -335,28 +362,28 @@ export class VistagraficaComponent {
       type: 'checkbox',
       label: 'Temperatura',
       value: 'temp',
-      checked: true
+      checked: false
     },
     {
       name: 'checkbox2',
       type: 'checkbox',
       label: 'Humedad',
       value: 'humid',
-      checked: true
+      checked: false
     },
     {
       name: 'checkbox3',
       type: 'checkbox',
       label: 'Presión',
       value: 'press',
-      checked: true
+      checked: false
     },
     {
       name: 'checkbox4',
       type: 'checkbox',
       label: 'Ruido',
       value: 'noise',
-      checked: true
+      checked: false
     },
     {
       name: 'checkbox5',
@@ -368,11 +395,25 @@ export class VistagraficaComponent {
 
   ]
 
+  borraTexto() {
+    d3.selectAll("svg > g > g> text").remove();
+  }
 
-  cambiarTamagnoletra(event){
-     this.tamagnoFuente = event.target.value;
-      this.borraGrafica();
-      this.inicarGrafica();
+  borrarPath() {
+    d3.selectAll("svg > g > path").remove();
+  }
+
+  borrarPutos(){
+    d3.selectAll("svg > g > g> circle").remove();
+  }
+
+  cambiarTamagnoletra(event) {
+    this.tamagnoFuente = event.target.value;
+    this.borraTexto();
+    this.addLabels();
+    this.leyenEndline();
+    // this.borraGrafica();
+    // this.inicarGrafica();
   }
 
 }
