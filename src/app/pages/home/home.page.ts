@@ -53,19 +53,8 @@ export class HomePage implements OnInit {
       }
     )
     //this.store.dispatch(new fromEstacion.CargarEstacionEntradasName('aulatest 1', 1));
-    this.iniciarGrafica();
-  }
-  iniciarGrafica() {
-    const line = d3.line()
-          .x(function(d, i) {
-                return 0
-            })
-            .y(function(d) {
-                return 0
-            })
-            .curve(d3.curveLinear);
-  }
 
+  }
 
 
 

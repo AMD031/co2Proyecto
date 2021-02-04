@@ -16,6 +16,7 @@ import { AppState } from 'src/store/app.reducer';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
+import { UtilesService } from 'src/app/services/utiles.service';
 
 
 @Component({
@@ -46,6 +47,7 @@ export class VistagraficaComponent {
   fin: string;
   mostrar: boolean = true;
   zoom: any;
+  Tooltip: any;
   private allGroup: any = ["CO2" /*, "temp", "humid", "press", "noise"*/];
 
 
@@ -53,7 +55,8 @@ export class VistagraficaComponent {
 
   constructor(
     private store: Store<AppState>,
-    private mensajeAlerta: MensajesalertasService
+    private mensajeAlerta: MensajesalertasService,
+    private utirl: UtilesService
   ) {
     this.width = 900 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
@@ -109,14 +112,14 @@ export class VistagraficaComponent {
         })
     } catch (error) {
       console.log('error');
-      
+
     }
 
   }
 
   ngOnInit(): void {
     this.iniciarCarga();
-    
+
   }
 
 
@@ -131,32 +134,49 @@ export class VistagraficaComponent {
     this.addPoints();
     this.mostrarTexto && this.addLabels();
     this.leyenEndline();
+    this.addToolTip();
   }
 
 
-  zoomed({transform} ) {
+  zoomed({ transform }) {
     this.g.attr("transform", transform);
   }
 
+  addToolTip() {
+    this.Tooltip = d3.select(".linealChart")
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("position", "absolute")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("padding", "5px")
+
+  }
+
+
+
   initSvg() {
-    
     this.svg = d3.select(".linealChart")
       .append("svg")
       .attr('width', '95%')
       .attr('height', '100%')
-      .attr('viewBox', `0 0 ${ 900} ${400}`)
+      .attr('viewBox', `0 0 ${900} ${400}`)
       .call(d3.zoom()
-      .extent([[0, 0], [this.width, this.height]])
-      .scaleExtent([1, 8])
-      .on("zoom", ({transform})=>{ 
-        return this.zoomed({transform})} 
-      )) ;
+        .extent([[0, 0], [this.width, this.height]])
+        .scaleExtent([1, 8])
+        .on("zoom", ({ transform }) => {
+          return this.zoomed({ transform })
+        }
+        ));
 
-     this.g = this.svg.append("g")
+    this.g = this.svg.append("g")
       .attr("transform",
         "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-      
+
   }
 
   reformatData() {
@@ -230,7 +250,7 @@ export class VistagraficaComponent {
 
 
 
-  addPoints() {
+  addPoints() :void{
     this.g
       // First we need to enter in a group
       .selectAll("myDots")
@@ -239,17 +259,67 @@ export class VistagraficaComponent {
       .append('g')
       .style("fill", (d) => { return this.myColor(d.name) })
       .selectAll("myPoints") // Second we need to enter in the 'values' part of this group
-      .data((d) => { return d.values })
+      .data((d) => {
+               
+        return d.values  })
       .enter()
       .append("circle")
+      .attr("class", "myCircle")
       .attr("cx", (d) => {
         const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.time);
         return this.x(time2)
       })
       .attr("cy", (d) => { return this.y(d.value) })
-      .attr("r", 4)
+      .attr("r", 6)
       .attr("stroke", "white")
+      .on("mouseover", (event, d) => this.mouseover(event, d))
+      .on("mousemove", (event, d) => this.mousemove(event, d))
+      .on("mouseleave",(event, d) => this.mouseleave(event,d))
   }
+
+
+
+
+
+  // Three function that change the tooltip when user hover / move / leave a cell
+  mouseover(event, d) {
+    
+    
+    this.Tooltip
+      .style("opacity", 1)
+  }
+
+  mousemove(event, d) :void{
+
+ 
+    //console.log(d3.pointer(event));
+    //d3.pointer()
+
+
+    
+
+   this.Tooltip
+      .html(
+        '<div style="text-align: left;">'+ 
+          '<b>' +"Valor: " + '</b>' +  d.value +'<br>'+
+          '<b>' +"Fecha: " + '</b>' + d.time +
+        '</div>'
+        
+      )
+      // .style("top", d3.select(event.target).attr("cy")+ 'px')
+      // .style("left",  d3.select(event.target).attr("cx")+ 'px')
+      .style("top", '15%')
+      .style("left", '50%')
+  }
+
+  mouseleave(event, d):void {
+    this.Tooltip
+      .transition()		
+      .duration(500)		
+      .style("opacity", 0);	
+  }
+
+
 
   addLabels() {
     this.g
@@ -386,7 +456,7 @@ export class VistagraficaComponent {
     d3.selectAll("svg > g > path").remove();
   }
 
-  borrarPutos(){
+  borrarPutos() {
     d3.selectAll("svg > g > g> circle").remove();
   }
 
