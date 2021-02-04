@@ -73,22 +73,6 @@ export class VistagraficaComponent {
     }
   }
 
-  // animacion(){
-
-  // d3.select('.linealChart')
-  //   .style('font-size', '0px')
-  //   .interrupt()
-  //   .transition()
-  //     .ease(d3.easePoly)
-  //     .duration(200)
-  //     .style('width', '20px')
-  //   .transition()
-  //     .ease(d3.easeBounce)
-  //     .duration(300)
-  //     .style('font-size', '12px')
-  //     .style('width', '100px');
-
-  // }
 
 
   aumentar() {
@@ -139,7 +123,6 @@ export class VistagraficaComponent {
 
 
   private inicarGrafica() {
-
     this.initSvg();
     this.reformatData();
     this.colorScale();
@@ -148,8 +131,6 @@ export class VistagraficaComponent {
     this.addPoints();
     this.mostrarTexto && this.addLabels();
     this.leyenEndline();
-
-    
   }
 
 
@@ -161,13 +142,15 @@ export class VistagraficaComponent {
     
     this.svg = d3.select(".linealChart")
       .append("svg")
-      .attr('width', '100%')
+      .attr('width', '95%')
       .attr('height', '100%')
-      .attr('viewBox', `0 0 ${900} ${400}`)
+      .attr('viewBox', `0 0 ${ 900} ${400}`)
       .call(d3.zoom()
       .extent([[0, 0], [this.width, this.height]])
       .scaleExtent([1, 8])
-      .on("zoom", ({transform})=> this.zoomed({transform}) )) ;
+      .on("zoom", ({transform})=>{ 
+        return this.zoomed({transform})} 
+      )) ;
 
      this.g = this.svg.append("g")
       .attr("transform",
@@ -216,14 +199,14 @@ export class VistagraficaComponent {
 
     this.g.append("g")
       .attr("transform", "translate(0," + this.height + ")")
-      .call(d3.axisBottom(this.x)).style("font-size", 15);
+      .call(d3.axisBottom(this.x)).style("font-size", 14.1);
 
     // Add Y axis
     this.y = d3.scaleLinear()
       .domain([0, this.altoEjeY])
       .range([this.height, 0]);
     this.g.append("g")
-      .call(d3.axisLeft(this.y)).style("font-size", 13);
+      .call(d3.axisLeft(this.y)).style("font-size", 14.1);
   }
 
   addLines() {
