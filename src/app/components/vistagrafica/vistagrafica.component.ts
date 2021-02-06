@@ -30,7 +30,7 @@ export class VistagraficaComponent {
   @Input('pagina') pagina: number;
   width: number;
   height: number;
-  margin = { top: 20, right: 20, bottom: 30, left: 40 };
+  margin = { top: 0, right: 5, bottom: 20, left: 0 };
   x: any;
   y: any;
   svg: any;
@@ -42,12 +42,23 @@ export class VistagraficaComponent {
   mostrarTexto: boolean = true;
   tamagnoFuente: number = 15;
   ob$: Subscription;
-  altoEjeY: number = 1250;
+  altoEjeY: number = 1100;
   inicio: string;
   fin: string;
   mostrar: boolean = true;
   zoom: any;
   Tooltip: any;
+
+  transform:any;
+
+  gx:any;
+  gy:any;
+
+  xAxis:any;
+  yAxis:any;
+
+  tamagnoPunto:any = 3;
+
   private allGroup: any = ["CO2" /*, "temp", "humid", "press", "noise"*/];
 
 
@@ -119,7 +130,6 @@ export class VistagraficaComponent {
 
   ngOnInit(): void {
     this.iniciarCarga();
-
   }
 
 
@@ -130,19 +140,47 @@ export class VistagraficaComponent {
     this.reformatData();
     this.colorScale();
     this.initAxis();
+    this.addAxis();
     this.addLines();
     this.addPoints();
     this.mostrarTexto && this.addLabels();
     this.leyenEndline();
     this.addToolTip();
+    //this.addRectangle()
   }
 
+  // addRectangle():void{
+  //   // margin = { top: 20, right: 20, bottom: 30, left: 50 };
+  //   this.svg.append("rect")
+  //   .attr("width", this.width)
+  //   .attr("height", this.height)
+  //   .style("fill", "none")
+  //   .style("pointer-events", "all")
+  //   .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
+   
+  // }
 
-  zoomed({ transform }) {
-    this.g.attr("transform", transform);
+
+
+  corrigirPosicion():void{
+   this.transform && this.svg.selectAll(".charts")
+    .attr("transform", this.transform);
   }
 
-  addToolTip() {
+  zoomed(/*{ transform } */ event):void {
+   // this.g.attr("transform", transform);
+     const { transform }  = event;
+     this.transform = transform;
+      this.svg.selectAll(".charts")
+          .attr("transform", transform);
+          
+      d3.selectAll('.line').style("stroke-width", 2/transform.k);
+      this.gx.call(this.xAxis.scale(transform.rescaleX(this.x)));
+      this.gy.call(this.yAxis.scale(transform.rescaleY(this.y)));
+
+  }
+
+  addToolTip():void {
     this.Tooltip = d3.select(".linealChart")
       .append("div")
       .style("opacity", 0)
@@ -158,19 +196,24 @@ export class VistagraficaComponent {
 
 
 
-  initSvg() {
+  initSvg():void {
+
     this.svg = d3.select(".linealChart")
       .append("svg")
+      //.attr("preserveAspectRatio", "xMinYMin meet")
       .attr('width', '95%')
       .attr('height', '100%')
       .attr('viewBox', `0 0 ${900} ${400}`)
+      //.classed("svg-content", true)
       .call(d3.zoom()
         .extent([[0, 0], [this.width, this.height]])
-        .scaleExtent([1, 8])
-        .on("zoom", ({ transform }) => {
-          return this.zoomed({ transform })
+        .scaleExtent([0.75, 8])
+        .on("zoom", (event, d) => {
+          return this.zoomed( event )
         }
         ));
+
+ 
 
     this.g = this.svg.append("g")
       .attr("transform",
@@ -179,7 +222,7 @@ export class VistagraficaComponent {
 
   }
 
-  reformatData() {
+  reformatData():void {
     this.dataReady = this.allGroup.map((grpName) => {
       return {
         name: grpName,
@@ -191,7 +234,7 @@ export class VistagraficaComponent {
     //console.log(this.dataReady);
   }
 
-  colorScale() {
+  colorScale():void {
     this.myColor = d3.scaleOrdinal()
       .domain(this.allGroup)
       .range(d3.schemeSet2);
@@ -199,7 +242,7 @@ export class VistagraficaComponent {
   }
 
 
-  initAxis() {
+  initAxis():void {
 
     this.inicio = moment(this.data[this.data.length - 1].time).toISOString();
     this.fin = moment(this.data[0].time).toISOString();
@@ -217,29 +260,48 @@ export class VistagraficaComponent {
         (d) => { return d; }))
       .range([0, this.width]);
 
-    this.g.append("g")
-      .attr("transform", "translate(0," + this.height + ")")
-      .call(d3.axisBottom(this.x)).style("font-size", 14.1);
+
 
     // Add Y axis
     this.y = d3.scaleLinear()
       .domain([0, this.altoEjeY])
       .range([this.height, 0]);
-    this.g.append("g")
-      .call(d3.axisLeft(this.y)).style("font-size", 14.1);
+
+
+    
   }
 
-  addLines() {
+
+  addAxis():void{
+    this.gx =  this.g.append("g")
+      .attr("transform", "translate(0," + 0 + ")")
+      .call(d3.axisBottom(this.x)).style("font-size", 14.1)
+
+
+            
+    this.gy = this.g.append("g")
+    .attr("transform", `translate(${this.width},` + 0 +")")
+    .call(d3.axisLeft(this.y )).style("font-size", 14.1)
+
+
+     //-----------------
+     this.xAxis = d3.axisBottom(this.x);
+     this.yAxis = d3.axisLeft(this.y)
+  }
+
+  addLines():void {
     var line = d3.line()
-      .x((d) => {
+      .x((d) => {        
         const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.time);
         return this.x(time2)
       })
       .y((d) => { return this.y(d.value) })
+
     this.g.selectAll("myLines")
       .data(this.dataReady)
       .enter()
       .append("path")
+      .attr("class", "charts")
       .attr("d", (d) => { return line(d.values) })
       .attr("stroke", (d) => {
         return this.myColor(d.name)
@@ -257,11 +319,16 @@ export class VistagraficaComponent {
       .data(this.dataReady)
       .enter()
       .append('g')
+      .attr("class", "charts")
       .style("fill", (d) => { return this.myColor(d.name) })
       .selectAll("myPoints") // Second we need to enter in the 'values' part of this group
       .data((d) => {
-               
-        return d.values  })
+      const valores =  d.values.map( 
+          ( valor) =>{
+           return {...valor, name: d.name}
+          }
+        )         
+        return valores })
       .enter()
       .append("circle")
       .attr("class", "myCircle")
@@ -270,10 +337,10 @@ export class VistagraficaComponent {
         return this.x(time2)
       })
       .attr("cy", (d) => { return this.y(d.value) })
-      .attr("r", 6)
+      .attr("r", this.tamagnoPunto)
       .attr("stroke", "white")
       .on("mouseover", (event, d) => this.mouseover(event, d))
-      .on("mousemove", (event, d) => this.mousemove(event, d))
+      .on("mousemove", (event, d) => this.mousemove(event, d, d.name))
       .on("mouseleave",(event, d) => this.mouseleave(event,d))
   }
 
@@ -282,26 +349,18 @@ export class VistagraficaComponent {
 
 
   // Three function that change the tooltip when user hover / move / leave a cell
-  mouseover(event, d) {
-    
-    
+  mouseover(event, d):void {
     this.Tooltip
       .style("opacity", 1)
   }
 
-  mousemove(event, d) :void{
-
- 
+  mousemove(event:any, d:any, name:any) :void{
     //console.log(d3.pointer(event));
     //d3.pointer()
-
-
-    
-
    this.Tooltip
       .html(
         '<div style="text-align: left;">'+ 
-          '<b>' +"Valor: " + '</b>' +  d.value +'<br>'+
+          '<b>' + name+': '+ '</b>' +  d.value +'<br>'+
           '<b>' +"Fecha: " + '</b>' + d.time +
         '</div>'
         
@@ -321,13 +380,14 @@ export class VistagraficaComponent {
 
 
 
-  addLabels() {
+  addLabels():void {
     this.g
       // First we need to enter in a group
       .selectAll("a")
       .data(this.dataReady)
       .enter()
       .append('g')
+      .attr("class", "charts")
       .style("fill", (d) => {
         return this.myColor(d.name)
       })
@@ -352,12 +412,13 @@ export class VistagraficaComponent {
 
   }
 
-  leyenEndline() {
+  leyenEndline():void {
     this.g
       .selectAll("myLabels")
       .data(this.dataReady)
       .enter()
       .append('g')
+      .attr("class", "charts")
       .append("text")
       .datum((d) => {
         return { name: d.name, value: d.values[ /*d.values.length - 1*/ 0] };
@@ -379,12 +440,12 @@ export class VistagraficaComponent {
 
   //------------------------------------------------------------ 
 
-  existe(valor: any) {
+  existe(valor: any):boolean {
     return this.marcdos.indexOf(valor) !== -1 ? true : false;
   }
 
 
-  async casillasVerificacion() {
+  async casillasVerificacion():Promise<void> {
     this.marcdos = await this.mensajeAlerta.presentAlertCheckbox("Parámetros", this.elementos);
     this.elementos[0].checked = this.existe('CO2');
     this.elementos[1].checked = this.existe('temp');
@@ -448,23 +509,35 @@ export class VistagraficaComponent {
 
   ]
 
-  borraTexto() {
+  borraTexto() :void{
     d3.selectAll("svg > g > g> text").remove();
   }
 
-  borrarPath() {
+  borrarPath():void {
     d3.selectAll("svg > g > path").remove();
   }
 
-  borrarPutos() {
+  borrarPutos():void {
     d3.selectAll("svg > g > g> circle").remove();
   }
 
-  cambiarTamagnoletra(event) {
+  cambiarTamagnoPuntos(event){
+    this.tamagnoPunto = event.target.value;
+    this.borrarPutos();
+    this.addPoints();
+    this.corrigirPosicion();
+  }
+
+
+
+  
+
+  cambiarTamagnoletra(event):void {
     this.tamagnoFuente = event.target.value;
     this.borraTexto();
     this.addLabels();
     this.leyenEndline();
+    this.corrigirPosicion();
     // this.borraGrafica();
     // this.inicarGrafica();
   }

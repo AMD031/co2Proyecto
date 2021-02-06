@@ -24,8 +24,8 @@
 
         <ion-buttons slot="end">
             <ion-item lines="none">
-                <ion-label>Tamaño</ion-label>
-                <ion-select value="15" (ionChange)="cambiarTamagnoletra($event)" >
+                <ion-label>Fuente</ion-label>
+                <ion-select style="width:50px;" value="15" (ionChange)="cambiarTamagnoletra($event)" >
                     <ion-select-option value="5">5</ion-select-option>
                     <ion-select-option value="10">10</ion-select-option>
                     <ion-select-option value="15">15</ion-select-option>
@@ -33,12 +33,22 @@
                     <ion-select-option value="22">22</ion-select-option>
                 </ion-select>
             </ion-item>
+
+            <ion-item lines="none">
+                <ion-label>Puntos</ion-label>
+                <ion-select style="width:50px;" value="1" (ionChange)="cambiarTamagnoPuntos($event)" >
+                    <ion-select-option value="0.5">.5</ion-select-option>
+                    <ion-select-option value="1">1</ion-select-option>
+                    <ion-select-option value="3">3</ion-select-option>
+                    <ion-select-option value="4">4</ion-select-option>
+                    <ion-select-option value="5">5</ion-select-option>
+                </ion-select>
+            </ion-item>
         </ion-buttons>
 
 
     </ion-toolbar>
 </ion-header>
-
 
 
 

@@ -73,13 +73,16 @@ export class MensajesalertasService {
    *  @description muestra un loading.
    */
   async presentLoading(msg: string = 'Cargando ...'): Promise<void> {
-    this.hideLoading();
+ 
+  this.myloading && this.hideLoading();
     this.myloading = await this.loadingController.create({
       cssClass: 'spinerOp',
       message: msg,
       spinner: 'crescent'
     });
     await this.myloading.present();
+    console.log(this.myloading);
+    
   }
 
 
@@ -87,7 +90,11 @@ export class MensajesalertasService {
    * @description oculta el loading.
    */
   hideLoading() {
+    console.log(this.myloading);
+    
     if (this.myloading) {
+   
+      
       this.myloading.dismiss();
     }
   }

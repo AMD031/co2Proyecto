@@ -21,10 +21,7 @@ export class HomePage implements OnInit {
   private estaciones = [];
   private loading: boolean;
   private loaded: boolean;
-  svg: any;
-  x: any;
-  y: any
-
+  private error: any;
 
 
 
@@ -35,29 +32,42 @@ export class HomePage implements OnInit {
     private alerta: MensajesalertasService,
     private modal: ModalController,
     private util: UtilesService,
-
   ) {
 
 
   }
   async ngOnInit() {
-    this.store.dispatch(new CargarEstacionesAlllast());
+    try {  
+      await this.alerta.presentLoading('Cargando ...');
+      this.store.dispatch(new CargarEstacionesAlllast());
+      this.store.select('estacionesLastAll').subscribe(
+        async (estaciones) => {
+          this.loading = estaciones.loading;
+          this.estaciones = estaciones.Estaciones;
+          this.loaded = estaciones.loaded;
+          if( estaciones.error){
+            this.error = estaciones.error.ok;
+          }
+         !this.error && this.alerta.hideLoading(); 
+         this.loaded && !this.loading && this.alerta.hideLoading();
+        }
+      )
+    } catch (error) {
+      this.alerta.hideLoading();
+    }
 
-    this.store.select('estacionesLastAll').subscribe(
-      async (estaciones) => {
-        this.loading && await this.alerta.presentLoading('... cargando');
-        this.estaciones = estaciones.Estaciones;
-        this.loading = estaciones.loading;
-        this.loaded = estaciones.loaded;
-        this.loaded && this.alerta.hideLoading();
-      }
-    )
     //this.store.dispatch(new fromEstacion.CargarEstacionEntradasName('aulatest 1', 1));
-
   }
 
 
+  actualizar(){
+    while(true){
+     setTimeout(() => {  
+       this.store.dispatch(new CargarEstacionesAlllast());
+     }, 600000);
+    }
 
+  }
 
 
   async presentModal(id: any = -1) {
