@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
-import { promise } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -81,7 +80,6 @@ export class MensajesalertasService {
       spinner: 'crescent'
     });
     await this.myloading.present();
-    console.log(this.myloading);
     
   }
 
@@ -89,12 +87,8 @@ export class MensajesalertasService {
   /**
    * @description oculta el loading.
    */
-  hideLoading() {
-    console.log(this.myloading);
-    
+  hideLoading() {    
     if (this.myloading) {
-   
-      
       this.myloading.dismiss();
     }
   }

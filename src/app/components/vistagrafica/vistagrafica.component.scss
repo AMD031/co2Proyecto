@@ -3,12 +3,21 @@ ion-select {
     --padding-end: 4px;
     --padding-start: 4px;
     --padding-top: 4px;
+   
 }
 
 
 
 ion-item {
     margin-right: 20px;
+}
+
+ion-label {
+  font-size: 0.78em !important;
+}
+
+ion-card-subtitle {
+    font-size: 0.85em !important;
 }
 
 

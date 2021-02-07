@@ -4,20 +4,28 @@
       Listado
     </ion-title>
   </ion-toolbar>
+  
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-item>
+    <ion-label></ion-label>
+  </ion-item>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
   <ion-grid fixed="true">
     <ion-row style="text-align: center;">
-      <ion-col size="2"><b>Estación</b></ion-col>
-      <ion-col size="3"><b>Última lectura</b></ion-col>
+      <ion-col size="2" ><b>Estación</b></ion-col>
+      <ion-col size="3" ><b>Última lectura</b></ion-col>
       <ion-col size="2"><b>Estado estación</b></ion-col>
       <ion-col size="2"><b>CO2</b></ion-col>
       <ion-col size="2"><b>Detalles</b></ion-col>
     </ion-row>
     <ion-row *ngFor="let estacion of this.estaciones" style="text-align: center;">
-      <ion-col size="2">
+      <ion-col size="2" >
         <ion-item lines="none">
           <ion-label class="ion-text-wrap">
             {{estacion.id}}

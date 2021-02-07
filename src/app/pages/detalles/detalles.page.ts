@@ -14,24 +14,24 @@ import { GraficaPage } from '../grafica/grafica.page';
   styleUrls: ['./detalles.page.scss'],
 })
 export class DetallesPage implements OnInit {
-
   @Input('id') id;
-  private entrada: any;
-  private entradasEstacion: any = [];
+  public entrada: any;
+  public entradasEstacion: any = [];
   private ob$: Subscription;
-  private ampliar: boolean = true;
+  public ampliar: boolean = true;
   public finCarga:boolean ;
-  private co2: Number = 0;
-  private temp: Number = 0;
-  private humid: Number = 0;
-  private press: Number = 0;
-  private noise: Number = 0;
-  private nombreEstacion: string;
-
+  public co2: Number = 0;
+  public temp: Number = 0;
+  public humid: Number = 0;
+  public press: Number = 0;
+  public noise: Number = 0;
+  public nombreEstacion: string;
+  private evento: any;
   constructor(
     private store: Store<AppState>,
     private _modal: ModalController,
     private util: UtilesService,
+  
   ) { }
 
 
@@ -50,6 +50,7 @@ export class DetallesPage implements OnInit {
               this.noise = this.entrada.data.noise
               this.nombreEstacion = this.entrada.station;
               this.finCarga = !estacion.loading;
+              this.finCarga && this.ocultarRefresh();
             }
           });
       } catch (error) {
@@ -59,7 +60,6 @@ export class DetallesPage implements OnInit {
   }
 
   async ampliarGrafica(){
-
     this.ampliar = !this.ampliar;
     // console.log("mando "+this.nombreEstacion);
     const modal = await this._modal.create({
@@ -73,12 +73,22 @@ export class DetallesPage implements OnInit {
     .then(() => {
       this.ampliar = !this.ampliar;
     });
-
     return await modal.present();
   }
 
+  ocultarRefresh(){
+    if (this.evento) {
+      this.evento.target.complete();
+    }
+  }
 
-  
+  async doRefresh($event){
+    if($event && this.id !== -1){
+      this.evento = $event;
+      await this.store.dispatch(new CargarEstacionId(this.id));
+    }
+}
+
   
   ionViewDidLeave() {
     this.co2 = 0;

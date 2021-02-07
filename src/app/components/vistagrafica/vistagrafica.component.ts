@@ -30,7 +30,7 @@ export class VistagraficaComponent {
   @Input('pagina') pagina: number;
   width: number;
   height: number;
-  margin = { top: 0, right: 5, bottom: 20, left: 0 };
+  margin = { top: 0, right: 1, bottom: 20, left: 0 };
   x: any;
   y: any;
   svg: any;
@@ -42,22 +42,23 @@ export class VistagraficaComponent {
   mostrarTexto: boolean = true;
   tamagnoFuente: number = 15;
   ob$: Subscription;
-  altoEjeY: number = 1100;
+  altoEjeY: number = 1250;
   inicio: string;
   fin: string;
   mostrar: boolean = true;
   zoom: any;
   Tooltip: any;
 
-  transform:any;
+  transform: any;
 
-  gx:any;
-  gy:any;
+  gx: any;
+  gy: any;
 
-  xAxis:any;
-  yAxis:any;
+  xAxis: any;
+  yAxis: any;
 
-  tamagnoPunto:any = 3;
+  tamagnoPunto: any = 3;
+
 
   private allGroup: any = ["CO2" /*, "temp", "humid", "press", "noise"*/];
 
@@ -137,6 +138,7 @@ export class VistagraficaComponent {
 
   private inicarGrafica() {
     this.initSvg();
+    this.addRectangle();
     this.reformatData();
     this.colorScale();
     this.initAxis();
@@ -146,41 +148,43 @@ export class VistagraficaComponent {
     this.mostrarTexto && this.addLabels();
     this.leyenEndline();
     this.addToolTip();
-    //this.addRectangle()
+ 
   }
 
-  // addRectangle():void{
-  //   // margin = { top: 20, right: 20, bottom: 30, left: 50 };
-  //   this.svg.append("rect")
-  //   .attr("width", this.width)
-  //   .attr("height", this.height)
-  //   .style("fill", "none")
-  //   .style("pointer-events", "all")
-  //   .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
-   
-  // }
-
-
-
-  corrigirPosicion():void{
-   this.transform && this.svg.selectAll(".charts")
-    .attr("transform", this.transform);
-  }
-
-  zoomed(/*{ transform } */ event):void {
-   // this.g.attr("transform", transform);
-     const { transform }  = event;
-     this.transform = transform;
-      this.svg.selectAll(".charts")
-          .attr("transform", transform);
-          
-      d3.selectAll('.line').style("stroke-width", 2/transform.k);
-      this.gx.call(this.xAxis.scale(transform.rescaleX(this.x)));
-      this.gy.call(this.yAxis.scale(transform.rescaleY(this.y)));
+  addRectangle(): void {
+    // margin = { top: 20, right: 20, bottom: 30, left: 50 };
+    this.svg.append("rect")
+      .attr("width", 65)
+      .attr("height", 30)
+      //.style("fill", "none")
+      //.style("pointer-events", "all")
+      .attr('transform', 'translate(' + (834 - this.margin.left) + ',' + (this.margin.top - 2) + ')')
+      .style("fill", "white")
+      .style("stroke", "gray")
+      .style("stroke-width", "1px");
 
   }
 
-  addToolTip():void {
+
+  corrigirPosicion(): void {
+    this.transform && this.svg.selectAll(".charts")
+      .attr("transform", this.transform);
+  }
+
+  zoomed(/*{ transform } */ event): void {
+    // this.g.attr("transform", transform);
+    const { transform } = event;
+    this.transform = transform;
+    this.svg.selectAll(".charts")
+      .attr("transform", transform);
+
+    d3.selectAll('.line').style("stroke-width", 2 / transform.k);
+    this.gx.call(this.xAxis.scale(transform.rescaleX(this.x)));
+    this.gy.call(this.yAxis.scale(transform.rescaleY(this.y)));
+
+  }
+
+  addToolTip(): void {
     this.Tooltip = d3.select(".linealChart")
       .append("div")
       .style("opacity", 0)
@@ -196,7 +200,7 @@ export class VistagraficaComponent {
 
 
 
-  initSvg():void {
+  initSvg(): void {
 
     this.svg = d3.select(".linealChart")
       .append("svg")
@@ -209,11 +213,11 @@ export class VistagraficaComponent {
         .extent([[0, 0], [this.width, this.height]])
         .scaleExtent([0.75, 8])
         .on("zoom", (event, d) => {
-          return this.zoomed( event )
+          return this.zoomed(event)
         }
         ));
 
- 
+
 
     this.g = this.svg.append("g")
       .attr("transform",
@@ -222,7 +226,7 @@ export class VistagraficaComponent {
 
   }
 
-  reformatData():void {
+  reformatData(): void {
     this.dataReady = this.allGroup.map((grpName) => {
       return {
         name: grpName,
@@ -234,7 +238,7 @@ export class VistagraficaComponent {
     //console.log(this.dataReady);
   }
 
-  colorScale():void {
+  colorScale(): void {
     this.myColor = d3.scaleOrdinal()
       .domain(this.allGroup)
       .range(d3.schemeSet2);
@@ -242,7 +246,7 @@ export class VistagraficaComponent {
   }
 
 
-  initAxis():void {
+  initAxis(): void {
 
     this.inicio = moment(this.data[this.data.length - 1].time).toISOString();
     this.fin = moment(this.data[0].time).toISOString();
@@ -268,30 +272,30 @@ export class VistagraficaComponent {
       .range([this.height, 0]);
 
 
-    
+
   }
 
 
-  addAxis():void{
-    this.gx =  this.g.append("g")
+  addAxis(): void {
+    this.gx = this.g.append("g")
       .attr("transform", "translate(0," + 0 + ")")
-      .call(d3.axisBottom(this.x)).style("font-size", 14.1)
+      .call(d3.axisBottom(this.x)).style("font-size", 20)
 
 
-            
+
     this.gy = this.g.append("g")
-    .attr("transform", `translate(${this.width},` + 0 +")")
-    .call(d3.axisLeft(this.y )).style("font-size", 14.1)
+      .attr("transform", `translate(${this.width},` + 0 + ")")
+      .call(d3.axisLeft(this.y)).style("font-size", 20)
 
 
-     //-----------------
-     this.xAxis = d3.axisBottom(this.x);
-     this.yAxis = d3.axisLeft(this.y)
+    //-----------------
+    this.xAxis = d3.axisBottom(this.x);
+    this.yAxis = d3.axisLeft(this.y)
   }
 
-  addLines():void {
+  addLines(): void {
     var line = d3.line()
-      .x((d) => {        
+      .x((d) => {
         const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.time);
         return this.x(time2)
       })
@@ -312,7 +316,7 @@ export class VistagraficaComponent {
 
 
 
-  addPoints() :void{
+  addPoints(): void {
     this.g
       // First we need to enter in a group
       .selectAll("myDots")
@@ -323,12 +327,13 @@ export class VistagraficaComponent {
       .style("fill", (d) => { return this.myColor(d.name) })
       .selectAll("myPoints") // Second we need to enter in the 'values' part of this group
       .data((d) => {
-      const valores =  d.values.map( 
-          ( valor) =>{
-           return {...valor, name: d.name}
+        const valores = d.values.map(
+          (valor) => {
+            return { ...valor, name: d.name }
           }
-        )         
-        return valores })
+        )
+        return valores
+      })
       .enter()
       .append("circle")
       .attr("class", "myCircle")
@@ -341,7 +346,7 @@ export class VistagraficaComponent {
       .attr("stroke", "white")
       .on("mouseover", (event, d) => this.mouseover(event, d))
       .on("mousemove", (event, d) => this.mousemove(event, d, d.name))
-      .on("mouseleave",(event, d) => this.mouseleave(event,d))
+      .on("mouseleave", (event, d) => this.mouseleave(event, d))
   }
 
 
@@ -349,38 +354,38 @@ export class VistagraficaComponent {
 
 
   // Three function that change the tooltip when user hover / move / leave a cell
-  mouseover(event, d):void {
+  mouseover(event, d): void {
     this.Tooltip
       .style("opacity", 1)
   }
 
-  mousemove(event:any, d:any, name:any) :void{
+  mousemove(event: any, d: any, name: any): void {
     //console.log(d3.pointer(event));
     //d3.pointer()
-   this.Tooltip
-      .html(
-        '<div style="text-align: left;">'+ 
-          '<b>' + name+': '+ '</b>' +  d.value +'<br>'+
-          '<b>' +"Fecha: " + '</b>' + d.time +
-        '</div>'
-        
-      )
-      // .style("top", d3.select(event.target).attr("cy")+ 'px')
-      // .style("left",  d3.select(event.target).attr("cx")+ 'px')
-      .style("top", '15%')
-      .style("left", '50%')
-  }
-
-  mouseleave(event, d):void {
     this.Tooltip
-      .transition()		
-      .duration(500)		
-      .style("opacity", 0);	
+      .html(
+        '<div style="text-align: left;">' +
+        '<b>' + name + ': ' + '</b>' + d.value + '<br>' +
+        '<b>' + "Fecha: " + '</b>' + d.time +
+        '</div>'
+
+      )
+      .style("top", d3.select(event.target).attr("cy")+ 'px')
+      .style("left",  d3.select(event.target).attr("cx")+ 'px')
+      // .style("top", '15%')
+      // .style("left", '50%')
+  }
+
+  mouseleave(event, d): void {
+    this.Tooltip
+      .transition()
+      .duration(500)
+      .style("opacity", 0);
   }
 
 
 
-  addLabels():void {
+  addLabels(): void {
     this.g
       // First we need to enter in a group
       .selectAll("a")
@@ -412,7 +417,7 @@ export class VistagraficaComponent {
 
   }
 
-  leyenEndline():void {
+  leyenEndline(): void {
     this.g
       .selectAll("myLabels")
       .data(this.dataReady)
@@ -440,12 +445,12 @@ export class VistagraficaComponent {
 
   //------------------------------------------------------------ 
 
-  existe(valor: any):boolean {
+  existe(valor: any): boolean {
     return this.marcdos.indexOf(valor) !== -1 ? true : false;
   }
 
 
-  async casillasVerificacion():Promise<void> {
+  async casillasVerificacion(): Promise<void> {
     this.marcdos = await this.mensajeAlerta.presentAlertCheckbox("Parámetros", this.elementos);
     this.elementos[0].checked = this.existe('CO2');
     this.elementos[1].checked = this.existe('temp');
@@ -509,19 +514,19 @@ export class VistagraficaComponent {
 
   ]
 
-  borraTexto() :void{
+  borraTexto(): void {
     d3.selectAll("svg > g > g> text").remove();
   }
 
-  borrarPath():void {
+  borrarPath(): void {
     d3.selectAll("svg > g > path").remove();
   }
 
-  borrarPutos():void {
+  borrarPutos(): void {
     d3.selectAll("svg > g > g> circle").remove();
   }
 
-  cambiarTamagnoPuntos(event){
+  cambiarTamagnoPuntos(event) {
     this.tamagnoPunto = event.target.value;
     this.borrarPutos();
     this.addPoints();
@@ -530,9 +535,9 @@ export class VistagraficaComponent {
 
 
 
-  
 
-  cambiarTamagnoletra(event):void {
+
+  cambiarTamagnoletra(event): void {
     this.tamagnoFuente = event.target.value;
     this.borraTexto();
     this.addLabels();

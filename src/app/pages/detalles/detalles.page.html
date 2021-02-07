@@ -5,6 +5,11 @@
 </ion-header>
 
 <ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-grid  class="centrar"  > 
     <ion-row>
       <ion-col size="12">
@@ -55,17 +60,10 @@
  
 
   <div style="text-align: right;">
-
-
-    <ion-button (click)="ampliarGrafica()"  fill="outline" shape="round">
-      <span *ngIf="true" > 
-        Ampliar gráfica
-      </span>
-      <!-- <span *ngIf="ampliar" > 
-         Ver detalles
-      </span> -->
-    </ion-button>
     <app-vistagrafica *ngIf="this.nombreEstacion && finCarga &&  this.ampliar " [nombre]="this.nombreEstacion" ></app-vistagrafica>
+    <ion-button (click)="ampliarGrafica()"  fill="outline" shape="round">
+        Ampliar gráfica
+    </ion-button>
   </div>
 
 

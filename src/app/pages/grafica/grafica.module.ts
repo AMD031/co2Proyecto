@@ -15,6 +15,6 @@ import { GraficaPage } from './grafica.page';
     IonicModule,
     GraficaPageRoutingModule
   ],
-  declarations: [GraficaPage]
+  declarations: []
 })
 export class GraficaPageModule {}

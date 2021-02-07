@@ -9,6 +9,8 @@ import { AppState } from 'src/store/app.reducer';
 import * as fromEstacion from '../../../store/actions'
 import { DetallesPage } from '../detalles/detalles.page';
 import * as d3 from "d3";
+import *as moment from 'moment';
+
 
 
 @Component({
@@ -18,13 +20,12 @@ import * as d3 from "d3";
 })
 export class HomePage implements OnInit {
 
-  private estaciones = [];
+  public estaciones = [];
   private loading: boolean;
   private loaded: boolean;
   private error: any;
-
-
-
+  private mostrar: boolean = true;
+  private evento: any = null;
 
   constructor(
     private co2: Co2Service,
@@ -36,49 +37,78 @@ export class HomePage implements OnInit {
 
 
   }
+
+
+
+
   async ngOnInit() {
-    try {  
+
+    if (this.mostrar) {
       await this.alerta.presentLoading('Cargando ...');
+    }
+
+    try {
       this.store.dispatch(new CargarEstacionesAlllast());
       this.store.select('estacionesLastAll').subscribe(
         async (estaciones) => {
           this.loading = estaciones.loading;
           this.estaciones = estaciones.Estaciones;
           this.loaded = estaciones.loaded;
-          if( estaciones.error){
+          if (estaciones.error) {
             this.error = estaciones.error.ok;
           }
-         !this.error && this.alerta.hideLoading(); 
-         this.loaded && !this.loading && this.alerta.hideLoading();
+          !this.error && this.alerta.hideLoading();
+          this.loaded && !this.loading && this.alerta.hideLoading();
+          this.loaded && this.ocultarRefresh();
+          this.error && this.ocultarRefresh();
         }
       )
     } catch (error) {
       this.alerta.hideLoading();
+      this.ocultarRefresh()
     }
 
-    //this.store.dispatch(new fromEstacion.CargarEstacionEntradasName('aulatest 1', 1));
+    //this.actualizar();
   }
 
+  actualizar() {
 
-  actualizar(){
-    while(true){
-     setTimeout(() => {  
-       this.store.dispatch(new CargarEstacionesAlllast());
-     }, 600000);
+    setInterval(() => {
+
+      console.log("tiempo: ", this.estaciones[0].time);
+
+
+    }, 3000);
+  }
+
+  ocultarRefresh() {
+    if (this.evento) {
+      !this.loading && this.evento.target.complete();
     }
-
   }
 
+  async doRefresh($event) {
+    this.mostrar = false;
+    if ($event) {
+      this.evento = $event;
+      await this.store.dispatch(new CargarEstacionesAlllast());
+    }
+  }
 
   async presentModal(id: any = -1) {
-    const modal = await this.modal.create({
-      component: DetallesPage,
-      cssClass: 'my-custom-class',
-      componentProps: {
-        'id': id,
-      }
-    });
-    return await modal.present();
+
+    if (id !== -1) {
+      const modal = await this.modal.create({
+        component: DetallesPage,
+        cssClass: 'my-custom-class',
+        componentProps: {
+          'id': id,
+        }
+      });
+      return await modal.present();
+    }
+
+
   }
 
 
