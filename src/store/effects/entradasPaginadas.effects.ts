@@ -19,8 +19,6 @@ export class EntradasPaginadaEffects {
             switchMap(action => {
                 const name = action['name'];
                 const id = action['id'];
-
-                            
                 return this.co2.getStationsNamePage(name, id)
                     .pipe(
                         map(entradas => new estacionActions.CargarEstacionEntradasSuccess(entradas as any)),

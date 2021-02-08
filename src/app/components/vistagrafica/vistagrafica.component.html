@@ -1,8 +1,19 @@
 
 <ion-header>
     <ion-toolbar >
-    
+
         <ion-buttons slot="start" >
+
+            <ion-buttons slot="start" *ngIf="mostarApmpliar">
+                <ion-button (click)="sendMessage()">
+                    <ion-icon slot="start" name="expand"></ion-icon>
+                
+                </ion-button>
+            </ion-buttons>
+
+            <ion-button   (click)="casillasVerificacion()" expand="block" fill="clear" shape="round">
+                <ion-label>Mostrar</ion-label>
+            </ion-button>
             <ion-button   (click)="disminuir()">
                 <ion-icon name="arrow-back"></ion-icon>
             </ion-button>   
@@ -17,9 +28,7 @@
                 Click me
             </ion-button> -->
 
-            <ion-button   (click)="casillasVerificacion()" expand="block" fill="clear" shape="round">
-                <ion-label>Mostrar</ion-label>
-            </ion-button>
+      
 
         </ion-buttons>
 

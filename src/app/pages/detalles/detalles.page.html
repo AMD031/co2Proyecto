@@ -1,7 +1,11 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-boton-atras></app-boton-atras>
+    </ion-buttons>
     <ion-title>Detalles</ion-title>
   </ion-toolbar>
+
 </ion-header>
 
 <ion-content>
@@ -10,7 +14,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid  class="centrar"  > 
+  <ion-grid class="centrar">
     <ion-row>
       <ion-col size="12">
         <div style="text-align: center;">
@@ -20,52 +24,139 @@
         </div>
       </ion-col>
     </ion-row>
+
     <ion-row>
       <ion-col size="6"><b>Datos</b></ion-col>
-      <ion-col size="6"><b>Estado</b></ion-col>
+      <ion-col size="6"><b>Valor</b></ion-col>
     </ion-row>
+
+
     <ion-row>
-      <ion-col size="6"><b>CO2</b></ion-col>
-      <ion-col size="6"> {{this.co2}}</ion-col>
+      <ion-col size="6">
+
+        <ion-item>
+          <ion-icon slot="start" src="assets/img/co2.svg"></ion-icon>
+          <ion-label><b>CO2</b> </ion-label>
+        </ion-item>
+
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label>{{this.co2}}</ion-label>
+        </ion-item>
+      </ion-col>
       <!-- <ion-col size="6"> {{this.estacion && this.estacion[0].data.CO2 }} </ion-col> -->
     </ion-row>
     <ion-row>
-      <ion-col size="6"><b>Temp</b></ion-col>
-      <ion-col size="6">{{this.temp}}</ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-icon slot="start" src="assets/img/hot.svg"></ion-icon>
+          <ion-label><b>Temperatura</b></ion-label>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label>{{this.temp}}</ion-label>
+        </ion-item>
+
+      </ion-col>
       <!-- <ion-col size="6">   {{this.estacion && this.estacion[0].data.temp }}        </ion-col> -->
     </ion-row>
     <ion-row>
-      <ion-col size="6"><b>Humid</b></ion-col>
-      <ion-col size="6">{{this.humid}}</ion-col>
+      <ion-col size="6">
+
+
+
+        <ion-item>
+          <ion-icon slot="start" src="assets/img/humedad.svg"></ion-icon>
+          <ion-label> <b>Humedad</b></ion-label>
+        </ion-item>
+
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label>{{this.humid}}</ion-label>
+        </ion-item>
+      </ion-col>
       <!-- <ion-col size="6">{{this.estacion && this.estacion[0].data.humid }} </ion-col> -->
     </ion-row>
     <ion-row>
-      <ion-col size="6"><b>Press</b></ion-col>
-      <ion-col size="6">{{this.press}}</ion-col>
+      <ion-col size="6">
+
+        <ion-item>
+          <ion-icon slot="start" src="assets/img/presion.svg"></ion-icon>
+          <ion-label> <b>Presión</b></ion-label>
+        </ion-item>
+
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label> {{this.press}}</ion-label>
+        </ion-item>
+      </ion-col>
       <!-- <ion-col size="6">{{this.estacion && this.estacion[0].data.press }}</ion-col> -->
     </ion-row>
     <ion-row>
-      <ion-col size="6"><b>Noise</b></ion-col>
-      <ion-col size="6">{{this.noise}}</ion-col>
+      <ion-col size="6">
+
+
+        <ion-item>
+          <ion-icon slot="start" src="assets/img/ruido.svg"></ion-icon>
+          <ion-label> <b>Ruido</b> </ion-label>
+        </ion-item>
+
+
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label> {{this.noise}}</ion-label>
+        </ion-item>
+      </ion-col>
       <!-- <ion-col size="6">{{this.estacion && this.estacion[0].data.noise }}</ion-col> -->
     </ion-row>
 
     <ion-row>
-      <ion-col size="6"><b>Lectura</b></ion-col>
-      <ion-col size="6">{{ this.entrada && this.entrada.time }}</ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-icon slot="start" src="assets/img/reloj.svg"></ion-icon>
+          <ion-label> <b>Lectura</b> </ion-label>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label> {{ this.entrada && this.entrada.time }}</ion-label>
+        </ion-item>
+      </ion-col>
       <!-- <ion-col size="6">{{this.estacion && this.estacion[0].time }}</ion-col> -->
     </ion-row>
- 
+
+
+    <ion-row>
+      <ion-col size="4"></ion-col>
+      <ion-col size="8">
+        <div style="text-align:right;">
+          <ion-button (click)="borrarEntrada()">
+            <ion-icon slot="start" src="assets/img/borrar.svg"></ion-icon>
+            <ion-label> <b> Borrar entradas</b></ion-label>
+          </ion-button>
+        </div>
+
+
+
+      </ion-col>
+      <!-- <ion-col size="2"></ion-col> -->
+    </ion-row>
+
+
+
   </ion-grid>
- 
+
+
+
+
 
   <div style="text-align: right;">
-    <app-vistagrafica *ngIf="this.nombreEstacion && finCarga &&  this.ampliar " [nombre]="this.nombreEstacion" ></app-vistagrafica>
-    <ion-button (click)="ampliarGrafica()"  fill="outline" shape="round">
-        Ampliar gráfica
-    </ion-button>
+    <app-vistagrafica [mostarApmpliar]="true" (messageEvent)="ampliarRecibido($event)"
+      *ngIf="this.nombreEstacion && finCarga &&  this.ampliar " [nombre]="this.nombreEstacion"></app-vistagrafica>
   </div>
-
-
-
 </ion-content>

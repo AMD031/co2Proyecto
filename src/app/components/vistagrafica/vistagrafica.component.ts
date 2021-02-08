@@ -1,5 +1,5 @@
 
-import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 // import * as d3 from 'd3-selection';
 // import * as d3Scale from 'd3-scale';
@@ -19,18 +19,23 @@ import { MensajesalertasService } from 'src/app/services/mensajesalertas.service
 import { UtilesService } from 'src/app/services/utiles.service';
 
 
+
 @Component({
   selector: 'app-vistagrafica',
   templateUrl: './vistagrafica.component.html',
   styleUrls: ['./vistagrafica.component.scss'],
 })
 export class VistagraficaComponent {
+
+  @Output() messageEvent = new EventEmitter<string>();
   //@Input('data') data:any = [];
   @Input('nombre') nombre: string;
   @Input('pagina') pagina: number;
+  @Input('mostarApmpliar') mostarApmpliar: number;
+
   width: number;
   height: number;
-  margin = { top: 0, right: 1, bottom: 20, left: 0 };
+  margin = { top: 0, right: 1, bottom: 7, left: 0 };
   x: any;
   y: any;
   svg: any;
@@ -40,6 +45,7 @@ export class VistagraficaComponent {
   data: any = [];
   page: number = 1;
   mostrarTexto: boolean = true;
+  mostrarLeyenda: boolean = true;
   tamagnoFuente: number = 15;
   ob$: Subscription;
   altoEjeY: number = 1250;
@@ -58,12 +64,7 @@ export class VistagraficaComponent {
   yAxis: any;
 
   tamagnoPunto: any = 3;
-
-
   private allGroup: any = ["CO2" /*, "temp", "humid", "press", "noise"*/];
-
-
-
 
   constructor(
     private store: Store<AppState>,
@@ -73,7 +74,9 @@ export class VistagraficaComponent {
     this.width = 900 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
   }
-
+  sendMessage() {
+    this.messageEvent.emit("amplia");
+  }
 
   disminuir() {
     try {
@@ -146,9 +149,10 @@ export class VistagraficaComponent {
     this.addLines();
     this.addPoints();
     this.mostrarTexto && this.addLabels();
-    this.leyenEndline();
+    this.mostrarLeyenda && this.leyenEndline();
     this.addToolTip();
- 
+    this.mostrarLeyenda && this.addIcons();
+
   }
 
   addRectangle(): void {
@@ -169,14 +173,28 @@ export class VistagraficaComponent {
   corrigirPosicion(): void {
     this.transform && this.svg.selectAll(".charts")
       .attr("transform", this.transform);
+
+    this.transform && this.svg.selectAll(".icono")
+      .attr("transform", this.transform);
+
+
   }
 
   zoomed(/*{ transform } */ event): void {
     // this.g.attr("transform", transform);
     const { transform } = event;
+
+
+
     this.transform = transform;
-    this.svg.selectAll(".charts")
+
+    this.transform && this.svg.selectAll(".charts")
       .attr("transform", transform);
+
+      this.transform && this.svg.selectAll(".icon")
+      .attr("transform", transform);
+    
+
 
     d3.selectAll('.line').style("stroke-width", 2 / transform.k);
     this.gx.call(this.xAxis.scale(transform.rescaleX(this.x)));
@@ -242,7 +260,7 @@ export class VistagraficaComponent {
     this.myColor = d3.scaleOrdinal()
       .domain(this.allGroup)
       .range(d3.schemeSet2);
-    //  .range( ["#FAA","#00F"]); 
+      //.range( ["grey","orange","black", "red", "blue"]); 
   }
 
 
@@ -301,7 +319,8 @@ export class VistagraficaComponent {
       })
       .y((d) => { return this.y(d.value) })
 
-    this.g.selectAll("myLines")
+    this.g
+      .selectAll("myLines")
       .data(this.dataReady)
       .enter()
       .append("path")
@@ -357,30 +376,46 @@ export class VistagraficaComponent {
   mouseover(event, d): void {
     this.Tooltip
       .style("opacity", 1)
+
   }
 
   mousemove(event: any, d: any, name: any): void {
     //console.log(d3.pointer(event));
     //d3.pointer()
+    //console.log(d3.select(event.target).attr("stroke"));
     this.Tooltip
       .html(
         '<div style="text-align: left;">' +
+        '<img src="assets/img/co2.svg" class="tamagnoImg">'+
         '<b>' + name + ': ' + '</b>' + d.value + '<br>' +
         '<b>' + "Fecha: " + '</b>' + d.time +
         '</div>'
 
       )
-      .style("top", d3.select(event.target).attr("cy")+ 'px')
-      .style("left",  d3.select(event.target).attr("cx")+ 'px')
-      // .style("top", '15%')
-      // .style("left", '50%')
+      // .style("top", d3.select(event.target).attr("cy")+ 70+ 'px')
+      // .style("left",  d3.select(event.target).attr("cx")+ 'px')
+      .style("top", '10%')
+      .style("left", '10%')
+
+    d3.select(event.target).style("stroke", "black")
+
+    // console.log(d3.select(event.target));
+
+
+
+
+
   }
 
   mouseleave(event, d): void {
+
+
     this.Tooltip
       .transition()
       .duration(500)
       .style("opacity", 0);
+
+    d3.select(event.target).style("stroke", "white")
   }
 
 
@@ -418,6 +453,7 @@ export class VistagraficaComponent {
   }
 
   leyenEndline(): void {
+
     this.g
       .selectAll("myLabels")
       .data(this.dataReady)
@@ -432,7 +468,7 @@ export class VistagraficaComponent {
         return "translate(" + this.x(d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.value.time))
           + "," + this.y(d.value.value) + ")";
       }) // Put the text at the position of the last point
-      .attr("x", 40) // shift the text a bit more right
+      .attr("x", 90) // shift the text a bit more right
       .attr("y", -1)
       .text((d) => {
         return '' + d.name + ' '
@@ -441,6 +477,35 @@ export class VistagraficaComponent {
       .style("font-size", this.tamagnoFuente)
   }
 
+
+  addIcons(){
+    
+
+    this.g
+    .selectAll("icons")
+    .data(this.dataReady)
+    .enter()
+    .append('g')
+    .attr("class", "icon")
+    .append("svg:image")
+    .datum((d) => {
+      return { name: d.name, value: d.values[ /*d.values.length - 1*/ 0] };
+    }) // keep only the last value of each time series
+    .attr("transform", (d) => {
+      return "translate(" + this.x(d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.value.time))
+        + "," + this.y(d.value.value) + ")";
+    }) // Put the text at the position of the last point
+    .attr( 
+       "xlink:href", (d) => { return this.utirl.devolverIcono(d.name) })
+    .attr('x', 30)
+    .attr('y', -20)
+    .attr("width", 50)
+    .attr("height", 50)
+    .append("text")
+      .attr("x", 10) // shift the text a bit more right
+     .attr("y", -1)
+ 
+  }
 
 
   //------------------------------------------------------------ 
@@ -458,10 +523,12 @@ export class VistagraficaComponent {
     this.elementos[3].checked = this.existe('press');
     this.elementos[4].checked = this.existe('noise');
     this.elementos[5].checked = this.existe('texto');
+    this.elementos[6].checked = this.existe('leyenda');
     this.mostrarTexto = this.existe('texto');
+    this.mostrarLeyenda = this.existe('leyenda');
 
-
-    this.allGroup = this.marcdos.filter((valor) => valor !== 'texto')
+    this.allGroup = this.marcdos.filter((valor) => valor !== 'texto' &&  valor !== 'leyenda');
+  
     this.borraGrafica();
     this.inicarGrafica();
   }
@@ -509,6 +576,13 @@ export class VistagraficaComponent {
       type: 'checkbox',
       label: 'Texto',
       value: 'texto',
+      checked: true
+    },
+    {
+      name: 'checkbox6',
+      type: 'checkbox',
+      label: 'Leyenda',
+      value: 'leyenda',
       checked: true
     },
 

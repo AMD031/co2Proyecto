@@ -27,13 +27,16 @@ export class DetallesPage implements OnInit {
   public noise: Number = 0;
   public nombreEstacion: string;
   private evento: any;
+
+  message:string;
+
+
   constructor(
     private store: Store<AppState>,
     private _modal: ModalController,
     private util: UtilesService,
   
   ) { }
-
 
   ngOnInit() {
     if (this.id !== -1) {
@@ -57,6 +60,14 @@ export class DetallesPage implements OnInit {
         console.log(error);
       }
     }
+  }
+
+  ampliarRecibido($event) {
+    this.message = $event;
+    if(this.message === "amplia"){
+      this.ampliarGrafica();
+    }
+    
   }
 
   async ampliarGrafica(){
@@ -89,7 +100,12 @@ export class DetallesPage implements OnInit {
     }
 }
 
-  
+    
+  borrarEntrada(){
+    this._modal.dismiss();
+  }
+
+
   ionViewDidLeave() {
     this.co2 = 0;
     this.temp = 0;
@@ -97,7 +113,6 @@ export class DetallesPage implements OnInit {
     this.press = 0;
     this.noise = 0;
     this.ob$.unsubscribe();
-
   }
 
 

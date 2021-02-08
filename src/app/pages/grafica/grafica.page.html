@@ -1,3 +1,13 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <app-boton-atras></app-boton-atras>
+        </ion-buttons>
+   
+        <ion-title>Gráfica</ion-title>
+    </ion-toolbar>
+</ion-header>
+
 <ion-content>
- <app-vistagrafica  [nombre]="this.nombre" ></app-vistagrafica>
+    <app-vistagrafica [mostarApmpliar]="false"  [nombre]="this.nombre" ></app-vistagrafica>
 </ion-content>

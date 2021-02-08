@@ -32,6 +32,7 @@ import { environment } from '../environments/environment';
 
 
 import { AppRoutingModule } from './app-routing.module';
+import { BotonAtrasComponent } from './components/boton-atras/boton-atras.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { AppRoutingModule } from './app-routing.module';
     HomePage,
     GraficaPage,
     DetallesPage,
-    VistagraficaComponent
+    VistagraficaComponent,
+    BotonAtrasComponent,
   ],
   entryComponents: [GraficaPage, DetallesPage],
   imports: [

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 @Component({
   selector: 'app-boton-atras',
@@ -6,6 +6,8 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./boton-atras.component.scss'],
 })
 export class BotonAtrasComponent implements OnInit {
+
+  @Input('mostrar') mostrar = true; 
 
   constructor(public modalController: ModalController) { }
 
