@@ -26,6 +26,7 @@ export class HomePage implements OnInit {
   private error: any;
   private mostrar: boolean = true;
   private evento: any = null;
+  private ahora: Date = null;
 
   constructor(
     private co2: Co2Service,
@@ -51,35 +52,62 @@ export class HomePage implements OnInit {
       this.store.dispatch(new CargarEstacionesAlllast());
       this.store.select('estacionesLastAll').subscribe(
         async (estaciones) => {
+
           this.loading = estaciones.loading;
           this.estaciones = estaciones.Estaciones;
           this.loaded = estaciones.loaded;
+
           if (estaciones.error) {
-            this.error = estaciones.error.ok;
+            this.error = !estaciones.error.ok;
+            this.error && this.ocultarRefresh();
+            this.error && this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
           }
+
           !this.error && this.alerta.hideLoading();
           this.loaded && !this.loading && this.alerta.hideLoading();
           this.loaded && this.ocultarRefresh();
-          this.error && this.ocultarRefresh();
+
         }
       )
     } catch (error) {
+      this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
       this.alerta.hideLoading();
       this.ocultarRefresh()
     }
 
-    //this.actualizar();
+    this.actualizar();
+    this.comprobarEstado("");
   }
 
   actualizar() {
-
-    setInterval(() => {
-
-      console.log("tiempo: ", this.estaciones[0].time);
-
-
-    }, 3000);
+    setInterval(()=>{
+      this.store.dispatch(new CargarEstacionesAlllast());
+    },60000)
   }
+
+
+
+  comprobarEstado(estacion:any):void{
+
+ 
+
+     const b = moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+ 
+     console.log( moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ') )
+     console.log(moment.utc(b).toISOString());
+    
+    //  console.log(moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ') );
+     
+    // //console.log( "+ 10 minutos:",  moment(estacion, "YYYY").add(10, 'minutes').toJSON());
+    
+    
+ 
+    
+    
+
+  }
+
+
 
   ocultarRefresh() {
     if (this.evento) {

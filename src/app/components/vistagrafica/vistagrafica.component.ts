@@ -152,6 +152,7 @@ export class VistagraficaComponent {
     this.mostrarLeyenda && this.leyenEndline();
     this.addToolTip();
     this.mostrarLeyenda && this.addIcons();
+    //this.corrigirPosicion();
 
   }
 
@@ -171,10 +172,11 @@ export class VistagraficaComponent {
 
 
   corrigirPosicion(): void {
+
     this.transform && this.svg.selectAll(".charts")
       .attr("transform", this.transform);
 
-    this.transform && this.svg.selectAll(".icono")
+    this.transform && this.svg.selectAll(".icon")
       .attr("transform", this.transform);
 
 
@@ -183,8 +185,6 @@ export class VistagraficaComponent {
   zoomed(/*{ transform } */ event): void {
     // this.g.attr("transform", transform);
     const { transform } = event;
-
-
 
     this.transform = transform;
 
@@ -249,7 +249,7 @@ export class VistagraficaComponent {
       return {
         name: grpName,
         values: this.data.map((d) => {
-          return { time: d.time, value: d.data[grpName] };
+          return { time:  this.utirl.fecha(d.time), value: d.data[grpName] };
         })
       };
     });
@@ -266,10 +266,15 @@ export class VistagraficaComponent {
 
   initAxis(): void {
 
-    this.inicio = moment(this.data[this.data.length - 1].time).toISOString();
-    this.fin = moment(this.data[0].time).toISOString();
-    const inicioMargen = moment(this.data[this.data.length - 1].time).subtract(5, 'minutes').toISOString();
-    const finMargen = moment(this.data[0].time).add(10, 'minutes').toISOString();
+
+    this.inicio =  this.utirl.fecha (this.data[this.data.length - 1].time );                                /*moment().toISOString();*/
+    this.fin =   this.utirl.fecha(this.data[0].time);  /*moment(this.data[0].time).toISOString();*/
+
+    const inicioMargen = moment(   this.inicio /*this.data[this.data.length - 1].time*/ ).subtract(5, 'minutes').toISOString();
+    const finMargen = moment(   this.fin  /*this.data[0].time*/  ).add(10, 'minutes').toISOString();
+
+    
+
 
 
     // Add X axis
@@ -314,6 +319,8 @@ export class VistagraficaComponent {
   addLines(): void {
     var line = d3.line()
       .x((d) => {
+        //console.log(d.time);
+        
         const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.time);
         return this.x(time2)
       })
@@ -357,7 +364,7 @@ export class VistagraficaComponent {
       .append("circle")
       .attr("class", "myCircle")
       .attr("cx", (d) => {
-        const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.time);
+        const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")( d.time);
         return this.x(time2)
       })
       .attr("cy", (d) => { return this.y(d.value) })
@@ -386,9 +393,9 @@ export class VistagraficaComponent {
     this.Tooltip
       .html(
         '<div style="text-align: left;">' +
-        '<img src="assets/img/co2.svg" class="tamagnoImg">'+
+        // '<img src="assets/img/co2.svg" class="tamagnoImg">'+
         '<b>' + name + ': ' + '</b>' + d.value + '<br>' +
-        '<b>' + "Fecha: " + '</b>' + d.time +
+        '<b>' + "Fecha: " + '</b>' +  d.time +
         '</div>'
 
       )
@@ -398,18 +405,10 @@ export class VistagraficaComponent {
       .style("left", '10%')
 
     d3.select(event.target).style("stroke", "black")
-
     // console.log(d3.select(event.target));
-
-
-
-
-
   }
 
   mouseleave(event, d): void {
-
-
     this.Tooltip
       .transition()
       .duration(500)
@@ -468,7 +467,7 @@ export class VistagraficaComponent {
         return "translate(" + this.x(d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.value.time))
           + "," + this.y(d.value.value) + ")";
       }) // Put the text at the position of the last point
-      .attr("x", 90) // shift the text a bit more right
+      .attr("x", 65) // shift the text a bit more right
       .attr("y", -1)
       .text((d) => {
         return '' + d.name + ' '
@@ -497,10 +496,10 @@ export class VistagraficaComponent {
     }) // Put the text at the position of the last point
     .attr( 
        "xlink:href", (d) => { return this.utirl.devolverIcono(d.name) })
-    .attr('x', 30)
+    .attr('x', 35)
     .attr('y', -20)
-    .attr("width", 50)
-    .attr("height", 50)
+    .attr("width", 20)
+    .attr("height", 20)
     .append("text")
       .attr("x", 10) // shift the text a bit more right
      .attr("y", -1)
@@ -600,8 +599,13 @@ export class VistagraficaComponent {
     d3.selectAll("svg > g > g> circle").remove();
   }
 
+  borrarIconos(): void{
+    d3.selectAll("svg > g > g> image").remove();
+  }
+
   cambiarTamagnoPuntos(event) {
     this.tamagnoPunto = event.target.value;
+ 
     this.borrarPutos();
     this.addPoints();
     this.corrigirPosicion();
@@ -613,8 +617,10 @@ export class VistagraficaComponent {
 
   cambiarTamagnoletra(event): void {
     this.tamagnoFuente = event.target.value;
+    this.borrarIconos();
     this.borraTexto();
     this.addLabels();
+    this.addIcons();
     this.leyenEndline();
     this.corrigirPosicion();
     // this.borraGrafica();

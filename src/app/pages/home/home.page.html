@@ -17,13 +17,66 @@
   </ion-refresher>
 
   <ion-grid fixed="true">
-    <ion-row style="text-align: center;">
-      <ion-col size="2" ><b>Estación</b></ion-col>
-      <ion-col size="3" ><b>Última lectura</b></ion-col>
-      <ion-col size="2"><b>Estado estación</b></ion-col>
-      <ion-col size="2"><b>CO2</b></ion-col>
-      <ion-col size="2"><b>Detalles</b></ion-col>
+
+    <ion-row >
+      <ion-col size="2" >
+
+        <ion-item lines="none" class="terms">
+        
+          <ion-label class="ion-text-wrap" >
+          <ion-icon slot="start" src="assets/img/raspberry-pi.svg"></ion-icon>
+          <b>Estación</b>
+          </ion-label>
+
+
+        </ion-item>
+        
+      </ion-col>
+      
+      <ion-col size="2" >
+          <ion-item lines="none"  class="terms">
+            <ion-label class="ion-text-wrap" >
+              <ion-icon slot="start" src="assets/img/reloj.svg"></ion-icon>
+              <b>Lectura</b>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+
+      <ion-col size="2">
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap" >
+            <ion-icon slot="start" src="assets/img/alarma.svg"></ion-icon>
+            <b>Estado </b>
+          </ion-label>
+        </ion-item>
+
+      </ion-col>
+
+      <ion-col size="2">
+        
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+          <ion-icon slot="start" src="assets/img/carbon-dioxide.svg"></ion-icon>
+            <b>CO2</b>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      
+      <ion-col size="2">
+
+        
+      
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap" style="text-align: center;">
+          <ion-icon slot="start" src="assets/img/ver-detalles.svg"></ion-icon>
+          <b>Detalles</b>
+          </ion-label>
+        </ion-item>
+
+      </ion-col>
     </ion-row>
+
+
     <ion-row *ngFor="let estacion of this.estaciones" style="text-align: center;">
       <ion-col size="2" >
         <ion-item lines="none">
@@ -33,10 +86,11 @@
         </ion-item>
       </ion-col>
 
-      <ion-col size="3">
+      <ion-col size="2">
         <ion-item lines="none">
           <ion-label class="ion-text-wrap">
-            {{estacion.time}}
+            {{  estacion.time && this.util.fecha(estacion.time)}}
+            <!-- {{this.comprobarEstado(estacion)}} -->
           </ion-label>
         </ion-item>
       </ion-col>
@@ -49,16 +103,18 @@
 
       <ion-col size="2">
       <!-- -------------------- -->
-              <!-- <ion-item lines="none">
+              <ion-item lines="none">
                 <ion-label class="ion-text-wrap">
                   {{ estacion.data &&  util.jsonParse(estacion.data).CO2 }}
                 </ion-label>
-              </ion-item> -->
+              </ion-item>
       <!-- -------------------- -->       
  
-       <ion-button disabled="true" fill="clear">
+       <!-- <ion-button disabled="true" fill="clear">
           <ion-icon slot="icon-only" name="star"></ion-icon>
-        </ion-button>
+        </ion-button> -->
+
+
       </ion-col>
 
       <ion-col size="2">
@@ -68,6 +124,8 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  
 
 </ion-content>
 

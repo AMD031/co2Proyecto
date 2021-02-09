@@ -33,9 +33,24 @@ ion-grid {
 
 ion-label {
     font-size: 0.72em !important;
+    text-align: center;
 }
 
 .col{
   background: gray;
-  border: think solid black;
+  border: think solid rgb(236, 220, 220);
   }
+
+ion-icon {
+  font-size: 1.8em;
+}
+
+ion-col {
+  --overflow: visible !important;
+  height: fit-content;
+  border-color: green;
+}
+
+.terms {
+  display: flex;
+}

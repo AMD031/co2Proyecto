@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,10 @@ export class UtilesService {
     }
   }
 
+  fecha(fecha: string):string{
+    const aux =  moment(fecha).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+    return moment(aux).add(1, 'hour').toISOString();
+  }
 
 
 }

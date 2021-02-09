@@ -17,7 +17,7 @@ const estadoInicial: EntradasPaginadaState = {
 };
 
 
-export function estacionPaginadaReducer(state = estadoInicial, action: fromEstacionPaginada.estacionEntradasPaginadasAcciones): EntradasPaginadaState  {
+export function estacionPaginadaReducer(state = estadoInicial, action: fromEstacionPaginada.estacionEntradasPaginadasAcciones): EntradasPaginadaState {
     switch (action.type) {
 
         case fromEstacionPaginada.CARGAR_ENTRADAS_ESTACION_PAGINADAS:
@@ -32,9 +32,9 @@ export function estacionPaginadaReducer(state = estadoInicial, action: fromEstac
                 ...state,
                 loading: false,
                 loaded: true,
-                Entradas: [ ...action.entradas ]
+                Entradas: [...action.entradas]
             };
-            
+
         case fromEstacionPaginada.CARGAR_ENTRADAS_ESTACION_PAGINADAS_FAIL:
             return {
                 ...state,
@@ -45,6 +45,26 @@ export function estacionPaginadaReducer(state = estadoInicial, action: fromEstac
                 }
             };
 
+        case fromEstacionPaginada.BORRAR_ENTRADAS_ESTACION:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case fromEstacionPaginada.BORRAR_ENTRADAS_ESTACION_SUCCESS:
+
+            return {
+                ...state,
+                Entradas: [],
+                loading: false,
+            }
+
+        case fromEstacionPaginada.BORRAR_ENTRADAS_ESTACION_FAIL:
+            return {
+                ...state,
+                error: { ...action.payload },
+                loading: false,
+            }
         default:
             return state;
 

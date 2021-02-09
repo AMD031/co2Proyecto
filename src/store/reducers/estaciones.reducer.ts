@@ -7,18 +7,20 @@ export interface EstacionesState {
     loaded: boolean;
     loading: boolean;
     error: any;
+    message: null,
 }
 
 const estadoInicial: EstacionesState = {
     Estaciones: [],
     loaded: false,
     loading: false,
-    error: null
+    error: null,
+    message: null,
 };
 
 
-export function estacionesReducer( state = estadoInicial, action: fromEstaciones.EstacionAccionesAlllast ): EstacionesState {
-    switch ( action.type ) {
+export function estacionesReducer(state = estadoInicial, action: fromEstaciones.EstacionAccionesAlllast): EstacionesState {
+    switch (action.type) {
         case fromEstaciones.CARGAR_ESTACIONES_All_LAST:
             return {
                 ...state,
@@ -39,9 +41,8 @@ export function estacionesReducer( state = estadoInicial, action: fromEstaciones
                 ...state,
                 loaded: false,
                 loading: false,
-                error:{ ...action.payload}
+                error: { ...action.payload }
             };
-
 
         default:
             return state;

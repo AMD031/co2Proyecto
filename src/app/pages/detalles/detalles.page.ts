@@ -2,8 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
 import { UtilesService } from 'src/app/services/utiles.service';
-import { CargarEstacionId } from 'src/store/actions';
+import { BorrarEntradasEstacion, BorrarEntradasEstacionSuccess, CargarEstacionId, logOut } from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
 import { GraficaPage } from '../grafica/grafica.page';
 
@@ -19,7 +20,7 @@ export class DetallesPage implements OnInit {
   public entradasEstacion: any = [];
   private ob$: Subscription;
   public ampliar: boolean = true;
-  public finCarga:boolean ;
+  public finCarga: boolean;
   public co2: Number = 0;
   public temp: Number = 0;
   public humid: Number = 0;
@@ -28,14 +29,14 @@ export class DetallesPage implements OnInit {
   public nombreEstacion: string;
   private evento: any;
 
-  message:string;
+  message: string;
 
 
   constructor(
     private store: Store<AppState>,
     private _modal: ModalController,
     private util: UtilesService,
-  
+    private mensaje: MensajesalertasService
   ) { }
 
   ngOnInit() {
@@ -43,8 +44,8 @@ export class DetallesPage implements OnInit {
       try {
         this.store.dispatch(new CargarEstacionId(this.id));
         this.ob$ = this.store.select('estacion').subscribe(
-          (estacion) => {  
-            if (estacion.Estacion) {
+          (estacion) => {
+            if (estacion.Estacion && Object.keys(estacion.Estacion).length !== 0) {
               this.entrada = estacion.Estacion[0];
               this.co2 = this.entrada.data.CO2
               this.temp = this.entrada.data.temp
@@ -52,25 +53,28 @@ export class DetallesPage implements OnInit {
               this.press = this.entrada.data.press
               this.noise = this.entrada.data.noise
               this.nombreEstacion = this.entrada.station;
+
+
+
               this.finCarga = !estacion.loading;
               this.finCarga && this.ocultarRefresh();
             }
           });
       } catch (error) {
-        console.log(error);
+        this.mensaje.presentToast("Fallo al cagar datos", "danger")
       }
     }
   }
 
   ampliarRecibido($event) {
     this.message = $event;
-    if(this.message === "amplia"){
+    if (this.message === "amplia") {
       this.ampliarGrafica();
     }
-    
+
   }
 
-  async ampliarGrafica(){
+  async ampliarGrafica() {
     this.ampliar = !this.ampliar;
     // console.log("mando "+this.nombreEstacion);
     const modal = await this._modal.create({
@@ -81,28 +85,50 @@ export class DetallesPage implements OnInit {
       }
     });
     modal.onDidDismiss()
-    .then(() => {
-      this.ampliar = !this.ampliar;
-    });
+      .then(() => {
+        this.ampliar = !this.ampliar;
+      });
     return await modal.present();
   }
 
-  ocultarRefresh(){
+  ocultarRefresh() {
     if (this.evento) {
       this.evento.target.complete();
     }
   }
 
-  async doRefresh($event){
-    if($event && this.id !== -1){
+  async doRefresh($event) {
+    if ($event && this.id !== -1) {
       this.evento = $event;
       await this.store.dispatch(new CargarEstacionId(this.id));
     }
-}
+  }
 
-    
-  borrarEntrada(){
-    this._modal.dismiss();
+
+  borrarEntrada() {
+    //this.store.dispatch(new BorrarEntradasEstacionSuccess(""));
+
+    this.store.dispatch(new BorrarEntradasEstacion('nada'));
+    this.ob$ = this.store.select('EntradasPaginadas').subscribe(
+      (estacion) => {
+        if (estacion.error) {
+
+          console.log(estacion.error.ok);
+
+        }
+
+      }
+    )
+
+
+
+
+
+
+
+
+
+
   }
 
 

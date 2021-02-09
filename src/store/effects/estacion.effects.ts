@@ -21,24 +21,12 @@ export class EstacionEffects {
                     return this.co2.getStationsId(id)
                     .pipe(
                         map( estacion => new estacionActions.CargarEstacionSuccess(estacion) ),
-                        catchError( error => of(new estacionActions.CargarEstacionFail(error))  )
+                        catchError( error => of(new estacionActions.CargarEstacionFail(error)))
                     );
             })
         );
         
-    // @Effect()
-    // cargarEstacionName$ = this.actions$
-    //     .pipe(
-    //         ofType( estacionActions.CARGAR_ESTACION_NAME),
-    //         switchMap( action => {
-    //             const name = action['name'];
-    //                 return this.co2.getStationsName(name)
-    //                 .pipe(
-    //                     map( estacion => new estacionActions.CargarEstacionSuccess(estacion) ),
-    //                     catchError( error => of(new estacionActions.CargarEstacionFail(error))  )
-    //                 );
-    //         })
-    //     );
+
 
 
 

@@ -59,7 +59,7 @@ export class MensajesalertasService {
    */
   async presentToast(msg: string, col: string, dur: number = 2000): Promise<void> {
     const toast = await this.toastController.create({
-      message: msg,
+      message: /*'<img src="assets/img/hot.svg">'+ */msg,
       color: col,
       duration: dur,
       position: 'middle'
