@@ -1,9 +1,14 @@
 ion-select {
-    --padding-bottom: 4px;
-    --padding-end: 4px;
-    --padding-start: 4px;
-    --padding-top: 4px;
+    --padding-bottom: 0px !important;
+    --padding-end: 0px !important;
+    --padding-start: 0px !important;
+    --padding-top: 0px !important;
+      width: 3.8em !important;
 }
+
+
+
+
 
 
 
@@ -21,10 +26,6 @@ ion-card-subtitle {
 
 
 
-.tamagnoImg{
-    height: 50px;
-    width: 50px;
-}
 
 // .myCircle {
 //     stroke: black !important;

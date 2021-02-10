@@ -71,7 +71,6 @@ export class DetallesPage implements OnInit {
     if (this.message === "amplia") {
       this.ampliarGrafica();
     }
-
   }
 
   async ampliarGrafica() {
@@ -107,28 +106,15 @@ export class DetallesPage implements OnInit {
 
   borrarEntrada() {
     //this.store.dispatch(new BorrarEntradasEstacionSuccess(""));
-
-    this.store.dispatch(new BorrarEntradasEstacion('nada'));
-    this.ob$ = this.store.select('EntradasPaginadas').subscribe(
-      (estacion) => {
-        if (estacion.error) {
-
-          console.log(estacion.error.ok);
-
-        }
-
-      }
-    )
-
-
-
-
-
-
-
-
-
-
+    if (this.nombreEstacion) {
+      this.store.dispatch(new BorrarEntradasEstacion(this.nombreEstacion));
+      this.ob$ = this.store.select('EntradasPaginadas').subscribe(
+        (estacion) => {
+          if (estacion.error) {
+            console.log(estacion.error.ok);
+          }
+        });
+    }
   }
 
 

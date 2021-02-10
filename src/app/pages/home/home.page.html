@@ -4,7 +4,6 @@
       Listado
     </ion-title>
   </ion-toolbar>
-  
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -18,117 +17,108 @@
 
   <ion-grid fixed="true">
 
-    <ion-row >
-      <ion-col size="2" >
-
-        <ion-item lines="none" class="terms">
-        
-          <ion-label class="ion-text-wrap" >
+    <ion-row>
+      <ion-col size="2">
+        <div style="text-align: center;">
           <ion-icon slot="start" src="assets/img/raspberry-pi.svg"></ion-icon>
-          <b>Estación</b>
-          </ion-label>
-
-
-        </ion-item>
-        
-      </ion-col>
-      
-      <ion-col size="2" >
-          <ion-item lines="none"  class="terms">
-            <ion-label class="ion-text-wrap" >
-              <ion-icon slot="start" src="assets/img/reloj.svg"></ion-icon>
-              <b>Lectura</b>
-            </ion-label>
-          </ion-item>
-        </ion-col>
-
-      <ion-col size="2">
-        <ion-item lines="none">
-          <ion-label class="ion-text-wrap" >
-            <ion-icon slot="start" src="assets/img/alarma.svg"></ion-icon>
-            <b>Estado </b>
-          </ion-label>
-        </ion-item>
-
+          <b *ngIf="this.anchoPantalla > this.tamMinPantalla">Estación</b>
+        </div>
       </ion-col>
 
-      <ion-col size="2">
-        
-        <ion-item lines="none">
+      <ion-col size="3">
+        <div style="text-align: center;">
           <ion-label class="ion-text-wrap">
-          <ion-icon slot="start" src="assets/img/carbon-dioxide.svg"></ion-icon>
-            <b>CO2</b>
+            <ion-icon slot="start" src="assets/img/reloj.svg"></ion-icon>
+            <b *ngIf="this.anchoPantalla > this.tamMinPantalla"
+              [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">Lectura</b>
           </ion-label>
-        </ion-item>
+        </div>
       </ion-col>
-      
+
+      <ion-col size="2">
+        <div style="text-align: center;">
+          <ion-label class="ion-text-wrap">
+            <ion-icon slot="start" src="assets/img/alarma.svg"></ion-icon>
+            <b *ngIf="this.anchoPantalla > this.tamMinPantalla">Estado </b>
+          </ion-label>
+        </div>
+
+      </ion-col>
+
       <ion-col size="2">
 
-        
-      
-        <ion-item lines="none">
-          <ion-label class="ion-text-wrap" style="text-align: center;">
-          <ion-icon slot="start" src="assets/img/ver-detalles.svg"></ion-icon>
-          <b>Detalles</b>
+        <div style="text-align: center;">
+          <ion-label class="ion-text-wrap">
+            <ion-icon slot="start" src="assets/img/co2.svg"></ion-icon>
+            <b *ngIf="this.anchoPantalla > this.tamMinPantalla">CO2</b>
           </ion-label>
-        </ion-item>
+        </div>
+      </ion-col>
+
+      <ion-col size="2">
+        <div style="text-align: center;">
+          <ion-label class="ion-text-wrap" style="text-align: center;">
+            <ion-icon slot="start" src="assets/img/ver-detalles.svg"></ion-icon>
+            <b *ngIf="this.anchoPantalla > this.tamMinPantalla">Detalles</b>
+          </ion-label>
+      </div>
 
       </ion-col>
     </ion-row>
 
 
     <ion-row *ngFor="let estacion of this.estaciones" style="text-align: center;">
-      <ion-col size="2" >
+      <ion-col size="2">
         <ion-item lines="none">
-          <ion-label class="ion-text-wrap">
+          <ion-label class="ion-text-wrap"
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
             {{estacion.id}}
           </ion-label>
         </ion-item>
       </ion-col>
 
-      <ion-col size="2">
+      <ion-col size="3">
         <ion-item lines="none">
-          <ion-label class="ion-text-wrap">
-            {{  estacion.time && this.util.fecha(estacion.time)}}
-            <!-- {{this.comprobarEstado(estacion)}} -->
+          <ion-label class="ion-text-wrap"
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            {{estacion.time}}
           </ion-label>
         </ion-item>
       </ion-col>
 
       <ion-col size="2">
         <ion-button disabled="true" fill="clear">
-          <ion-icon slot="icon-only" name="star"></ion-icon>
+          <ion-icon
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}"
+            slot="icon-only" name="star"></ion-icon>
         </ion-button>
       </ion-col>
 
       <ion-col size="2">
-      <!-- -------------------- -->
-              <ion-item lines="none">
-                <ion-label class="ion-text-wrap">
-                  {{ estacion.data &&  util.jsonParse(estacion.data).CO2 }}
-                </ion-label>
-              </ion-item>
-      <!-- -------------------- -->       
- 
-       <!-- <ion-button disabled="true" fill="clear">
+        <!-- -------------------- -->
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap"
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            {{ estacion.data && util.jsonParse(estacion.data).CO2 }}
+          </ion-label>
+        </ion-item>
+        <!-- -------------------- -->
+
+        <!-- <ion-button disabled="true" fill="clear">
           <ion-icon slot="icon-only" name="star"></ion-icon>
         </ion-button> -->
-
-
       </ion-col>
 
       <ion-col size="2">
         <ion-button (click)="this.presentModal(estacion.id)" fill="clear">
-          <ion-icon slot="icon-only" src="assets/img/mas.svg"></ion-icon>
+          <ion-icon slot="icon-only" src="assets/img/mas.svg"
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+          </ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  
+
 
 </ion-content>
-
-
-
-

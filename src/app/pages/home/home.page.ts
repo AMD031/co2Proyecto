@@ -10,7 +10,7 @@ import * as fromEstacion from '../../../store/actions'
 import { DetallesPage } from '../detalles/detalles.page';
 import * as d3 from "d3";
 import *as moment from 'moment';
-
+import { Platform } from '@ionic/angular';
 
 
 @Component({
@@ -27,6 +27,11 @@ export class HomePage implements OnInit {
   private mostrar: boolean = true;
   private evento: any = null;
   private ahora: Date = null;
+  public anchoPantalla ;
+  public tamMinPantalla = 639;
+  public minFuente = '0.59em';
+  public maxFuetne = '1em';
+
 
   constructor(
     private co2: Co2Service,
@@ -34,6 +39,7 @@ export class HomePage implements OnInit {
     private alerta: MensajesalertasService,
     private modal: ModalController,
     private util: UtilesService,
+    public platform: Platform
   ) {
 
 
@@ -43,6 +49,11 @@ export class HomePage implements OnInit {
 
 
   async ngOnInit() {
+    this.anchoPantalla =  this.platform.width();
+    this.platform.resize.subscribe(async () => {
+    this.anchoPantalla =  this.platform.width();
+      console.log(this.anchoPantalla);
+    });
 
     if (this.mostrar) {
       await this.alerta.presentLoading('Cargando ...');
@@ -89,22 +100,7 @@ export class HomePage implements OnInit {
 
   comprobarEstado(estacion:any):void{
 
- 
-
-     const b = moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
- 
-     console.log( moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ') )
-     console.log(moment.utc(b).toISOString());
     
-    //  console.log(moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ') );
-     
-    // //console.log( "+ 10 minutos:",  moment(estacion, "YYYY").add(10, 'minutes').toJSON());
-    
-    
- 
-    
-    
-
   }
 
 
@@ -124,7 +120,6 @@ export class HomePage implements OnInit {
   }
 
   async presentModal(id: any = -1) {
-
     if (id !== -1) {
       const modal = await this.modal.create({
         component: DetallesPage,
@@ -135,8 +130,6 @@ export class HomePage implements OnInit {
       });
       return await modal.present();
     }
-
-
   }
 
 

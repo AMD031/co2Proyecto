@@ -31,6 +31,7 @@ export class VistagraficaComponent {
   //@Input('data') data:any = [];
   @Input('nombre') nombre: string;
   @Input('pagina') pagina: number;
+  @Input('ancho') ancho: string = '60%';
   @Input('mostarApmpliar') mostarApmpliar: number;
 
   width: number;
@@ -64,6 +65,13 @@ export class VistagraficaComponent {
   yAxis: any;
 
   tamagnoPunto: any = 3;
+  amuentar: boolean = false;
+
+  toolTipMovil(){
+
+  }
+
+
   private allGroup: any = ["CO2" /*, "temp", "humid", "press", "noise"*/];
 
   constructor(
@@ -78,34 +86,6 @@ export class VistagraficaComponent {
     this.messageEvent.emit("amplia");
   }
 
-  disminuir() {
-    try {
-      if (this.page > 1) {
-        this.page--;
-        if (this.data && this.data.length > 0) {
-          this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-
-
-  aumentar() {
-    if (this.page >= 1) {
-      this.page++;
-      if (this.data && this.data.length > 0) {
-        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
-      } else {
-        this.page = 1;
-        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
-        this.ob$.unsubscribe;
-        this.iniciarCarga();
-      }
-    }
-  }
 
 
 
@@ -120,38 +100,97 @@ export class VistagraficaComponent {
       this.ob$ = this.store.select('EntradasPaginadas').pipe().subscribe(
         (datos) => {
           this.data = datos.Entradas;
-          if (this.data && this.data.length > 0) {
+
+          if(this.data && this.data.length === 0){
+            this.borrarElementos();
+          }
+   
+         if (this.data && this.data.length > 0) {
             this.borraGrafica();
             this.inicarGrafica()
-          }
+
+         }
         })
     } catch (error) {
       console.log('error');
-
     }
 
   }
+
+  disminuir() {
+    try {
+      if (this.page > 1) {
+        this.page--;
+        if (this.data && this.data.length > 0) {
+          this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+        }else{
+          this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+          this.ob$.unsubscribe;
+          this.iniciarCarga();
+        }
+
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+
+  aumentar() {
+    try {
+
+      this.page++;
+      if (this.data && this.data.length > 0) {
+        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+      } else {
+        this.page = 1;
+        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+        this.ob$.unsubscribe;
+        this.iniciarCarga();
+      }
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+
+
+
 
   ngOnInit(): void {
     this.iniciarCarga();
   }
 
 
+  borrarElementos():void{
+    this.borraTexto();
+    this.borrarIconos();
+    this.borrarPath();
+    this.borrarPutos();
+  }
 
 
   private inicarGrafica() {
-    this.initSvg();
-    this.addRectangle();
-    this.reformatData();
-    this.colorScale();
-    this.initAxis();
-    this.addAxis();
-    this.addLines();
-    this.addPoints();
-    this.mostrarTexto && this.addLabels();
-    this.mostrarLeyenda && this.leyenEndline();
-    this.addToolTip();
-    this.mostrarLeyenda && this.addIcons();
+   
+
+      this.initSvg();
+      this.addRectangle();
+      this.reformatData();
+      this.colorScale();
+      this.initAxis();
+      this.addAxis();
+      this.addLines();
+      this.addPoints();
+      this.mostrarTexto && this.addLabels();
+      this.mostrarLeyenda && this.leyenEndline();
+      this.addToolTip();
+      this.mostrarLeyenda && this.addIcons();
+      if(this.data && this.data.length === 0){ 
+        this.borrarElementos();
+      }
+
+    
     //this.corrigirPosicion();
 
   }
@@ -183,7 +222,8 @@ export class VistagraficaComponent {
   }
 
   zoomed(/*{ transform } */ event): void {
-    // this.g.attr("transform", transform);
+
+    
     const { transform } = event;
 
     this.transform = transform;
@@ -229,7 +269,7 @@ export class VistagraficaComponent {
       //.classed("svg-content", true)
       .call(d3.zoom()
         .extent([[0, 0], [this.width, this.height]])
-        .scaleExtent([0.75, 8])
+        .scaleExtent([0.50, 8])
         .on("zoom", (event, d) => {
           return this.zoomed(event)
         }
@@ -393,19 +433,37 @@ export class VistagraficaComponent {
     this.Tooltip
       .html(
         '<div style="text-align: left;">' +
-        // '<img src="assets/img/co2.svg" class="tamagnoImg">'+
+        `<img src='${this.utirl.devolverIcono(name)}' id="parametroImg">`+
         '<b>' + name + ': ' + '</b>' + d.value + '<br>' +
+        '<img src="assets/img/reloj.svg" id="relojImg">'+
         '<b>' + "Fecha: " + '</b>' +  d.time +
         '</div>'
 
       )
+
+      
       // .style("top", d3.select(event.target).attr("cy")+ 70+ 'px')
       // .style("left",  d3.select(event.target).attr("cx")+ 'px')
+
       .style("top", '10%')
       .style("left", '10%')
 
     d3.select(event.target).style("stroke", "black")
+      
+    this.cambiarTamagnoPorId("parametroImg",20,20);
+    this.cambiarTamagnoPorId("relojImg",20,20);
+ 
+
+
     // console.log(d3.select(event.target));
+  }
+
+  cambiarTamagnoPorId(id: string, alto:number, ancho:number){
+    const img = document.getElementById(id);
+    if(img && img.style) {
+        img.style.height = `${alto}px`;
+        img.style.width = `${ancho}px`;
+    }
   }
 
   mouseleave(event, d): void {

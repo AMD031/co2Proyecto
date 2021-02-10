@@ -1,72 +1,71 @@
 
-<ion-header>
-    <ion-toolbar >
-
-        <ion-buttons slot="start" >
-
-            <ion-buttons slot="start" *ngIf="mostarApmpliar">
-                <ion-button (click)="sendMessage()">
-                    <ion-icon slot="start" name="expand"></ion-icon>
-                
-                </ion-button>
-            </ion-buttons>
-
-            <ion-button   (click)="casillasVerificacion()" expand="block" fill="clear" shape="round">
-                <ion-label>Mostrar</ion-label>
-            </ion-button>
-            <ion-button   (click)="disminuir()">
-                <ion-icon name="arrow-back"></ion-icon>
-            </ion-button>   
-            <ion-label> Página{{this.page}}</ion-label>
-           
-            <ion-button (click)="aumentar()">
-                <ion-icon name="arrow-forward"></ion-icon>
-            </ion-button>
-
-
-            <!-- <ion-button (click)="visualizarValores()" expand="block" fill="clear" shape="round">
-                Click me
-            </ion-button> -->
-
-      
-
-        </ion-buttons>
-
-        <ion-buttons slot="end">
-            <ion-item lines="none">
-                <ion-label>Fuente</ion-label>
-                <ion-select style="width:50px;" value="15" (ionChange)="cambiarTamagnoletra($event)" >
-                    <ion-select-option value="5">5</ion-select-option>
-                    <ion-select-option value="10">10</ion-select-option>
-                    <ion-select-option value="15">15</ion-select-option>
-                    <ion-select-option value="20">20</ion-select-option>
-                    <ion-select-option value="22">22</ion-select-option>
-                </ion-select>
-            </ion-item>
-
-            <ion-item lines="none">
-                <ion-label>Puntos</ion-label>
-                <ion-select style="width:50px;" value="1" (ionChange)="cambiarTamagnoPuntos($event)" >
-                    <ion-select-option value="0.5">.5</ion-select-option>
-                    <ion-select-option value="1">1</ion-select-option>
-                    <ion-select-option value="3">3</ion-select-option>
-                    <ion-select-option value="4">4</ion-select-option>
-                    <ion-select-option value="5">5</ion-select-option>
-                </ion-select>
-            </ion-item>
-        </ion-buttons>
-
-    </ion-toolbar>
-</ion-header>
 
 
 
-<ion-card style="margin-bottom: 3%; margin-top: 0%; width: 90%; margin: auto; height: 100%;">
+<ion-card style="margin-bottom: 3%; margin-top: 0%; margin: auto; height: 100%;" [style.width]="this.ancho">
     <!-- <ion-card-header>
-    </ion-card-header> -->
-    <ion-card-subtitle style="text-align: center; padding: 1%;">Fecha inicio: {{this.inicio}} - Fecha fin: {{this.fin}} </ion-card-subtitle>
-    <ion-card-content  class="linealChart">
+        </ion-card-header> -->
+        <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-buttons slot="start" *ngIf="mostarApmpliar">
+                    <ion-button (click)="sendMessage()">
+                        <ion-icon slot="start" name="expand"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+    
+                <ion-button (click)="casillasVerificacion()" expand="block" fill="clear" shape="round">
+                    <ion-label>Mostrar</ion-label>
+                </ion-button>
+    
+            </ion-buttons>
+    
+    
+            <ion-buttons slot="start">
+                <ion-item lines="none">
+                    <ion-label>Fuente</ion-label>
+                    <ion-select value="15" (ionChange)="cambiarTamagnoletra($event)">
+                        <ion-select-option value="5">5</ion-select-option>
+                        <ion-select-option value="10">10</ion-select-option>
+                        <ion-select-option value="15">15</ion-select-option>
+                        <ion-select-option value="20">20</ion-select-option>
+                        <ion-select-option value="22">22</ion-select-option>
+                    </ion-select>
+                </ion-item>
+    
+                <ion-item lines="none">
+                    <ion-label>Puntos</ion-label>
+                    <ion-select value="1" (ionChange)="cambiarTamagnoPuntos($event)">
+                        <ion-select-option value="0.5">.5</ion-select-option>
+                        <ion-select-option value="1">1</ion-select-option>
+                        <ion-select-option value="3">3</ion-select-option>
+                        <ion-select-option value="4">4</ion-select-option>
+                        <ion-select-option value="5">5</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </ion-buttons>
+        </ion-toolbar>
+
+        <ion-card-subtitle style="text-align: center; padding: 1%;">
+            <b> Fecha inicio:</b> <span *ngIf="this.data && this.data.length > 0"> {{this.inicio}} </span> -
+            <b> Fecha fin: </b> <span *ngIf="this.data && this.data.length > 0"> {{this.fin}} </span>
+        </ion-card-subtitle>
+    
+        <ion-toolbar>
+            <div style="text-align: center;">
+                <ion-button (click)="disminuir()" style="height: 20px;">
+                    <ion-icon name="arrow-back"></ion-icon>
+                </ion-button>
+                <ion-label style="height: 20px; padding: auto; "> Página{{this.page}} </ion-label>
+
+                <ion-button (click)="aumentar()" style="height: 20px;">
+                    <ion-icon name="arrow-forward"></ion-icon>
+                </ion-button>
+            </div>
+        </ion-toolbar>
+
+    <ion-card-content class="linealChart">
         <!-- <div  style="width: 95%; margin-bottom: 2%;  margin-right: auto; margin-left: auto;  border: solid 1px; padding: 5px;" ></div> -->
     </ion-card-content>
-</ion-card>
 
+
+</ion-card>

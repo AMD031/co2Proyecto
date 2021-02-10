@@ -22,7 +22,6 @@ export class UtilesService {
 
 
   devolverIcono(valor: string): string {
-
     switch (valor) {
       case 'CO2':
         return "assets/img/co2.svg";

@@ -7,13 +7,15 @@ export interface EntradasPaginadaState {
     loaded: boolean;
     loading: boolean;
     error: any;
+    message: any;
 }
 
 const estadoInicial: EntradasPaginadaState = {
     Entradas: null,
     loaded: false,
     loading: false,
-    error: null
+    error: null,
+    message: null,
 };
 
 
@@ -24,7 +26,8 @@ export function estacionPaginadaReducer(state = estadoInicial, action: fromEstac
             return {
                 ...state,
                 loading: true,
-                error: null
+                error: null,
+                message: null,
             };
 
         case fromEstacionPaginada.CARGAR_ENTRADAS_ESTACION_PAGINADAS_SUCCESS:
@@ -56,7 +59,10 @@ export function estacionPaginadaReducer(state = estadoInicial, action: fromEstac
             return {
                 ...state,
                 Entradas: [],
+                message: { ...action.payload },
                 loading: false,
+                loaded:false,
+             
             }
 
         case fromEstacionPaginada.BORRAR_ENTRADAS_ESTACION_FAIL:
@@ -64,6 +70,7 @@ export function estacionPaginadaReducer(state = estadoInicial, action: fromEstac
                 ...state,
                 error: { ...action.payload },
                 loading: false,
+                loaded:  false,
             }
         default:
             return state;

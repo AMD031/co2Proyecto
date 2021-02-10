@@ -1,12 +1,12 @@
 .centrar{
-   margin-left: 5%;
+   margin-left: 13%;
+   margin-right: 13.8%;
    margin-top: 1%;
 }
 
 ion-grid {
    font-size: 0.75em !important;
 }
-
 
 
 ion-item {
@@ -19,4 +19,8 @@ ion-item {
 ion-icon {
 font-size: 1.9em !important;
 
+}
+
+ion-button {
+   --background: var(--azul-fondo);
 }

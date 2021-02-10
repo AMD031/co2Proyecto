@@ -27,10 +27,10 @@
 
 :root{
 
-    --azul-fondo: #3880ff;
+    --azul-fondo: #015abe;
     ion-toolbar {
         --background: var(--azul-fondo);
-        --border-color: #3880ff;
+        --border-color: var(--azul-fondo);
         --border-style: solid;
         //--border-width: 8px;
         --color: white;
@@ -45,8 +45,10 @@
             --background:  var(--azul-fondo);;
             --min-height: 2em;
         }
+      
     }
 
+ 
     
     app-boton-atras{
         ion-item {
@@ -58,7 +60,7 @@
     }
 
     .alert-head.sc-ion-alert-md{
-        background-color: #3880ff ;
+        background-color: var(--azul-fondo);
         h2{
             color: white;
         }

@@ -132,7 +132,7 @@ export class Co2Service {
    *   es necesario incluir apikey.
    */
   deleteStationsName(name: any): Observable<any> {
-    const endPoint = environment.endPoint + `/stations/${name}`;
+    const endPoint = environment.endPoint + `/stations/name/${name}`;
     return this.http.delete(endPoint, { headers: this.header });
   }
 

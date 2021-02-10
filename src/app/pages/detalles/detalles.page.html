@@ -33,7 +33,6 @@
 
     <ion-row>
       <ion-col size="6">
-
         <ion-item>
           <ion-icon slot="start" src="assets/img/co2.svg"></ion-icon>
           <ion-label><b>CO2</b> </ion-label>
@@ -132,31 +131,32 @@
 
 
     <ion-row>
-      <ion-col size="4"></ion-col>
-      <ion-col size="8">
-        <div style="text-align:right;">
+   
+      <ion-col size="12">
+        <div style="text-align:center;">
           <ion-button (click)="borrarEntrada()">
             <ion-icon slot="start" src="assets/img/borrar.svg"></ion-icon>
             <ion-label> <b> Borrar entradas</b></ion-label>
           </ion-button>
         </div>
-
-
-
+   
       </ion-col>
-      <!-- <ion-col size="2"></ion-col> -->
     </ion-row>
-
-
-
   </ion-grid>
 
 
 
 
 
-  <div style="text-align: right;">
-    <app-vistagrafica [mostarApmpliar]="true" (messageEvent)="ampliarRecibido($event)"
-      *ngIf="this.nombreEstacion && finCarga &&  this.ampliar " [nombre]="this.nombreEstacion"></app-vistagrafica>
+  <div style="text-align: right; margin-bottom: 2%;">
+    <app-vistagrafica 
+    [mostarApmpliar]="true" 
+    (messageEvent)="ampliarRecibido($event)"
+    *ngIf="this.nombreEstacion && finCarga &&  this.ampliar "
+    [nombre]="this.nombreEstacion"
+    [ancho]="'70%'"
+    >
+
+      </app-vistagrafica>
   </div>
 </ion-content>
