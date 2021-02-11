@@ -7,7 +7,7 @@ import { UtilesService } from 'src/app/services/utiles.service';
 import { BorrarEntradasEstacion, BorrarEntradasEstacionSuccess, CargarEstacionId, logOut } from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
 import { GraficaPage } from '../grafica/grafica.page';
-
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-detalles',
@@ -29,6 +29,15 @@ export class DetallesPage implements OnInit {
   public nombreEstacion: string;
   private evento: any;
 
+  public anchoPantalla:any ;
+  public tamMinPantalla = 639;
+  public minFuente = '0.8em';
+  public maxFuetne = '3em';
+  public maxIcono = '2.5em';
+  public minIcono = '1.5em';
+  public maxIconoSuperior = '2em';
+  public minIconoSuperior = '1em';
+
   message: string;
 
 
@@ -36,10 +45,19 @@ export class DetallesPage implements OnInit {
     private store: Store<AppState>,
     private _modal: ModalController,
     private util: UtilesService,
-    private mensaje: MensajesalertasService
+    private mensaje: MensajesalertasService,
+    public platform: Platform,
   ) { }
 
   ngOnInit() {
+
+    this.anchoPantalla =  this.platform.width();
+    
+    this.platform.resize.subscribe(async () => {
+       this.anchoPantalla =  this.platform.width();
+      // console.log(this.anchoPantalla);
+    });
+
     if (this.id !== -1) {
       try {
         this.store.dispatch(new CargarEstacionId(this.id));
@@ -78,7 +96,7 @@ export class DetallesPage implements OnInit {
     // console.log("mando "+this.nombreEstacion);
     const modal = await this._modal.create({
       component: GraficaPage,
-      cssClass: 'my-custom-class',
+      cssClass: 'fullscreen',
       componentProps: {
         'nombre': this.nombreEstacion,
       }

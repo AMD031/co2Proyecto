@@ -1,8 +1,8 @@
 .centrar{
-   margin-left: 13%;
-   margin-right: 13.8%;
-   margin-top: 1%;
+   margin: auto;
 }
+
+
 
 ion-grid {
    font-size: 0.75em !important;
@@ -16,11 +16,56 @@ ion-item {
    margin: 0px !important;
 }
 
-ion-icon {
-font-size: 1.9em !important;
 
-}
 
 ion-button {
    --background: var(--azul-fondo);
 }
+
+
+ion-item {
+   // --background: #3880ff;
+   // --background-activated: #3880ff;
+   // --background-activated-opacity: 1;
+   // --background-focused: #3880ff;
+   // --background-focused-opacity: 1;
+   // --background-hover: #3880ff;
+   // --background-hover-opacity: 1;
+   // --border-color: #3880ff;
+   // --border-radius: 8px;
+   // --border-style: solid;
+   // --border-width: 8px;
+   // --color: #ffffff;
+   // --color-activated: #3880ff;
+   // --color-focused: #3880ff;
+   // --color-hover: #3880ff;
+   // --detail-icon-color: #989aa2;
+   // --detail-icon-font-size: 16px;
+   // --detail-icon-opacity: 1;
+   // --highlight-color-focused: #0cd1e8;
+   // --highlight-color-invalid: #f04141;
+   // --highlight-color-valid: #10dc60;
+   // --highlight-height: 32px;
+   --inner-border-width: 0px;
+   --inner-box-shadow: 0px 0px;
+   --inner-padding-bottom: 0px;
+   --inner-padding-end: 0px;
+   --inner-padding-start: 0px;
+   --inner-padding-top: 0px;
+   // --min-height: 24px;
+   // --padding-bottom: 4px;
+   // --padding-end: 4px;
+   // --padding-start: 4px;
+   // --padding-top: 4px;
+   // --ripple-color: #1e1e1e;
+   // --transition: background-color 15ms linear;
+
+
+   
+}
+
+.iconoDiv{
+   text-align: right;
+}
+
+

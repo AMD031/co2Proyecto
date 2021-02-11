@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { ActionSheetController, AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,8 @@ export class MensajesalertasService {
     public alertController: AlertController,
     public toastController: ToastController,
     public loadingController: LoadingController,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public actionSheetController: ActionSheetController
   ) { }
 
   /**
@@ -139,8 +140,6 @@ export class MensajesalertasService {
     textoAceptar: string = 'aceptar',
    // mensaje: string = 'Elige'
   ) {
-
-
     return new Promise<any>( async(resolve, reject) => {
       const alert = await this.alertController.create({
         cssClass: 'my-custom-class',
@@ -169,12 +168,123 @@ export class MensajesalertasService {
           alert.present();
         }
       )
-
-
     })
   }
 
+  async presentActionSheetLetra():Promise<number> {
+    return new Promise((resolve, reject) => {
+      const actionSheet = this.actionSheetController.create({
+        header: 'Tamaño letra',
+        cssClass: 'my-custom-class',
+        buttons: [
+          {
+            text: '5',
+            // role: 'destructive',
+            icon: '',
+            handler: () => {
+              resolve(5)
+            }
+          },
+          {
+            text: '10',
+            icon: '',
+            handler: () => {
+              resolve(10);
+            }
+          },
+          {
+            text: '15',
+            icon: '',
+            handler: () => {
+             resolve(15);
+            }
+          },
+          {
+            text: '20',
+            icon: '',
+            handler: () => {
+              resolve(20);
+            }
+          },
+          {
+            text: '22',
+            icon: '',
+            handler: () => {
+              resolve(22);
+            }
+          },
+          {
+            text: 'Cancelar',
+            icon: 'close',
+            role: 'cancel',
+            handler: () => {
+              
+            }
+          }]
+      }).then(
+        (actionSheet) =>{
+          actionSheet.present();
+        })
+    });
+ 
 
+}
+
+
+
+
+
+async presentActionSheetPunto():Promise<number> {
+  return new Promise((resolve, reject) => {
+    const actionSheet = this.actionSheetController.create({
+      header: 'Tamaño letra',
+      cssClass: 'my-custom-class',
+      buttons: [
+        {
+          text: '0.5',
+          // role: 'destructive',
+          icon: '',
+          handler: () => {
+            resolve(0.5)
+          }
+        },
+        {
+          text: '1',
+          icon: '',
+          handler: () => {
+            resolve(1);
+          }
+        },
+        {
+          text: '3',
+          icon: '',
+          handler: () => {
+           resolve(3);
+          }
+        },
+        {
+          text: '5',
+          icon: '',
+          handler: () => {
+            resolve(5);
+          }
+        },
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            
+          }
+        }]
+    }).then(
+      (actionSheet) =>{
+        actionSheet.present();
+      })
+  });
+
+
+}
 
 
 }

@@ -5,7 +5,9 @@
 <ion-card style="margin-bottom: 3%; margin-top: 0%; margin: auto; height: 100%;" [style.width]="this.ancho">
     <!-- <ion-card-header>
         </ion-card-header> -->
-        <ion-toolbar>
+        
+        <!-- <ion-toolbar>
+
             <ion-buttons slot="start">
                 <ion-buttons slot="start" *ngIf="mostarApmpliar">
                     <ion-button (click)="sendMessage()">
@@ -43,12 +45,9 @@
                     </ion-select>
                 </ion-item>
             </ion-buttons>
-        </ion-toolbar>
+        </ion-toolbar> -->
 
-        <ion-card-subtitle style="text-align: center; padding: 1%;">
-            <b> Fecha inicio:</b> <span *ngIf="this.data && this.data.length > 0"> {{this.inicio}} </span> -
-            <b> Fecha fin: </b> <span *ngIf="this.data && this.data.length > 0"> {{this.fin}} </span>
-        </ion-card-subtitle>
+      
     
         <ion-toolbar>
             <div style="text-align: center;">
@@ -62,10 +61,48 @@
                 </ion-button>
             </div>
         </ion-toolbar>
+        <ion-card-subtitle style="text-align: center; padding: 1%;">
+            <b> Fecha inicio:</b> <span *ngIf="this.data && this.data.length > 0"> {{this.inicio}} </span> -
+            <b> Fecha fin: </b> <span *ngIf="this.data && this.data.length > 0"> {{this.fin}} </span>
+        </ion-card-subtitle>
+        
+    <ion-card-content class="linealChart" >
 
-    <ion-card-content class="linealChart">
+ 
         <!-- <div  style="width: 95%; margin-bottom: 2%;  margin-right: auto; margin-left: auto;  border: solid 1px; padding: 5px;" ></div> -->
     </ion-card-content>
 
+    <ion-fab vertical="bottom" horizontal="start">
+
+        <ion-fab-button size="small">
+            <ion-icon  name="add"></ion-icon>
+        </ion-fab-button>
+    
+        <ion-fab-list side="end">
+          <ion-fab-button  size="small" (click)="casillasVerificacion()" >
+            <!-- <ion-icon name="logo-vimeo"></ion-icon> -->
+                Most
+          </ion-fab-button>
+          <ion-fab-button  size="small" (click)="cambiarTamagnoletra()">
+            <ion-icon name="logo-chrome"></ion-icon>
+            <ion-label>{{this.tamagnoFuente}}</ion-label>
+          </ion-fab-button>
+
+          <ion-fab-button  size="small" (click)="cambiarTamagnoPuntos()">
+            <ion-icon name="logo-react"></ion-icon>
+            <ion-label>{{this.tamagnoPunto}}</ion-label>
+          </ion-fab-button>
+
+          <ion-fab-button  size="small" (click)="sendMessage()" *ngIf="mostarApmpliar">
+                  <ion-icon  name="expand"></ion-icon>
+                
+          </ion-fab-button>
+
+        </ion-fab-list>
+        
+      </ion-fab>
 
 </ion-card>
+
+
+

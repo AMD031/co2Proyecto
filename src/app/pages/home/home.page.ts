@@ -27,10 +27,18 @@ export class HomePage implements OnInit {
   private mostrar: boolean = true;
   private evento: any = null;
   private ahora: Date = null;
+
+  
   public anchoPantalla ;
   public tamMinPantalla = 639;
   public minFuente = '0.59em';
-  public maxFuetne = '1em';
+  public maxFuetne = '3em';
+  public maxIcono = '2em';
+  public minIcono = '1.5em';
+  public maxIconoSuperior = '2em';
+  public minIconoSuperior = '1em';
+
+
 
 
   constructor(
@@ -52,7 +60,7 @@ export class HomePage implements OnInit {
     this.anchoPantalla =  this.platform.width();
     this.platform.resize.subscribe(async () => {
     this.anchoPantalla =  this.platform.width();
-      console.log(this.anchoPantalla);
+      //  console.log(this.anchoPantalla);
     });
 
     if (this.mostrar) {
@@ -123,7 +131,7 @@ export class HomePage implements OnInit {
     if (id !== -1) {
       const modal = await this.modal.create({
         component: DetallesPage,
-        cssClass: 'my-custom-class',
+        cssClass: 'fullscreen',
         componentProps: {
           'id': id,
         }

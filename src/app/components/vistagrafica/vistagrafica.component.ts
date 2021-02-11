@@ -17,6 +17,8 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
 import { UtilesService } from 'src/app/services/utiles.service';
+import { ActionSheetController } from '@ionic/angular';
+import { promise } from 'protractor';
 
 
 
@@ -67,7 +69,7 @@ export class VistagraficaComponent {
   tamagnoPunto: any = 3;
   amuentar: boolean = false;
 
-  toolTipMovil(){
+  toolTipMovil() {
 
   }
 
@@ -77,7 +79,8 @@ export class VistagraficaComponent {
   constructor(
     private store: Store<AppState>,
     private mensajeAlerta: MensajesalertasService,
-    private utirl: UtilesService
+    private utirl: UtilesService,
+    public actionSheetController: ActionSheetController
   ) {
     this.width = 900 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
@@ -101,15 +104,15 @@ export class VistagraficaComponent {
         (datos) => {
           this.data = datos.Entradas;
 
-          if(this.data && this.data.length === 0){
+          if (this.data && this.data.length === 0) {
             this.borrarElementos();
           }
-   
-         if (this.data && this.data.length > 0) {
+
+          if (this.data && this.data.length > 0) {
             this.borraGrafica();
             this.inicarGrafica()
 
-         }
+          }
         })
     } catch (error) {
       console.log('error');
@@ -123,7 +126,7 @@ export class VistagraficaComponent {
         this.page--;
         if (this.data && this.data.length > 0) {
           this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
-        }else{
+        } else {
           this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
           this.ob$.unsubscribe;
           this.iniciarCarga();
@@ -149,7 +152,7 @@ export class VistagraficaComponent {
         this.ob$.unsubscribe;
         this.iniciarCarga();
       }
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   }
@@ -163,7 +166,7 @@ export class VistagraficaComponent {
   }
 
 
-  borrarElementos():void{
+  borrarElementos(): void {
     this.borraTexto();
     this.borrarIconos();
     this.borrarPath();
@@ -172,26 +175,27 @@ export class VistagraficaComponent {
 
 
   private inicarGrafica() {
-   
+    this.initSvg();
+    this.addRectangle();
+    this.reformatData();
+    this.colorScale();
+    this.initAxis();
+    this.addAxis();
+    this.addLines();
+    this.addPoints();
+    this.mostrarTexto && this.addLabels();
+    this.mostrarLeyenda && this.leyenEndline();
+    this.addToolTip();
+    this.mostrarLeyenda && this.addIcons();
+    if (this.data && this.data.length === 0) {
+      this.borrarElementos();
+    }
 
-      this.initSvg();
-      this.addRectangle();
-      this.reformatData();
-      this.colorScale();
-      this.initAxis();
-      this.addAxis();
-      this.addLines();
-      this.addPoints();
-      this.mostrarTexto && this.addLabels();
-      this.mostrarLeyenda && this.leyenEndline();
-      this.addToolTip();
-      this.mostrarLeyenda && this.addIcons();
-      if(this.data && this.data.length === 0){ 
-        this.borrarElementos();
-      }
 
-    
-    //this.corrigirPosicion();
+
+
+
+    this.corrigirPosicion();
 
   }
 
@@ -223,7 +227,8 @@ export class VistagraficaComponent {
 
   zoomed(/*{ transform } */ event): void {
 
-    
+    //console.log(event);
+
     const { transform } = event;
 
     this.transform = transform;
@@ -231,9 +236,9 @@ export class VistagraficaComponent {
     this.transform && this.svg.selectAll(".charts")
       .attr("transform", transform);
 
-      this.transform && this.svg.selectAll(".icon")
+    this.transform && this.svg.selectAll(".icon")
       .attr("transform", transform);
-    
+
 
 
     d3.selectAll('.line').style("stroke-width", 2 / transform.k);
@@ -263,7 +268,7 @@ export class VistagraficaComponent {
     this.svg = d3.select(".linealChart")
       .append("svg")
       //.attr("preserveAspectRatio", "xMinYMin meet")
-      .attr('width', '95%')
+      .attr('width', '100%')
       .attr('height', '100%')
       .attr('viewBox', `0 0 ${900} ${400}`)
       //.classed("svg-content", true)
@@ -289,7 +294,7 @@ export class VistagraficaComponent {
       return {
         name: grpName,
         values: this.data.map((d) => {
-          return { time:  this.utirl.fecha(d.time), value: d.data[grpName] };
+          return { time: this.utirl.fecha(d.time), value: d.data[grpName] };
         })
       };
     });
@@ -300,20 +305,20 @@ export class VistagraficaComponent {
     this.myColor = d3.scaleOrdinal()
       .domain(this.allGroup)
       .range(d3.schemeSet2);
-      //.range( ["grey","orange","black", "red", "blue"]); 
+    //.range( ["grey","orange","black", "red", "blue"]); 
   }
 
 
   initAxis(): void {
 
 
-    this.inicio =  this.utirl.fecha (this.data[this.data.length - 1].time );                                /*moment().toISOString();*/
-    this.fin =   this.utirl.fecha(this.data[0].time);  /*moment(this.data[0].time).toISOString();*/
+    this.inicio = this.utirl.fecha(this.data[this.data.length - 1].time);                                /*moment().toISOString();*/
+    this.fin = this.utirl.fecha(this.data[0].time);  /*moment(this.data[0].time).toISOString();*/
 
-    const inicioMargen = moment(   this.inicio /*this.data[this.data.length - 1].time*/ ).subtract(5, 'minutes').toISOString();
-    const finMargen = moment(   this.fin  /*this.data[0].time*/  ).add(10, 'minutes').toISOString();
+    const inicioMargen = moment(this.inicio /*this.data[this.data.length - 1].time*/).subtract(5, 'minutes').toISOString();
+    const finMargen = moment(this.fin  /*this.data[0].time*/).add(10, 'minutes').toISOString();
 
-    
+
 
 
 
@@ -360,7 +365,7 @@ export class VistagraficaComponent {
     var line = d3.line()
       .x((d) => {
         //console.log(d.time);
-        
+
         const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.time);
         return this.x(time2)
       })
@@ -404,7 +409,7 @@ export class VistagraficaComponent {
       .append("circle")
       .attr("class", "myCircle")
       .attr("cx", (d) => {
-        const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")( d.time);
+        const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.time);
         return this.x(time2)
       })
       .attr("cy", (d) => { return this.y(d.value) })
@@ -433,15 +438,15 @@ export class VistagraficaComponent {
     this.Tooltip
       .html(
         '<div style="text-align: left;">' +
-        `<img src='${this.utirl.devolverIcono(name)}' id="parametroImg">`+
+        `<img src='${this.utirl.devolverIcono(name)}' id="parametroImg">` +
         '<b>' + name + ': ' + '</b>' + d.value + '<br>' +
-        '<img src="assets/img/reloj.svg" id="relojImg">'+
-        '<b>' + "Fecha: " + '</b>' +  d.time +
+        '<img src="assets/img/reloj.svg" id="relojImg">' +
+        '<b>' + "Fecha: " + '</b>' + d.time +
         '</div>'
 
       )
 
-      
+
       // .style("top", d3.select(event.target).attr("cy")+ 70+ 'px')
       // .style("left",  d3.select(event.target).attr("cx")+ 'px')
 
@@ -449,20 +454,20 @@ export class VistagraficaComponent {
       .style("left", '10%')
 
     d3.select(event.target).style("stroke", "black")
-      
-    this.cambiarTamagnoPorId("parametroImg",20,20);
-    this.cambiarTamagnoPorId("relojImg",20,20);
- 
+
+    this.cambiarTamagnoPorId("parametroImg", 20, 20);
+    this.cambiarTamagnoPorId("relojImg", 20, 20);
+
 
 
     // console.log(d3.select(event.target));
   }
 
-  cambiarTamagnoPorId(id: string, alto:number, ancho:number){
+  cambiarTamagnoPorId(id: string, alto: number, ancho: number) {
     const img = document.getElementById(id);
-    if(img && img.style) {
-        img.style.height = `${alto}px`;
-        img.style.width = `${ancho}px`;
+    if (img && img.style) {
+      img.style.height = `${alto}px`;
+      img.style.width = `${ancho}px`;
     }
   }
 
@@ -535,33 +540,33 @@ export class VistagraficaComponent {
   }
 
 
-  addIcons(){
-    
+  addIcons() {
+
 
     this.g
-    .selectAll("icons")
-    .data(this.dataReady)
-    .enter()
-    .append('g')
-    .attr("class", "icon")
-    .append("svg:image")
-    .datum((d) => {
-      return { name: d.name, value: d.values[ /*d.values.length - 1*/ 0] };
-    }) // keep only the last value of each time series
-    .attr("transform", (d) => {
-      return "translate(" + this.x(d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.value.time))
-        + "," + this.y(d.value.value) + ")";
-    }) // Put the text at the position of the last point
-    .attr( 
-       "xlink:href", (d) => { return this.utirl.devolverIcono(d.name) })
-    .attr('x', 35)
-    .attr('y', -20)
-    .attr("width", 20)
-    .attr("height", 20)
-    .append("text")
+      .selectAll("icons")
+      .data(this.dataReady)
+      .enter()
+      .append('g')
+      .attr("class", "icon")
+      .append("svg:image")
+      .datum((d) => {
+        return { name: d.name, value: d.values[ /*d.values.length - 1*/ 0] };
+      }) // keep only the last value of each time series
+      .attr("transform", (d) => {
+        return "translate(" + this.x(d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.value.time))
+          + "," + this.y(d.value.value) + ")";
+      }) // Put the text at the position of the last point
+      .attr(
+        "xlink:href", (d) => { return this.utirl.devolverIcono(d.name) })
+      .attr('x', 35)
+      .attr('y', -20)
+      .attr("width", 20)
+      .attr("height", 20)
+      .append("text")
       .attr("x", 10) // shift the text a bit more right
-     .attr("y", -1)
- 
+      .attr("y", -1)
+
   }
 
 
@@ -584,8 +589,8 @@ export class VistagraficaComponent {
     this.mostrarTexto = this.existe('texto');
     this.mostrarLeyenda = this.existe('leyenda');
 
-    this.allGroup = this.marcdos.filter((valor) => valor !== 'texto' &&  valor !== 'leyenda');
-  
+    this.allGroup = this.marcdos.filter((valor) => valor !== 'texto' && valor !== 'leyenda');
+
     this.borraGrafica();
     this.inicarGrafica();
   }
@@ -657,32 +662,51 @@ export class VistagraficaComponent {
     d3.selectAll("svg > g > g> circle").remove();
   }
 
-  borrarIconos(): void{
+  borrarIconos(): void {
     d3.selectAll("svg > g > g> image").remove();
   }
 
-  cambiarTamagnoPuntos(event) {
-    this.tamagnoPunto = event.target.value;
- 
-    this.borrarPutos();
-    this.addPoints();
-    this.corrigirPosicion();
+  cambiarTamagnoPuntos(/*event*/):void{
+    // this.tamagnoPunto = event.target.value;
+    this.mensajeAlerta.presentActionSheetPunto().then(
+       (valor)=>{
+         this.tamagnoPunto = valor;
+        this.borrarPutos();
+        this.addPoints();
+        this.corrigirPosicion();
+       }).catch(
+         (error)=>{
+            console.log(error);
+         });
   }
 
 
-
-
-
-  cambiarTamagnoletra(event): void {
-    this.tamagnoFuente = event.target.value;
-    this.borrarIconos();
-    this.borraTexto();
-    this.addLabels();
-    this.addIcons();
-    this.leyenEndline();
-    this.corrigirPosicion();
+   cambiarTamagnoletra( /*event*/): void{
+    // this.tamagnoFuente = event.target.value;
+   this.mensajeAlerta.presentActionSheetLetra().then(
+      (valor) =>{
+        this.tamagnoFuente = valor;
+        this.borrarIconos();
+        this.borraTexto();
+        this.addLabels();
+        this.addIcons();
+        this.leyenEndline();
+        this.corrigirPosicion();
+      }).catch(
+          (error) =>{
+            console.log(error);
+          });
     // this.borraGrafica();
     // this.inicarGrafica();
   }
 
-}
+
+
+ 
+
+
+    
+  }
+
+
+

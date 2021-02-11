@@ -9,7 +9,7 @@ export class UtilesService {
   constructor() { }
 
   jsonParse(dato: any) {
-    if (dato && dato !== 'undefined') {
+    if (dato && typeof(dato) != "undefined") {
       return JSON.parse(dato);
     }
   }

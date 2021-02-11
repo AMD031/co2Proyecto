@@ -8,11 +8,22 @@ ion-select {
 
 
 
-
+ion-content {
+  // --background: #ffffff;
+  // --color: #3880ff;
+  // --keyboard-offset: 0px;
+  // --offset-bottom: 0px;
+  // --offset-top: 0px;
+  --padding-bottom: 0px;
+  --padding-end: 0px;
+  --padding-start: 0px;
+  --padding-top: 0px;
+}
 
 
 
 ion-item {
+    color: white !important;
     margin-right: 20px;
 }
 
@@ -25,7 +36,7 @@ ion-card-subtitle {
 }
 
 
-
+ 
 
 // .myCircle {
 //     stroke: black !important;
