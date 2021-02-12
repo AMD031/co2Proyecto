@@ -237,7 +237,7 @@ export class MensajesalertasService {
 async presentActionSheetPunto():Promise<number> {
   return new Promise((resolve, reject) => {
     const actionSheet = this.actionSheetController.create({
-      header: 'Tamaño letra',
+      header: 'Tamaño puntos',
       cssClass: 'my-custom-class',
       buttons: [
         {
@@ -286,5 +286,9 @@ async presentActionSheetPunto():Promise<number> {
 
 }
 
+
+cerrarModal(){
+  this.modalController.dismiss();
+}
 
 }

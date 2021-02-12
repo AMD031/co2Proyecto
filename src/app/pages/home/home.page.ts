@@ -54,7 +54,7 @@ export class HomePage implements OnInit {
   }
 
 
-
+ 
 
   async ngOnInit() {
     this.anchoPantalla =  this.platform.width();
@@ -82,7 +82,7 @@ export class HomePage implements OnInit {
             this.error && this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
           }
 
-          !this.error && this.alerta.hideLoading();
+          this.error && this.alerta.hideLoading();
           this.loaded && !this.loading && this.alerta.hideLoading();
           this.loaded && this.ocultarRefresh();
 
@@ -101,7 +101,7 @@ export class HomePage implements OnInit {
   actualizar() {
     setInterval(()=>{
       this.store.dispatch(new CargarEstacionesAlllast());
-    },60000)
+    },600000)
   }
 
 

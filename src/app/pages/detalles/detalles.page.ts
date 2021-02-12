@@ -4,10 +4,11 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
 import { UtilesService } from 'src/app/services/utiles.service';
-import { BorrarEntradasEstacion, BorrarEntradasEstacionSuccess, CargarEstacionId, logOut } from 'src/store/actions';
+import { BorrarEntradasEstacion, BorrarEntradasEstacionSuccess, CargarEstacionesAlllast, CargarEstacionId, logOut } from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
 import { GraficaPage } from '../grafica/grafica.page';
 import { Platform } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-detalles',
@@ -19,6 +20,7 @@ export class DetallesPage implements OnInit {
   public entrada: any;
   public entradasEstacion: any = [];
   private ob$: Subscription;
+  private ob2$: Subscription;
   public ampliar: boolean = true;
   public finCarga: boolean;
   public co2: Number = 0;
@@ -29,7 +31,8 @@ export class DetallesPage implements OnInit {
   public nombreEstacion: string;
   private evento: any;
 
-  public anchoPantalla:any ;
+  //tamaños
+  public anchoPantalla: any;
   public tamMinPantalla = 639;
   public minFuente = '0.8em';
   public maxFuetne = '3em';
@@ -37,8 +40,11 @@ export class DetallesPage implements OnInit {
   public minIcono = '1.5em';
   public maxIconoSuperior = '2em';
   public minIconoSuperior = '1em';
-
+  private loaded;
+  private loading;
+  private errorBorrar;
   message: string;
+  private respBorrar;
 
 
   constructor(
@@ -47,14 +53,15 @@ export class DetallesPage implements OnInit {
     private util: UtilesService,
     private mensaje: MensajesalertasService,
     public platform: Platform,
+    private router: Router,
   ) { }
 
   ngOnInit() {
 
-    this.anchoPantalla =  this.platform.width();
-    
+    this.anchoPantalla = this.platform.width();
+
     this.platform.resize.subscribe(async () => {
-       this.anchoPantalla =  this.platform.width();
+      this.anchoPantalla = this.platform.width();
       // console.log(this.anchoPantalla);
     });
 
@@ -71,15 +78,12 @@ export class DetallesPage implements OnInit {
               this.press = this.entrada.data.press
               this.noise = this.entrada.data.noise
               this.nombreEstacion = this.entrada.station;
-
-
-
               this.finCarga = !estacion.loading;
               this.finCarga && this.ocultarRefresh();
             }
           });
       } catch (error) {
-        this.mensaje.presentToast("Fallo al cagar datos", "danger")
+        this.mensaje.presentToast("Fallo al cagar datos de la estación", "danger")
       }
     }
   }
@@ -122,15 +126,35 @@ export class DetallesPage implements OnInit {
   }
 
 
-  borrarEntrada() {
+  async borrarEntrada() {
     //this.store.dispatch(new BorrarEntradasEstacionSuccess(""));
     if (this.nombreEstacion) {
-      this.store.dispatch(new BorrarEntradasEstacion(this.nombreEstacion));
-      this.ob$ = this.store.select('EntradasPaginadas').subscribe(
+     this.respBorrar = await this.mensaje.presentAlertConfirm("Borrar", "¿Estás seguro que quieres borrar?", "Cancelar", "Aceptar");
+
+
+      if (this.respBorrar) {
+        this.mensaje.presentLoading("Intentando borrar...");
+        this.store.dispatch(new BorrarEntradasEstacion(this.nombreEstacion));
+      }
+
+      this.ob2$ = this.store.select('EntradasPaginadas').subscribe(
         (estacion) => {
+
+          this.loading = estacion.loading;
+          this.loaded = estacion.loaded;
+
           if (estacion.error) {
-            console.log(estacion.error.ok);
+            this.errorBorrar = !estacion.error.ok;
+            this.errorBorrar && this.ocultarRefresh();
+            this.errorBorrar && this.mensaje.presentToast("No se ha podido borrar las entradas", "danger");
           }
+
+          console.log(this.errorBorrar);
+          !this.errorBorrar && this.mensaje.hideLoading();
+          !this.errorBorrar && this.store.dispatch(new CargarEstacionesAlllast());
+          !this.loading && this.mensaje.hideLoading();
+          !this.loading && this.respBorrar && this.mensaje.cerrarModal();
+
         });
     }
   }
@@ -142,7 +166,8 @@ export class DetallesPage implements OnInit {
     this.humid = 0;
     this.press = 0;
     this.noise = 0;
-    this.ob$.unsubscribe();
+    this.ob$ && this.ob$.unsubscribe();
+    this.ob2$ && this.ob2$.unsubscribe();
   }
 
 

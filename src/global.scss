@@ -77,8 +77,156 @@
 
 
 }
+ion-alert.alertBorrar{
 
+    div.alert-head{
+        border-top: solid gray 1px ;
+        border-bottom: solid gray 1px ;
+    }
+
+    div.alert-message.sc-ion-alert-md{
+        padding-top: 1em !important;
+    }
+    .alert-button-group.sc-ion-alert-md{
+        border-top: solid gray 1px ;
+        border-bottom: solid gray 1px ;
+    }
+ 
+}
+
+
+ion-alert {
+    --backdrop-opacity: 0.5;
+    --background: #333131;
+    // --height: 100%;
+    // --max-height: 100%;
+    // --max-width: 100%;
+    // --min-height: 100%;
+    --min-width: 90%;
+    // --width: 100%;
     
+    // ion-radio {
+    //     --border-radius: 8px;
+    //     --color: #3880ff;
+    //     --color-checked: #3880ff;
+    //     --inner-border-radius: 2px
+    // }
+
+    h2{
+        color: black;
+    }
+
+    .alert-button-group.sc-ion-alert-md{
+ 
+        background-color: white;
+        
+    }
+
+ 
+    
+ 
+    // button[role='radio']{
+    //     .alert-radio-label.sc-ion-alert-md {
+    //         color: rgb(255, 255, 255);
+          
+    //     }
+    // }
+
+    .alert-radio-inner{
+        background-color: rgb(114, 25, 25)
+    }
+    
+    strong{
+        color: black;
+    }
+
+    div.alert-head{
+        border-top: grey solid 1px;
+        background-color: #005cbb !important;
+     
+        // padding-bottom: 1em;
+        // margin-bottom: 1em;
+    }
+    
+    div.alert-radio-label{
+        color: white;
+    }
+
+    .alert-radio-label.sc-ion-alert-md{
+       color: white;
+    }
+
+
+    .alert-button.alert-button-role-cancel  {
+        color: rgb(255, 255, 255) !important;
+        background-color: #009688 !important;
+        border: grey 1px solid !important;
+    }
+
+   
+    .alert-button{
+        color: rgb(255, 255, 255) !important;
+        background-color:  #005aa8 !important;
+        border: grey 1px solid !important;
+ 
+    }
+
+ 
+    
+
+}
+
+
+ion-action-sheet {
+    --backdrop-opacity: 0.5;
+    --background: #000000;
+    --button-background: #333131;
+    --button-background-activated: #a02b1c;
+    // --button-background-activated-opacity: 1;
+    // --button-background-focused: #3880ff;
+    // --button-background-focused-opacity: 1;
+    --button-background-hover: #383233;
+    --button-background-hover-opacity: 1;
+    // --button-background-selected: #3880ff;
+    // --button-background-selected-opacity: 1;
+    --button-color: #ffffff;
+    // --button-color-activated: #3880ff;
+    // --button-color-focused: #3880ff;
+    --button-color-hover: #000000;
+    // --button-color-selected: #3880ff;
+    --color: #ffffff;
+    // --height: 100%;
+    // --max-height: 100%;
+    // --max-width: 100%;
+    // --min-height: 100%;
+    // --min-width: 100%;
+    // --width: 100%;
+
+
+    div.action-sheet-title.sc-ion-action-sheet-md{
+        border-top: grey 1px solid !important;
+        border-bottom: grey 1px solid !important;
+        color: white !important;
+        background-color: var(--azul-fondo) !important;
+    }
+
+
+    // button:hover.action-sheet-button.ion-activatable.ion-focusable.action-sheet-cancel {
+    //     color: rgb(255, 255, 255) !important;
+    //     border-top: grey 1px solid;
+    //     --button-background-hover: rgb(12, 12, 12)  !important;
+    //     border-bottom: grey 1px solid;
+    // }
+
+    button.action-sheet-button.ion-activatable.ion-focusable.action-sheet-cancel{
+        // --button-background-hover:  rgb(34, 1, 1);
+        border-top: grey 1px solid;
+        border-bottom: grey 1px solid;
+        background-color: #009688;
+        color: rgb(255, 255, 255) !important;
+    }
+ 
+}
 
  
 

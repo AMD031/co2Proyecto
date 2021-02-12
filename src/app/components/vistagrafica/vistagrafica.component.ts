@@ -19,6 +19,7 @@ import { MensajesalertasService } from 'src/app/services/mensajesalertas.service
 import { UtilesService } from 'src/app/services/utiles.service';
 import { ActionSheetController } from '@ionic/angular';
 import { promise } from 'protractor';
+import { Platform } from '@ionic/angular';
 
 
 
@@ -69,9 +70,25 @@ export class VistagraficaComponent {
   tamagnoPunto: any = 3;
   amuentar: boolean = false;
 
-  toolTipMovil() {
+  //tamaños
+  public anchoPantalla: any;
+  public tamMinPantalla = 639;
+  public minFuente = '0.55em';
+  public maxFuetne = '2em';
+  // public maxIcono = '2.5em';
+  // public minIcono = '1.5em';
+  // public maxIconoSuperior = '2em';
+  // public minIconoSuperior = '1em';
 
-  }
+  // public maxIcono = '2.5em';
+  // public minIcono = '1.5em';
+  // public maxIconoSuperior = '2em';
+  // public minIconoSuperior = '1em';
+
+
+  private loading: boolean;
+  private error: any;
+  private loaded: boolean;
 
 
   private allGroup: any = ["CO2" /*, "temp", "humid", "press", "noise"*/];
@@ -80,7 +97,9 @@ export class VistagraficaComponent {
     private store: Store<AppState>,
     private mensajeAlerta: MensajesalertasService,
     private utirl: UtilesService,
-    public actionSheetController: ActionSheetController
+    public actionSheetController: ActionSheetController,
+    public platform: Platform,
+    private mensaje: MensajesalertasService
   ) {
     this.width = 900 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
@@ -89,20 +108,26 @@ export class VistagraficaComponent {
     this.messageEvent.emit("amplia");
   }
 
-
-
-
-
   borraGrafica() {
     d3.selectAll(".linealChart > *").remove();
   }
 
-  iniciarCarga() {
+
+  async mostrarLoading(loading: boolean) {
+    await this.mensaje.presentLoading('Cargando datos grafica...')
+  }
+
+
+  async iniciarCarga() {
     try {
       this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+
       this.ob$ = this.store.select('EntradasPaginadas').pipe().subscribe(
-        (datos) => {
+        async (datos) => {
+
           this.data = datos.Entradas;
+          this.loading = datos.loading;
+          this.loaded = datos.loaded;
 
           if (this.data && this.data.length === 0) {
             this.borrarElementos();
@@ -111,11 +136,21 @@ export class VistagraficaComponent {
           if (this.data && this.data.length > 0) {
             this.borraGrafica();
             this.inicarGrafica()
-
           }
+
+          if (datos.error) {
+            this.error = !datos.error.ok
+            this.error && this.mensajeAlerta.hideLoading();
+          }
+
+          console.log(!this.loading);
+          // !this.loading && this.mensajeAlerta.hideLoading(); 
         })
+
+
     } catch (error) {
-      console.log('error');
+      this.mensajeAlerta.hideLoading();
+      // console.log('error');
     }
 
   }
@@ -162,6 +197,11 @@ export class VistagraficaComponent {
 
 
   ngOnInit(): void {
+    this.anchoPantalla = this.platform.width();
+    this.platform.resize.subscribe(async () => {
+      this.anchoPantalla = this.platform.width();
+      // console.log(this.anchoPantalla);
+    });
     this.iniciarCarga();
   }
 
@@ -190,13 +230,7 @@ export class VistagraficaComponent {
     if (this.data && this.data.length === 0) {
       this.borrarElementos();
     }
-
-
-
-
-
-    this.corrigirPosicion();
-
+    // this.corrigirPosicion();
   }
 
   addRectangle(): void {
@@ -365,7 +399,6 @@ export class VistagraficaComponent {
     var line = d3.line()
       .x((d) => {
         //console.log(d.time);
-
         const time2 = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ")(d.time);
         return this.x(time2)
       })
@@ -570,6 +603,27 @@ export class VistagraficaComponent {
   }
 
 
+  addLoading(){
+    
+    this.g
+    .selectAll("icons")
+    .data(this.dataReady)
+    .enter()
+    .append('g')
+    .attr("class", "loading")
+    .append("svg:image")
+    // .attr("fill", "green")
+    .attr(
+      "xlink:href", 'assets/img/loading.svg')
+    .attr("width", 200)
+    .attr("height", 200)
+    .attr("x", 300) 
+    .attr("y", 100)
+
+  }
+
+
+
   //------------------------------------------------------------ 
 
   existe(valor: any): boolean {
@@ -666,25 +720,25 @@ export class VistagraficaComponent {
     d3.selectAll("svg > g > g> image").remove();
   }
 
-  cambiarTamagnoPuntos(/*event*/):void{
+  cambiarTamagnoPuntos(/*event*/): void {
     // this.tamagnoPunto = event.target.value;
     this.mensajeAlerta.presentActionSheetPunto().then(
-       (valor)=>{
-         this.tamagnoPunto = valor;
+      (valor) => {
+        this.tamagnoPunto = valor;
         this.borrarPutos();
         this.addPoints();
         this.corrigirPosicion();
-       }).catch(
-         (error)=>{
-            console.log(error);
-         });
+      }).catch(
+        (error) => {
+          console.log(error);
+        });
   }
 
 
-   cambiarTamagnoletra( /*event*/): void{
+  cambiarTamagnoletra( /*event*/): void {
     // this.tamagnoFuente = event.target.value;
-   this.mensajeAlerta.presentActionSheetLetra().then(
-      (valor) =>{
+    this.mensajeAlerta.presentActionSheetLetra().then(
+      (valor) => {
         this.tamagnoFuente = valor;
         this.borrarIconos();
         this.borraTexto();
@@ -693,20 +747,20 @@ export class VistagraficaComponent {
         this.leyenEndline();
         this.corrigirPosicion();
       }).catch(
-          (error) =>{
-            console.log(error);
-          });
+        (error) => {
+          console.log(error);
+        });
     // this.borraGrafica();
     // this.inicarGrafica();
   }
 
 
 
- 
 
 
-    
-  }
+
+
+}
 
 
 

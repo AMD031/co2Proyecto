@@ -80,7 +80,7 @@
 
       <ion-col size="4">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">{{this.co2}}</ion-label>
+          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">{{this.temp}}</ion-label>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -196,10 +196,28 @@
         </ion-label>
         </ion-item>
       </ion-col>
+
+      
+      
+      
+
     </ion-row>
 
 
-    
+    <ion-row>
+   
+      <ion-col size="12">
+        <div style="text-align:center;">
+          <ion-button (click)="borrarEntrada()">
+            <ion-icon slot="start" src="assets/img/borrar.svg"></ion-icon>
+            <ion-label> <b> Borrar entradas</b></ion-label>
+          </ion-button>
+        </div>
+   
+      </ion-col>
+    </ion-row> 
+
+
 
 
 
