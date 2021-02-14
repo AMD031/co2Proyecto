@@ -20,6 +20,7 @@ import { UtilesService } from 'src/app/services/utiles.service';
 import { ActionSheetController } from '@ionic/angular';
 import { promise } from 'protractor';
 import { Platform } from '@ionic/angular';
+import { GraficaconfService } from 'src/app/services/graficaconf.service';
 
 
 
@@ -52,7 +53,7 @@ export class VistagraficaComponent {
   mostrarLeyenda: boolean = true;
   tamagnoFuente: number = 15;
   ob$: Subscription;
-  altoEjeY: number = 1250;
+  altoEjeY: number = 1500;
   inicio: string;
   fin: string;
   mostrar: boolean = true;
@@ -91,7 +92,7 @@ export class VistagraficaComponent {
   private loaded: boolean;
 
 
-  private allGroup: any = ["CO2" /*, "temp", "humid", "press", "noise"*/];
+  //private allGroup: any = ["CO2" /*, "temp", "humid", "press", "noise"*/];
 
   constructor(
     private store: Store<AppState>,
@@ -99,10 +100,12 @@ export class VistagraficaComponent {
     private utirl: UtilesService,
     public actionSheetController: ActionSheetController,
     public platform: Platform,
-    private mensaje: MensajesalertasService
+    private mensaje: MensajesalertasService,
+    private confg: GraficaconfService
   ) {
     this.width = 900 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
+
   }
   sendMessage() {
     this.messageEvent.emit("amplia");
@@ -120,7 +123,9 @@ export class VistagraficaComponent {
 
   async iniciarCarga() {
     try {
-      this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+  
+      
+      this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.confg.page));
 
       this.ob$ = this.store.select('EntradasPaginadas').pipe().subscribe(
         async (datos) => {
@@ -157,12 +162,12 @@ export class VistagraficaComponent {
 
   disminuir() {
     try {
-      if (this.page > 1) {
-        this.page--;
+      if (this.confg.page > 1) {
+        this.confg.page--;
         if (this.data && this.data.length > 0) {
-          this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+          this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.confg.page));
         } else {
-          this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+          this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.confg.page));
           this.ob$.unsubscribe;
           this.iniciarCarga();
         }
@@ -178,12 +183,12 @@ export class VistagraficaComponent {
   aumentar() {
     try {
 
-      this.page++;
+      this.confg.page++;
       if (this.data && this.data.length > 0) {
-        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.confg.page));
       } else {
-        this.page = 1;
-        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.page));
+        this.confg.page = 1;
+        this.store.dispatch(new CargarEstacionEntradasName(this.nombre, this.confg.page));
         this.ob$.unsubscribe;
         this.iniciarCarga();
       }
@@ -197,6 +202,7 @@ export class VistagraficaComponent {
 
 
   ngOnInit(): void {
+    //console.log("pagina: ",this.confg.page);
     this.anchoPantalla = this.platform.width();
     this.platform.resize.subscribe(async () => {
       this.anchoPantalla = this.platform.width();
@@ -223,10 +229,10 @@ export class VistagraficaComponent {
     this.addAxis();
     this.addLines();
     this.addPoints();
-    this.mostrarTexto && this.addLabels();
-    this.mostrarLeyenda && this.leyenEndline();
+    this.confg.mostrarTexto && this.addLabels();
+    this.confg.mostrarLeyenda && this.leyenEndline();
     this.addToolTip();
-    this.mostrarLeyenda && this.addIcons();
+    this.confg.mostrarLeyenda && this.addIcons();
     if (this.data && this.data.length === 0) {
       this.borrarElementos();
     }
@@ -324,7 +330,7 @@ export class VistagraficaComponent {
   }
 
   reformatData(): void {
-    this.dataReady = this.allGroup.map((grpName) => {
+    this.dataReady = this.confg.allGroup.map((grpName) => {
       return {
         name: grpName,
         values: this.data.map((d) => {
@@ -337,7 +343,7 @@ export class VistagraficaComponent {
 
   colorScale(): void {
     this.myColor = d3.scaleOrdinal()
-      .domain(this.allGroup)
+      .domain(this.confg.allGroup)
       .range(d3.schemeSet2);
     //.range( ["grey","orange","black", "red", "blue"]); 
   }
@@ -446,7 +452,7 @@ export class VistagraficaComponent {
         return this.x(time2)
       })
       .attr("cy", (d) => { return this.y(d.value) })
-      .attr("r", this.tamagnoPunto)
+      .attr("r", this.confg.tamagnoPunto)
       .attr("stroke", "white")
       .on("mouseover", (event, d) => this.mouseover(event, d))
       .on("mousemove", (event, d) => this.mousemove(event, d, d.name))
@@ -541,7 +547,7 @@ export class VistagraficaComponent {
         return '' + d.value + ' '
       })
       // .style("fill", (d) => { return d.name })
-      .style("font-size", this.tamagnoFuente)
+      .style("font-size", this.confg.tamagnoFuente)
 
 
 
@@ -569,7 +575,7 @@ export class VistagraficaComponent {
         return '' + d.name + ' '
       })
       .style("fill", (d) => { return this.myColor(d.name) })
-      .style("font-size", this.tamagnoFuente)
+      .style("font-size", this.confg.tamagnoFuente)
   }
 
 
@@ -640,10 +646,10 @@ export class VistagraficaComponent {
     this.elementos[4].checked = this.existe('noise');
     this.elementos[5].checked = this.existe('texto');
     this.elementos[6].checked = this.existe('leyenda');
-    this.mostrarTexto = this.existe('texto');
-    this.mostrarLeyenda = this.existe('leyenda');
+    this.confg.mostrarTexto = this.existe('texto');
+    this.confg.mostrarLeyenda = this.existe('leyenda');
 
-    this.allGroup = this.marcdos.filter((valor) => valor !== 'texto' && valor !== 'leyenda');
+    this.confg.allGroup = this.marcdos.filter((valor) => valor !== 'texto' && valor !== 'leyenda');
 
     this.borraGrafica();
     this.inicarGrafica();
@@ -724,13 +730,13 @@ export class VistagraficaComponent {
     // this.tamagnoPunto = event.target.value;
     this.mensajeAlerta.presentActionSheetPunto().then(
       (valor) => {
-        this.tamagnoPunto = valor;
+        this.confg.tamagnoPunto = valor;
         this.borrarPutos();
         this.addPoints();
         this.corrigirPosicion();
       }).catch(
         (error) => {
-          console.log(error);
+          this.confg.tamagnoPunto = 3;
         });
   }
 
@@ -739,7 +745,7 @@ export class VistagraficaComponent {
     // this.tamagnoFuente = event.target.value;
     this.mensajeAlerta.presentActionSheetLetra().then(
       (valor) => {
-        this.tamagnoFuente = valor;
+        this.confg.tamagnoFuente = valor;
         this.borrarIconos();
         this.borraTexto();
         this.addLabels();
@@ -748,7 +754,7 @@ export class VistagraficaComponent {
         this.corrigirPosicion();
       }).catch(
         (error) => {
-          console.log(error);
+          this.confg.tamagnoPunto = 3;
         });
     // this.borraGrafica();
     // this.inicarGrafica();

@@ -33,6 +33,10 @@ import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { BotonAtrasComponent } from './components/boton-atras/boton-atras.component';
+import { LoginService } from './services/login.service';
+import { MensajesalertasService } from './services/mensajesalertas.service';
+import { utils } from 'protractor';
+import { UtilesService } from './services/utiles.service';
 
 
 @NgModule({
@@ -64,6 +68,9 @@ import { BotonAtrasComponent } from './components/boton-atras/boton-atras.compon
     SplashScreen,
     Co2Service,
     HttpClient,
+    LoginService,
+    MensajesalertasService,
+    UtilesService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

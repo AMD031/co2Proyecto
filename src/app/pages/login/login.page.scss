@@ -71,11 +71,11 @@ ion-button {
     }
 
     ion-item{
-        &:hover {
+        &:focus-within {
         
             // box-shadow: 1px 1px 1px 1px #daedfb;
-            -webkit-box-shadow: 0 0 5px #b1cadb;
-             box-shadow: 0 0 5px #b1cadb;
+            -webkit-box-shadow: 0 0 5px #7096af;
+             box-shadow: 0 0 5px #7096af;
              border: solid  grey 0px;
           }
     }

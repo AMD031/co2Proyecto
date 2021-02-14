@@ -9,6 +9,7 @@ import { AppState } from 'src/store/app.reducer';
 import { GraficaPage } from '../grafica/grafica.page';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { GraficaconfService } from 'src/app/services/graficaconf.service';
 
 @Component({
   selector: 'app-detalles',
@@ -54,6 +55,7 @@ export class DetallesPage implements OnInit {
     private mensaje: MensajesalertasService,
     public platform: Platform,
     private router: Router,
+    private configGrafica: GraficaconfService
   ) { }
 
   ngOnInit() {
@@ -168,6 +170,8 @@ export class DetallesPage implements OnInit {
     this.noise = 0;
     this.ob$ && this.ob$.unsubscribe();
     this.ob2$ && this.ob2$.unsubscribe();
+    this.configGrafica.page = 1;
+
   }
 
 
