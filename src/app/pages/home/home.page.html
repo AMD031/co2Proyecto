@@ -130,10 +130,11 @@
      
           <p >
             <ion-icon 
+
             class="color-Icono"
-            [style]="this.util.colorIcono('grey')"
+            [style]="this.util.colorIcono(comprobarEstado(estacion.time).color)"
             [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              slot="icon-only" [src]="comprobarEstado(estacion.time)">
+              slot="icon-only" [src]="comprobarEstado(estacion.time).url">
             </ion-icon>
           
           </p>
@@ -158,9 +159,9 @@
           <p >
             <ion-icon 
                class="color-Icono"
-              [style]="this.util.colorIcono('grey')"
+              [style]="this.util.colorIcono(this.util.devolverIconoCo2(util.jsonParse(estacion.data).CO2).color)"
                [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              slot="icon-only" [src]="this.util.devolverIconoCo2(util.jsonParse(estacion.data).CO2 )">
+              slot="icon-only" [src]="this.util.devolverIconoCo2(util.jsonParse(estacion.data).CO2 ).url">
             </ion-icon>
           </p>
 
@@ -175,7 +176,7 @@
 
       <ion-col size="2">
         <ion-button   (click)="this.presentModal(estacion.id)" fill="clear">
-          <ion-icon  class="color-Icono"  [style]="this.util.colorIcono('grey')" slot="icon-only" src="assets/img/mas.svg"
+          <ion-icon  class="color-Icono"  [style]="this.util.colorIcono('#015abe')" slot="icon-only" src="assets/img/mas.svg"
             [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}">
           </ion-icon>
         </ion-button>

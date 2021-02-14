@@ -68,59 +68,55 @@
             </ion-button>
         </div>
 
-
-
-
-
-
-
-
-
     </ion-toolbar>
-    <ion-card-subtitle style="text-align: center; padding: 1%;" >
-        <p style="margin: 0; padding: 0; "   
-           [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}" >
+    <ion-card-subtitle style="text-align: center; padding: 1%;">
+        <p style="margin: 0; padding: 0; "
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
             <b> Fecha inicio:</b> <span *ngIf="this.data && this.data.length > 0"> {{this.inicio}} </span> -
             <b> Fecha fin: </b> <span *ngIf="this.data && this.data.length > 0"> {{this.fin}} </span>
         </p>
-   </ion-card-subtitle>
-    <ion-card-content class="linealChart">
+    </ion-card-subtitle>
 
+  
+<!-- 
+    <div *ngIf="this.loading" style="align-items: center; position: absolute; left: 50%; top: 50%;" >
 
-        <!-- <div  style="width: 95%; margin-bottom: 2%;  margin-right: auto; margin-left: auto;  border: solid 1px; padding: 5px;" ></div> -->
-    </ion-card-content>
+        <ion-img style="width: 50%; height: 60;" src="assets/img/loading2.svg"></ion-img>
 
+    </div> -->
+    
+    <!-- [ngStyle]="{'visibility': this.loading ? 'hidden' : 'visible' }"  -->
+    <span  >
 
+    
+      <ion-card-content  class="linealChart">
+            </ion-card-content>
+         <ion-fab vertical="bottom" horizontal="start">
 
-    <ion-fab vertical="bottom" horizontal="start">
-
-        <ion-fab-button size="small">
-            <ion-icon src="assets/img/ajuste.svg"></ion-icon>
-        </ion-fab-button>
-
-        <ion-fab-list side="end">
-            <ion-fab-button size="small" (click)="casillasVerificacion()">
-                <ion-icon src="assets/img/ojo.svg"></ion-icon>
-            </ion-fab-button>
-            <ion-fab-button size="small" (click)="cambiarTamagnoletra()">
-                <ion-icon src="assets/img/fuente.svg"></ion-icon>
-                <ion-label>{{this.tamagnoFuente}}</ion-label>
+            <ion-fab-button size="small">
+                <ion-icon src="assets/img/ajuste.svg"></ion-icon>
             </ion-fab-button>
 
-            <ion-fab-button size="small" (click)="cambiarTamagnoPuntos()">
-                <ion-icon src="assets/img/puntotam.svg"></ion-icon>
+            <ion-fab-list side="end">
+                <ion-fab-button size="small" (click)="casillasVerificacion()">
+                    <ion-icon src="assets/img/ojo.svg"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-button size="small" (click)="cambiarTamagnoletra()">
+                    <ion-icon src="assets/img/fuente.svg"></ion-icon>
+                    <ion-label>{{this.tamagnoFuente}}</ion-label>
+                </ion-fab-button>
 
-                <ion-label>{{this.tamagnoPunto}}</ion-label>
-            </ion-fab-button>
+                <ion-fab-button size="small" (click)="cambiarTamagnoPuntos()">
+                    <ion-icon src="assets/img/puntotam.svg"></ion-icon>
 
-            <!-- 
-          <ion-fab-button  size="small" (click)="sendMessage()" *ngIf="mostarApmpliar">
-                  <ion-icon  name="expand"></ion-icon>
-                
-          </ion-fab-button> -->
-        </ion-fab-list>
+                    <ion-label>{{this.tamagnoPunto}}</ion-label>
+                </ion-fab-button>
 
-    </ion-fab>
+            </ion-fab-list>
+        </ion-fab>
 
+   
+
+    </span>
 
 </ion-card>

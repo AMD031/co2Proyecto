@@ -25,6 +25,14 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+
+.loading-wrapper{
+    background: transparent !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+     color:black !important;
+}
+
 :root{
 
     --azul-fondo: #015abe;
@@ -227,10 +235,11 @@ ion-action-sheet {
     }
  
 
-    
+ 
 
 
 }
 
  
+
 

@@ -87,7 +87,7 @@ export class VistagraficaComponent {
   // public minIconoSuperior = '1em';
 
 
-  private loading: boolean;
+  private loading: boolean = true;
   private error: any;
   private loaded: boolean;
 
@@ -130,9 +130,10 @@ export class VistagraficaComponent {
       this.ob$ = this.store.select('EntradasPaginadas').pipe().subscribe(
         async (datos) => {
 
-          this.data = datos.Entradas;
           this.loading = datos.loading;
+          this.data = datos.Entradas;
           this.loaded = datos.loaded;
+        
 
           if (this.data && this.data.length === 0) {
             this.borrarElementos();
@@ -171,7 +172,6 @@ export class VistagraficaComponent {
           this.ob$.unsubscribe;
           this.iniciarCarga();
         }
-
       }
     } catch (error) {
       console.log(error);

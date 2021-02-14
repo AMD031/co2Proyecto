@@ -21,13 +21,13 @@ import { Platform } from '@ionic/angular';
 export class HomePage implements OnInit {
 
   public estaciones = [];
-  private loading: boolean;
+  private loading: boolean = true;
   private loaded: boolean;
   private error: any;
   private mostrar: boolean = true;
   private evento: any = null;
   private ahora: Date = null;
-
+  private llamado = false;
   
   public anchoPantalla ;
   public tamMinPantalla = 639;
@@ -63,15 +63,20 @@ export class HomePage implements OnInit {
       //  console.log(this.anchoPantalla);
     });
 
-    if (this.mostrar) {
-      await this.alerta.presentLoading('Cargando ...');
-    }
 
     try {
+      
+
       this.store.dispatch(new CargarEstacionesAlllast());
+   
+   
+      if (this.mostrar &&  this.loading) {
+        await this.alerta.presentLoading('Cargando ...');
+       }
+
       this.store.select('estacionesLastAll').subscribe(
         async (estaciones) => {
-
+                
           this.loading = estaciones.loading;
           this.estaciones = estaciones.Estaciones;
           this.loaded = estaciones.loaded;
@@ -82,10 +87,11 @@ export class HomePage implements OnInit {
             this.error && this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
           }
 
+          !this.loading && this.loaded && this.alerta.hideLoading();
+          !this.loading &&  this.loaded && this.ocultarRefresh();
           this.error && this.alerta.hideLoading();
-          this.loaded && !this.loading && this.alerta.hideLoading();
-          this.loaded && this.ocultarRefresh();
-
+    
+         // this.llamado = false;
         }
       )
     } catch (error) {
@@ -93,13 +99,12 @@ export class HomePage implements OnInit {
       this.alerta.hideLoading();
       this.ocultarRefresh()
     }
-
     this.actualizar();
-    this.comprobarEstado("");
   }
 
   actualizar() {
     setInterval(()=>{
+      this.alerta.presentLoading('Cargando ...')
       this.store.dispatch(new CargarEstacionesAlllast());
     },300000)
   }

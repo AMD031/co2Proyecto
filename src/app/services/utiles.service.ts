@@ -39,27 +39,28 @@ export class UtilesService {
     }
   }
 
-  devolverIconoEstado(valor: string): string{
+  devolverIconoEstado(valor: string): any{
 
     switch (valor) {
       case 'correcto':
-        return "assets/img/correcto.svg";
+        return { url: "assets/img/correcto.svg" , color: "#008800"}
       case 'incorrecto':
-        return "assets/img/incorrecto3.svg";
+        return {url: "assets/img/incorrecto3.svg", color: "#550000"};
     }
 
 
   }
 
-  devolverIconoCo2(valor: number): string{
+  devolverIconoCo2(valor: number): any{
     if( 0 <= valor && valor <= 450 ){
-      return "assets/img/optimo.svg";
+
+      return { url: "assets/img/optimo.svg" , color: "#00AA00"}
     }else if(valor >450 && valor <= 810 ){
-      return "assets/img/bien.svg";
+      return { url: "assets/img/bien.svg" , color: "#008800"}
     }else if (valor >810 && valor <= 1000 ){
-      return "assets/img/regular.svg";
-    }else if (valor >1000 && valor ){
-      return "assets/img/mal.svg";
+      return { url: "assets/img/regular.svg" , color: "#f0540e"}
+    }else if (valor >1000){
+      return { url: "assets/img/mal.svg" , color: "#550000"}
     }
   }
 

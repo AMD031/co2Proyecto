@@ -42,23 +42,29 @@ export class DetallesPage implements OnInit {
   public maxIconoSuperior = '2em';
   public minIconoSuperior = '1em';
   private loaded;
-  private loading;
+  private loadedBorrar;
+  private loading = true;
   private errorBorrar;
   message: string;
   private respBorrar;
-
-
+  private mostrar: boolean = true;
+  private error: any;
+  private llamado = false;
+  private loadingBorrar:any
   constructor(
+
     private store: Store<AppState>,
     private _modal: ModalController,
     private util: UtilesService,
     private mensaje: MensajesalertasService,
     public platform: Platform,
     private router: Router,
-    private configGrafica: GraficaconfService
+    private configGrafica: GraficaconfService,
+
+    
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     this.anchoPantalla = this.platform.width();
 
@@ -67,12 +73,22 @@ export class DetallesPage implements OnInit {
       // console.log(this.anchoPantalla);
     });
 
+
     if (this.id !== -1) {
       try {
+
+        if (this.mostrar && this.loading) {
+          await this.mensaje.presentLoading('Cargando ...');           
+        }
         this.store.dispatch(new CargarEstacionId(this.id));
         this.ob$ = this.store.select('estacion').subscribe(
-          (estacion) => {
+          async (estacion) => {
+            
+        
+
+
             if (estacion.Estacion && Object.keys(estacion.Estacion).length !== 0) {
+
               this.entrada = estacion.Estacion[0];
               this.co2 = this.entrada.data.CO2
               this.temp = this.entrada.data.temp
@@ -80,8 +96,19 @@ export class DetallesPage implements OnInit {
               this.press = this.entrada.data.press
               this.noise = this.entrada.data.noise
               this.nombreEstacion = this.entrada.station;
+              
               this.finCarga = !estacion.loading;
+              this.loaded = estacion.loaded;
+
+              if (estacion.error) {
+                this.error = !estacion.error.ok;
+                this.error && this.ocultarRefresh();
+                this.error && this.mensaje.presentToast("No se ha podido cargar los datos de la estación", "danger");
+              }
+
+              this.finCarga && this.mensaje.hideLoading();
               this.finCarga && this.ocultarRefresh();
+              this.error && this.mensaje.hideLoading();
             }
           });
       } catch (error) {
@@ -121,6 +148,7 @@ export class DetallesPage implements OnInit {
   }
 
   async doRefresh($event) {
+    this.mostrar = false;
     if ($event && this.id !== -1) {
       this.evento = $event;
       await this.store.dispatch(new CargarEstacionId(this.id));
@@ -131,7 +159,7 @@ export class DetallesPage implements OnInit {
   async borrarEntrada() {
     //this.store.dispatch(new BorrarEntradasEstacionSuccess(""));
     if (this.nombreEstacion) {
-     this.respBorrar = await this.mensaje.presentAlertConfirm("Borrar", "¿Estás seguro que quieres borrar?", "Cancelar", "Aceptar");
+      this.respBorrar = await this.mensaje.presentAlertConfirm("Borrar", "¿Estás seguro que quieres borrar?", "Cancelar", "Aceptar");
 
 
       if (this.respBorrar) {
@@ -142,8 +170,8 @@ export class DetallesPage implements OnInit {
       this.ob2$ = this.store.select('EntradasPaginadas').subscribe(
         (estacion) => {
 
-          this.loading = estacion.loading;
-          this.loaded = estacion.loaded;
+          this.loadingBorrar = estacion.loading;
+          this.loadedBorrar = estacion.loaded;
 
           if (estacion.error) {
             this.errorBorrar = !estacion.error.ok;
@@ -154,8 +182,8 @@ export class DetallesPage implements OnInit {
           console.log(this.errorBorrar);
           !this.errorBorrar && this.mensaje.hideLoading();
           !this.errorBorrar && this.store.dispatch(new CargarEstacionesAlllast());
-          !this.loading && this.mensaje.hideLoading();
-          !this.loading && this.respBorrar && this.mensaje.cerrarModal();
+          !this.loadingBorrar && this.mensaje.hideLoading();
+          !this.loadingBorrar && this.respBorrar && this.mensaje.cerrarModal();
 
         });
     }
