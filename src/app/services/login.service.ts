@@ -15,13 +15,14 @@ export class LoginService implements CanActivate {
     this.store.select('login')
     .subscribe( login => {
         this.permiso = login.login;
-         this.permiso = true;
+        // this.permiso = true;
     });
   }
 
   canActivate(route: ActivatedRouteSnapshot): boolean{
     if (!this.permiso) {
       this.router.navigate(['login']);
+      this.router.navigate(['/'], { replaceUrl: true });
       return false;
     }
      return true;

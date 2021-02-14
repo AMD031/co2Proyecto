@@ -143,7 +143,7 @@ export class VistagraficaComponent {
             this.error && this.mensajeAlerta.hideLoading();
           }
 
-          console.log(!this.loading);
+          //console.log(!this.loading);
           // !this.loading && this.mensajeAlerta.hideLoading(); 
         })
 

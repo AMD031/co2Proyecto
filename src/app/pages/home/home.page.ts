@@ -89,7 +89,7 @@ export class HomePage implements OnInit {
         }
       )
     } catch (error) {
-      this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
+      this.alerta.presentToast("No se ha podido cargar las Estaciones, comprueba la conexión", "danger");
       this.alerta.hideLoading();
       this.ocultarRefresh()
     }
@@ -101,14 +101,26 @@ export class HomePage implements OnInit {
   actualizar() {
     setInterval(()=>{
       this.store.dispatch(new CargarEstacionesAlllast());
-    },600000)
+    },300000)
   }
 
 
 
-  comprobarEstado(estacion:any):void{
-
-    
+  comprobarEstado(lectura:any):string{
+    if(lectura){
+      const momentoActual  = this.util.fecha(moment().toISOString())
+      const lecturaFutura  =  this.util.fecha( moment(lectura).add(10, 'minutes').toISOString() )
+      // console.log("actual: ", momentoActual);
+      // console.log("Futura: ",lecturaFutura);      
+      let resultado  = moment(momentoActual).isBefore(lecturaFutura ,"minutes");
+      // console.log(resultado);
+        if(resultado){
+         return this.util.devolverIconoEstado("correcto");
+        }else{
+          return this.util.devolverIconoEstado("incorrecto");
+        }
+      //console.log(  moment("1999").isBefore("2000" ,"years")); // true    
+    }
   }
 
 
@@ -139,6 +151,8 @@ export class HomePage implements OnInit {
       return await modal.present();
     }
   }
+
+
 
 
 

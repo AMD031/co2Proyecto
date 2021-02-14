@@ -36,7 +36,7 @@
         <ion-item>
           <ion-label>
             <div class="iconoDiv">
-              <ion-icon slot="start" src="assets/img/co2.svg"
+              <ion-icon slot="start" [src]="util.devolverIcono('CO2')"
               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
               ></ion-icon>
           </div>
@@ -63,7 +63,7 @@
         <ion-item>
           <ion-label>
             <div class="iconoDiv">
-              <ion-icon slot="start" src="assets/img/hot.svg"
+              <ion-icon slot="start" [src]="util.devolverIcono('temp')"
               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
               ></ion-icon>
           </div>
@@ -91,7 +91,7 @@
         <ion-item>
           <ion-label>
             <div class="iconoDiv">
-              <ion-icon slot="start" src="assets/img/humedad.svg"
+              <ion-icon slot="start" [src]="util.devolverIcono('humid')"
               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
               ></ion-icon>
           </div>
@@ -118,7 +118,7 @@
         <ion-item>
           <ion-label>
             <div class="iconoDiv">
-              <ion-icon slot="start" src="assets/img/presion.svg"
+              <ion-icon slot="start" [src]="util.devolverIcono('press')"
               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
               ></ion-icon>
           </div>
@@ -145,7 +145,7 @@
         <ion-item>
           <ion-label>
             <div class="iconoDiv">
-              <ion-icon slot="start" src="assets/img/ruido.svg"
+              <ion-icon slot="start" [src]="util.devolverIcono('noise')"
               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
               ></ion-icon>
           </div>
@@ -172,7 +172,7 @@
         <ion-item>
           <ion-label>
             <div class="iconoDiv">
-              <ion-icon slot="start" src="assets/img/reloj.svg"
+              <ion-icon slot="start" [src]="util.devolverIcono('date')"
               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
               ></ion-icon>
           </div>
@@ -330,7 +330,7 @@
           (messageEvent)="ampliarRecibido($event)"
           *ngIf="this.nombreEstacion && finCarga &&  this.ampliar "
           [nombre]="this.nombreEstacion"
-          [ancho]="'70%'"
+          [ancho]="'82%'"
           >
       </app-vistagrafica>
   </div>

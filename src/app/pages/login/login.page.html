@@ -5,25 +5,29 @@
 </ion-header>
 
 <ion-content>
+  <ion-img class="imagen" src="assets/img/co2.svg"></ion-img>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-   
-    <ion-item>
-      <!-- <ion-label position="floating">E-Mail <ion-text color="danger">*</ion-text></ion-label> -->
-      <ion-input required formControlName="usuario" type="text" placeholder="Usuario"></ion-input>
-    </ion-item>
-    
-    <ion-item>
-      <!-- <ion-label position="floating">Password <ion-text color="danger">*</ion-text></ion-label> -->
-      <ion-input required formControlName="password" type="password" placeholder="Contraseña"></ion-input>
-    </ion-item>
 
-    <div style="text-align: right;">    
-      <ion-button block color="primary" type="submit" [disabled]="loginForm.invalid">
+
+
+      <ion-item>
+        <!-- <ion-label position="floating">E-Mail <ion-text color="danger">*</ion-text></ion-label> -->
+        <ion-input required formControlName="usuario" type="text" placeholder="Usuario"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <!-- <ion-label position="floating">Password <ion-text color="danger">*</ion-text></ion-label> -->
+        <ion-input required formControlName="password" type="password" placeholder="Contraseña"></ion-input>
+      </ion-item>
+
+      <ion-button block type="submit" [disabled]="loginForm.invalid" Expand="full">
         Login
       </ion-button>
-    </div>
+
+
+
 
 
   </form>
-  
+
 </ion-content>
