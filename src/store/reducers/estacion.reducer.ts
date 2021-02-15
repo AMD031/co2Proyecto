@@ -27,14 +27,6 @@ export function estacionReducer(state = estadoInicial, action: fromEstacion.esta
                 error: null
             };
 
-        // case fromEstacion.CARGAR_ESTACION_NAME:
-        //     return {
-        //         ...state,
-        //         loading: true,
-        //         error: null
-        //     };
-
-
      
         case fromEstacion.CARGAR_ESTACION_SUCCESS:
             return {

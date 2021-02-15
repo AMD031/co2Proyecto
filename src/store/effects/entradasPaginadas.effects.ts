@@ -35,7 +35,7 @@ export class EntradasPaginadaEffects {
                 ofType(estacionActions.BORRAR_ENTRADAS_ESTACION),
                 switchMap( action => {
                     const name = action['name'];
-                    console.log(name);
+                    // console.log(name);
                     return this.co2.deleteStationsName(name)
                         .pipe(
                             map( (mensaje) => new estacionActions.BorrarEntradasEstacionSuccess(mensaje)),

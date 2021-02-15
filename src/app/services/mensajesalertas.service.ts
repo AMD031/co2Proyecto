@@ -287,8 +287,8 @@ async presentActionSheetPunto():Promise<number> {
 }
 
 
-cerrarModal(){
-  this.modalController.dismiss();
+cerrarModal(data?:any){
+  this.modalController.dismiss(data);
 }
 
 }

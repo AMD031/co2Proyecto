@@ -41,6 +41,8 @@ export class DetallesPage implements OnInit {
   public minIcono = '1.5em';
   public maxIconoSuperior = '2em';
   public minIconoSuperior = '1em';
+  //------------------
+
   private loaded;
   private loadedBorrar;
   private loading = true;
@@ -50,9 +52,8 @@ export class DetallesPage implements OnInit {
   private mostrar: boolean = true;
   private error: any;
   private llamado = false;
-  private loadingBorrar:any
+  private loadingBorrar: any
   constructor(
-
     private store: Store<AppState>,
     private _modal: ModalController,
     private util: UtilesService,
@@ -61,7 +62,7 @@ export class DetallesPage implements OnInit {
     private router: Router,
     private configGrafica: GraficaconfService,
 
-    
+
   ) { }
 
   async ngOnInit() {
@@ -73,19 +74,18 @@ export class DetallesPage implements OnInit {
       // console.log(this.anchoPantalla);
     });
 
-
+    console.log();
+    
     if (this.id !== -1) {
       try {
 
         if (this.mostrar && this.loading) {
-          await this.mensaje.presentLoading('Cargando ...');           
+          await this.mensaje.presentLoading('Cargando ...');
         }
+
         this.store.dispatch(new CargarEstacionId(this.id));
         this.ob$ = this.store.select('estacion').subscribe(
           async (estacion) => {
-            
-        
-
 
             if (estacion.Estacion && Object.keys(estacion.Estacion).length !== 0) {
 
@@ -96,7 +96,7 @@ export class DetallesPage implements OnInit {
               this.press = this.entrada.data.press
               this.noise = this.entrada.data.noise
               this.nombreEstacion = this.entrada.station;
-              
+
               this.finCarga = !estacion.loading;
               this.loaded = estacion.loaded;
 
@@ -105,15 +105,21 @@ export class DetallesPage implements OnInit {
                 this.error && this.ocultarRefresh();
                 this.error && this.mensaje.presentToast("No se ha podido cargar los datos de la estación", "danger");
               }
-
-              this.finCarga && this.mensaje.hideLoading();
-              this.finCarga && this.ocultarRefresh();
-              this.error && this.mensaje.hideLoading();
             }
+
+            this.finCarga  && this.loaded && this.ocultarRefresh();
+            //console.log(this.finCarga);
+            this.error && this.mensaje.hideLoading();
+           // (this.loading === null) && this.mensaje.hideLoading();
+            this.finCarga  && this.loaded && this.mensaje.hideLoading();
+            (typeof this.loading !== 'undefined') && this.mensaje.hideLoading();
           });
+
       } catch (error) {
-        this.mensaje.presentToast("Fallo al cagar datos de la estación", "danger")
+        this.mensaje.hideLoading();
+        this.mensaje.presentToast("No se ha podido cargar los datos de la estación", "danger")
       }
+
     }
   }
 
@@ -158,35 +164,45 @@ export class DetallesPage implements OnInit {
 
   async borrarEntrada() {
     //this.store.dispatch(new BorrarEntradasEstacionSuccess(""));
-    if (this.nombreEstacion) {
-      this.respBorrar = await this.mensaje.presentAlertConfirm("Borrar", "¿Estás seguro que quieres borrar?", "Cancelar", "Aceptar");
+
+    try {
 
 
-      if (this.respBorrar) {
-        this.mensaje.presentLoading("Intentando borrar...");
-        this.store.dispatch(new BorrarEntradasEstacion(this.nombreEstacion));
+
+      if (this.nombreEstacion) {
+        this.respBorrar = await this.mensaje.presentAlertConfirm("Borrar", "¿Estás seguro que quieres borrar?", "Cancelar", "Aceptar");
+
+
+        if (this.respBorrar) {
+          await this.mensaje.presentLoading("Intentando borrar...");
+          this.store.dispatch(new BorrarEntradasEstacion(this.nombreEstacion));
+        }
+
+        this.ob2$ = this.store.select('EntradasPaginadas').subscribe(
+          (estacion) => {
+
+            this.loadingBorrar = estacion.loading;
+            this.loadedBorrar = estacion.loaded;
+
+            if (estacion.error && this.respBorrar) {
+              this.errorBorrar = !estacion.error.ok;
+              this.errorBorrar && this.mensaje.hideLoading();
+              this.errorBorrar && this.ocultarRefresh();
+              this.errorBorrar && this.mensaje.presentToast("No se ha podido borrar las entradas", "danger");
+            }
+
+            this.errorBorrar && this.mensaje.hideLoading();
+            !this.loadingBorrar && this.mensaje.hideLoading();
+            !this.loadingBorrar && this.respBorrar && !this.errorBorrar && this.mensaje.cerrarModal("borrado");
+            (typeof this.loading !== 'undefined') && this.mensaje.hideLoading();
+          });
       }
 
-      this.ob2$ = this.store.select('EntradasPaginadas').subscribe(
-        (estacion) => {
-
-          this.loadingBorrar = estacion.loading;
-          this.loadedBorrar = estacion.loaded;
-
-          if (estacion.error) {
-            this.errorBorrar = !estacion.error.ok;
-            this.errorBorrar && this.ocultarRefresh();
-            this.errorBorrar && this.mensaje.presentToast("No se ha podido borrar las entradas", "danger");
-          }
-
-          console.log(this.errorBorrar);
-          !this.errorBorrar && this.mensaje.hideLoading();
-          !this.errorBorrar && this.store.dispatch(new CargarEstacionesAlllast());
-          !this.loadingBorrar && this.mensaje.hideLoading();
-          !this.loadingBorrar && this.respBorrar && this.mensaje.cerrarModal();
-
-        });
+    } catch (error) {
+      this.mensaje.hideLoading();
+      this.mensaje.presentToast("No se ha podido borrar las entradas", "danger");
     }
+
   }
 
 

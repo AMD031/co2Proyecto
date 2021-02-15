@@ -53,7 +53,6 @@ export class UtilesService {
 
   devolverIconoCo2(valor: number): any{
     if( 0 <= valor && valor <= 450 ){
-
       return { url: "assets/img/optimo.svg" , color: "#00AA00"}
     }else if(valor >450 && valor <= 810 ){
       return { url: "assets/img/bien.svg" , color: "#008800"}
@@ -62,6 +61,8 @@ export class UtilesService {
     }else if (valor >1000){
       return { url: "assets/img/mal.svg" , color: "#550000"}
     }
+
+
   }
 
 

@@ -30,7 +30,9 @@ export class LoginPage implements OnInit {
   }
   ngOnInit(): void {
     if (this.login.estaLogeado()) {
-      this.router.navigate(['home']);
+      setTimeout(() => {  
+        this.router.navigate(['/home'],{replaceUrl:true});
+      }, 500);
     }
   }
 
@@ -41,7 +43,9 @@ export class LoginPage implements OnInit {
     };
     this.login.iniciarLogin(data)
     if (this.login.estaLogeado()) {
-      this.router.navigate(['home']);
+      setTimeout(() => {  
+        this.router.navigate(['/home'], {replaceUrl:true});
+      }, 500);
     }
     this.loginForm.reset();
   }

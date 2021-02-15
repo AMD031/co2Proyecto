@@ -11,6 +11,7 @@ import { DetallesPage } from '../detalles/detalles.page';
 import * as d3 from "d3";
 import *as moment from 'moment';
 import { Platform } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -28,8 +29,8 @@ export class HomePage implements OnInit {
   private evento: any = null;
   private ahora: Date = null;
   private llamado = false;
-  
-  public anchoPantalla ;
+
+  public anchoPantalla;
   public tamMinPantalla = 639;
   public minFuente = '0.59em';
   public maxFuetne = '3em';
@@ -47,36 +48,34 @@ export class HomePage implements OnInit {
     private alerta: MensajesalertasService,
     private modal: ModalController,
     private util: UtilesService,
-    public platform: Platform
+    public platform: Platform,
+    private router: Router
   ) {
 
 
   }
 
 
- 
+
 
   async ngOnInit() {
-    this.anchoPantalla =  this.platform.width();
+
+
+
+    this.anchoPantalla = this.platform.width();
     this.platform.resize.subscribe(async () => {
-    this.anchoPantalla =  this.platform.width();
+      this.anchoPantalla = this.platform.width();
       //  console.log(this.anchoPantalla);
     });
-
-
     try {
-      
-
       this.store.dispatch(new CargarEstacionesAlllast());
-   
-   
-      if (this.mostrar &&  this.loading) {
+      if (this.mostrar && this.loading) {
         await this.alerta.presentLoading('Cargando ...');
-       }
+      }
 
       this.store.select('estacionesLastAll').subscribe(
         async (estaciones) => {
-                
+
           this.loading = estaciones.loading;
           this.estaciones = estaciones.Estaciones;
           this.loaded = estaciones.loaded;
@@ -88,10 +87,9 @@ export class HomePage implements OnInit {
           }
 
           !this.loading && this.loaded && this.alerta.hideLoading();
-          !this.loading &&  this.loaded && this.ocultarRefresh();
+          !this.loading && this.loaded && this.ocultarRefresh();
           this.error && this.alerta.hideLoading();
-    
-         // this.llamado = false;
+          (typeof this.loading !== 'undefined') && this.alerta.hideLoading();
         }
       )
     } catch (error) {
@@ -103,27 +101,32 @@ export class HomePage implements OnInit {
   }
 
   actualizar() {
-    setInterval(()=>{
-      this.alerta.presentLoading('Cargando ...')
+    setInterval( async () => {
+      await this.alerta.presentLoading('Cargando ...')
       this.store.dispatch(new CargarEstacionesAlllast());
-    },300000)
+      
+      // setTimeout(() => {
+      //   this.alerta.hideLoading();
+      // }, 30000);
+
+    },300000);
   }
 
 
 
-  comprobarEstado(lectura:any):string{
-    if(lectura){
-      const momentoActual  = this.util.fecha(moment().toISOString())
-      const lecturaFutura  =  this.util.fecha( moment(lectura).add(10, 'minutes').toISOString() )
+  comprobarEstado(lectura: any): string {
+    if (lectura) {
+      const momentoActual = this.util.fecha(moment().toISOString())
+      const lecturaFutura = this.util.fecha(moment(lectura).add(10, 'minutes').toISOString())
       // console.log("actual: ", momentoActual);
       // console.log("Futura: ",lecturaFutura);      
-      let resultado  = moment(momentoActual).isBefore(lecturaFutura ,"minutes");
+      let resultado = moment(momentoActual).isBefore(lecturaFutura, "minutes");
       // console.log(resultado);
-        if(resultado){
-         return this.util.devolverIconoEstado("correcto");
-        }else{
-          return this.util.devolverIconoEstado("incorrecto");
-        }
+      if (resultado) {
+        return this.util.devolverIconoEstado("correcto");
+      } else {
+        return this.util.devolverIconoEstado("incorrecto");
+      }
       //console.log(  moment("1999").isBefore("2000" ,"years")); // true    
     }
   }
@@ -145,7 +148,7 @@ export class HomePage implements OnInit {
   }
 
   async presentModal(id: any = -1) {
-    if (id !== -1) {
+  
       const modal = await this.modal.create({
         component: DetallesPage,
         cssClass: 'fullscreen',
@@ -153,8 +156,18 @@ export class HomePage implements OnInit {
           'id': id,
         }
       });
+
+      modal.onDidDismiss()
+      .then( async(data) => {
+        const mensaje = data['data']
+        if(mensaje ==='borrado'){
+          await this.alerta.presentLoading()
+          this.store.dispatch(new CargarEstacionesAlllast());
+        }
+      });
+
       return await modal.present();
-    }
+ 
   }
 
 
