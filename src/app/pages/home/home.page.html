@@ -53,7 +53,7 @@
       <ion-col size="2">
 
         <div style="text-align: center;">
-          <p class="icono" >
+          <p class="icono">
             <ion-icon slot="start" src="assets/img/alarm2.svg"
               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIconoSuperior : this.minIconoSuperior}">
             </ion-icon>
@@ -86,7 +86,7 @@
 
       <ion-col size="2">
         <div style="text-align: center;">
-          
+
           <p class="icono">
             <ion-icon slot="start" src="assets/img/ver-detalles.svg"
               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIconoSuperior : this.minIconoSuperior}">
@@ -102,10 +102,10 @@
 
 
     <ion-row *ngFor="let estacion of this.estaciones; let i=index" style="text-align: center; ">
-     
+
       <ion-col size="2">
 
-        
+
         <ion-item lines="none">
           <ion-label class="ion-text-wrap"
             [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
@@ -118,25 +118,26 @@
         <ion-item lines="none">
           <ion-label class="ion-text-wrap"
             [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
-            {{estacion.time}}
+
+      
+            <span> <b>Día:</b> {{this.util.fecha(estacion.time).slice(0,10)}} </span> <br>
+            <span> <b>Hora: </b> {{this.util.fecha(estacion.time).slice(11, 16)}}</span>
+       
           </ion-label>
         </ion-item>
       </ion-col>
 
-      <ion-col size="2">
-
+      <ion-col size="2" >
+     
 
         <div style="text-align: center;">
-     
-          <p >
-            <ion-icon 
 
-            class="color-Icono"
-            [style]="this.util.colorIcono(comprobarEstado(estacion.time).color)"
-            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              slot="icon-only" [src]="comprobarEstado(estacion.time).url">
+          <p>
+            <ion-icon class="color-Icono" [style]="this.util.colorIcono(comprobarEstado(estacion.time)['color'])"
+              [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
+              slot="icon-only" [src]="comprobarEstado(estacion.time)['url']">
             </ion-icon>
-          
+
           </p>
         </div>
       </ion-col>
@@ -156,16 +157,15 @@
           <!-- class="color-Icono" 
              [style]="  i %2 !==0 ?   this.util.colorIcono('#009900'): this.util.colorIcono('#600')  " 
           -->
-          <p >
-            <ion-icon 
-               class="color-Icono"
-              [style]="this.util.colorIcono(this.util.devolverIconoCo2(util.jsonParse(estacion.data).CO2).color)"
-               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              slot="icon-only" [src]="this.util.devolverIconoCo2(util.jsonParse(estacion.data).CO2 ).url">
+          <p>
+            <ion-icon class="color-Icono"
+              [style]="this.util.colorIcono(this.util.devolverIconoCo2(util.jsonParse(estacion.data).CO2)['color'])"
+              [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
+              slot="icon-only" [src]="this.util.devolverIconoCo2(util.jsonParse(estacion.data).CO2 )['url']">
             </ion-icon>
           </p>
 
-     
+
 
         </div>
         <!-- -------------------- -->
@@ -175,8 +175,9 @@
       </ion-col>
 
       <ion-col size="2">
-        <ion-button   (click)="this.presentModal(estacion.id)" fill="clear">
-          <ion-icon  class="color-Icono"  [style]="this.util.colorIcono('#015abe')" slot="icon-only" src="assets/img/mas.svg"
+        <ion-button (click)="this.presentModal(estacion.id)" fill="clear">
+          <ion-icon class="color-Icono" [style]="this.util.colorIcono('#015abe')" slot="icon-only"
+            src="assets/img/mas.svg"
             [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}">
           </ion-icon>
         </ion-button>

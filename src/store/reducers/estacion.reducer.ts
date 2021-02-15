@@ -27,6 +27,14 @@ export function estacionReducer(state = estadoInicial, action: fromEstacion.esta
                 error: null
             };
 
+        case fromEstacion.REINICIAR_ESTACION:
+            return {
+                Estacion: null,
+                loaded: false,
+                loading: false,
+                error: null
+            };
+
      
         case fromEstacion.CARGAR_ESTACION_SUCCESS:
             return {

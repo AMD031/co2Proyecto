@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
 import { UtilesService } from 'src/app/services/utiles.service';
-import { BorrarEntradasEstacion, BorrarEntradasEstacionSuccess, CargarEstacionesAlllast, CargarEstacionId, logOut } from 'src/store/actions';
+import { BorrarEntradasEstacion, BorrarEntradasEstacionSuccess, CargarEstacionesAlllast, CargarEstacionId, logOut, ReiniciarEstacion } from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
 import { GraficaPage } from '../grafica/grafica.page';
 import { Platform } from '@ionic/angular';
@@ -36,7 +36,7 @@ export class DetallesPage implements OnInit {
   public anchoPantalla: any;
   public tamMinPantalla = 639;
   public minFuente = '0.8em';
-  public maxFuetne = '3em';
+  public maxFuente  = '1em';
   public maxIcono = '2.5em';
   public minIcono = '1.5em';
   public maxIconoSuperior = '2em';
@@ -56,7 +56,7 @@ export class DetallesPage implements OnInit {
   constructor(
     private store: Store<AppState>,
     private _modal: ModalController,
-    private util: UtilesService,
+    public util: UtilesService,
     private mensaje: MensajesalertasService,
     public platform: Platform,
     private router: Router,
@@ -74,8 +74,7 @@ export class DetallesPage implements OnInit {
       // console.log(this.anchoPantalla);
     });
 
-    console.log();
-    
+
     if (this.id !== -1) {
       try {
 
@@ -98,21 +97,15 @@ export class DetallesPage implements OnInit {
               this.nombreEstacion = this.entrada.station;
 
               this.finCarga = !estacion.loading;
-              this.loaded = estacion.loaded;
-
-              if (estacion.error) {
-                this.error = !estacion.error.ok;
-                this.error && this.ocultarRefresh();
-                this.error && this.mensaje.presentToast("No se ha podido cargar los datos de la estación", "danger");
-              }
+       
             }
-
-            this.finCarga  && this.loaded && this.ocultarRefresh();
-            //console.log(this.finCarga);
-            this.error && this.mensaje.hideLoading();
-           // (this.loading === null) && this.mensaje.hideLoading();
-            this.finCarga  && this.loaded && this.mensaje.hideLoading();
+            estacion.error && this.mensaje.hideLoading();
+            estacion.error && this.ocultarRefresh();
+            estacion.error && this.mensaje.presentToast("No se ha podido cargar los datos de la estación", "danger");
+            !estacion.loading && estacion.loaded && this.ocultarRefresh();
+            !estacion.loading && estacion.loaded && this.mensaje.hideLoading();
             (typeof this.loading !== 'undefined') && this.mensaje.hideLoading();
+            (typeof this.loading !== 'undefined') &&this.ocultarRefresh();
           });
 
       } catch (error) {
@@ -140,11 +133,15 @@ export class DetallesPage implements OnInit {
         'nombre': this.nombreEstacion,
       }
     });
+
     modal.onDidDismiss()
       .then(() => {
+
         this.ampliar = !this.ampliar;
       });
     return await modal.present();
+
+
   }
 
   ocultarRefresh() {
@@ -190,13 +187,18 @@ export class DetallesPage implements OnInit {
               this.errorBorrar && this.ocultarRefresh();
               this.errorBorrar && this.mensaje.presentToast("No se ha podido borrar las entradas", "danger");
             }
-
-            this.errorBorrar && this.mensaje.hideLoading();
-            !this.loadingBorrar && this.mensaje.hideLoading();
-            !this.loadingBorrar && this.respBorrar && !this.errorBorrar && this.mensaje.cerrarModal("borrado");
-            (typeof this.loading !== 'undefined') && this.mensaje.hideLoading();
           });
+
+        this.errorBorrar && this.mensaje.hideLoading();
+        !this.loadingBorrar && this.mensaje.hideLoading();
+        !this.loadingBorrar && this.respBorrar && !this.errorBorrar && this.mensaje.cerrarModal("borrado");
+        (typeof this.loading !== 'undefined') && this.mensaje.hideLoading();
+
+      }else{
+        this.mensaje.presentToast("No se puede borrar una estación que no ha sido cargada", "danger");
       }
+
+
 
     } catch (error) {
       this.mensaje.hideLoading();
@@ -206,12 +208,12 @@ export class DetallesPage implements OnInit {
   }
 
 
+  ionViewWillLeave() {
+    this.store.dispatch(new ReiniciarEstacion());
+  }
+
+
   ionViewDidLeave() {
-    this.co2 = 0;
-    this.temp = 0;
-    this.humid = 0;
-    this.press = 0;
-    this.noise = 0;
     this.ob$ && this.ob$.unsubscribe();
     this.ob2$ && this.ob2$.unsubscribe();
     this.configGrafica.page = 1;

@@ -75,7 +75,8 @@ export class VistagraficaComponent {
   public anchoPantalla: any;
   public tamMinPantalla = 639;
   public minFuente = '0.55em';
-  public maxFuetne = '2em';
+  public maxFuente = '0.9em';
+
   // public maxIcono = '2.5em';
   // public minIcono = '1.5em';
   // public maxIconoSuperior = '2em';
@@ -97,11 +98,11 @@ export class VistagraficaComponent {
   constructor(
     private store: Store<AppState>,
     private mensajeAlerta: MensajesalertasService,
-    private utirl: UtilesService,
+    public utirl: UtilesService,
     public actionSheetController: ActionSheetController,
     public platform: Platform,
     private mensaje: MensajesalertasService,
-    private confg: GraficaconfService
+    public confg: GraficaconfService
   ) {
     this.width = 900 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
@@ -345,7 +346,9 @@ export class VistagraficaComponent {
     this.myColor = d3.scaleOrdinal()
       .domain(this.confg.allGroup)
       .range(d3.schemeSet2);
-    //.range( ["grey","orange","black", "red", "blue"]); 
+
+   
+      
   }
 
 
@@ -633,82 +636,37 @@ export class VistagraficaComponent {
   //------------------------------------------------------------ 
 
   existe(valor: any): boolean {
-    return this.marcdos.indexOf(valor) !== -1 ? true : false;
+    return this.confg.marcdos.indexOf(valor) !== -1 ? true : false;
   }
 
 
   async casillasVerificacion(): Promise<void> {
-    this.marcdos = await this.mensajeAlerta.presentAlertCheckbox("Parámetros", this.elementos);
-    this.elementos[0].checked = this.existe('CO2');
-    this.elementos[1].checked = this.existe('temp');
-    this.elementos[2].checked = this.existe('humid');
-    this.elementos[3].checked = this.existe('press');
-    this.elementos[4].checked = this.existe('noise');
-    this.elementos[5].checked = this.existe('texto');
-    this.elementos[6].checked = this.existe('leyenda');
+    this.confg.marcdos = await this.mensajeAlerta.presentAlertCheckbox("Parámetros", this.confg.elementos);
+
+    console.log("valores: ",this.confg.marcdos);
+    
+    this.confg.elementos[0].checked = this.existe('CO2');
+    this.confg.elementos[1].checked = this.existe('temp');
+    this.confg.elementos[2].checked = this.existe('humid');
+    this.confg.elementos[3].checked = this.existe('press');
+    this.confg.elementos[4].checked = this.existe('noise');
+    this.confg.elementos[5].checked = this.existe('texto');
+    this.confg.elementos[6].checked = this.existe('leyenda');
+    
     this.confg.mostrarTexto = this.existe('texto');
     this.confg.mostrarLeyenda = this.existe('leyenda');
 
-    this.confg.allGroup = this.marcdos.filter((valor) => valor !== 'texto' && valor !== 'leyenda');
+    this.confg.allGroup = this.confg.marcdos.filter((valor) => valor !== 'texto' && valor !== 'leyenda');
+
+
 
     this.borraGrafica();
     this.inicarGrafica();
   }
 
 
-  private marcdos: any = [];
-  public elementos: any = [
-    {
-      name: 'checkbox0',
-      type: 'checkbox',
-      label: 'CO2',
-      value: 'CO2',
-      checked: true,
-    },
-    {
-      name: 'checkbox1',
-      type: 'checkbox',
-      label: 'Temperatura',
-      value: 'temp',
-      checked: false
-    },
-    {
-      name: 'checkbox2',
-      type: 'checkbox',
-      label: 'Humedad',
-      value: 'humid',
-      checked: false
-    },
-    {
-      name: 'checkbox3',
-      type: 'checkbox',
-      label: 'Presión',
-      value: 'press',
-      checked: false
-    },
-    {
-      name: 'checkbox4',
-      type: 'checkbox',
-      label: 'Ruido',
-      value: 'noise',
-      checked: false
-    },
-    {
-      name: 'checkbox5',
-      type: 'checkbox',
-      label: 'Texto',
-      value: 'texto',
-      checked: true
-    },
-    {
-      name: 'checkbox6',
-      type: 'checkbox',
-      label: 'Leyenda',
-      value: 'leyenda',
-      checked: true
-    },
 
-  ]
+
 
   borraTexto(): void {
     d3.selectAll("svg > g > g> text").remove();

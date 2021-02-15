@@ -32,12 +32,13 @@ export class HomePage implements OnInit {
 
   public anchoPantalla;
   public tamMinPantalla = 639;
-  public minFuente = '0.59em';
-  public maxFuetne = '3em';
+  public minFuente = '0.48em';
+  public maxFuente = '0.86em';
   public maxIcono = '2em';
   public minIcono = '1.5em';
   public maxIconoSuperior = '2em';
   public minIconoSuperior = '1em';
+  private diferencia = 300000;
 
 
 
@@ -47,7 +48,7 @@ export class HomePage implements OnInit {
     private store: Store<AppState>,
     private alerta: MensajesalertasService,
     private modal: ModalController,
-    private util: UtilesService,
+    public util: UtilesService,
     public platform: Platform,
     private router: Router
   ) {
@@ -59,9 +60,6 @@ export class HomePage implements OnInit {
 
 
   async ngOnInit() {
-
-
-
     this.anchoPantalla = this.platform.width();
     this.platform.resize.subscribe(async () => {
       this.anchoPantalla = this.platform.width();
@@ -97,29 +95,37 @@ export class HomePage implements OnInit {
       this.alerta.hideLoading();
       this.ocultarRefresh()
     }
-    this.actualizar();
+
+    setTimeout(() => {
+      this.actualizar();
+    }, 800);
   }
 
   actualizar() {
+
+
+    console.log(this.diferencia);
     setInterval( async () => {
       await this.alerta.presentLoading('Cargando ...')
       this.store.dispatch(new CargarEstacionesAlllast());
-      
-      // setTimeout(() => {
-      //   this.alerta.hideLoading();
-      // }, 30000);
+      console.log(this.diferencia);
+    },this.diferencia);
 
-    },300000);
+
   }
+
 
 
 
   comprobarEstado(lectura: any): string {
+    
     if (lectura) {
       const momentoActual = this.util.fecha(moment().toISOString())
       const lecturaFutura = this.util.fecha(moment(lectura).add(10, 'minutes').toISOString())
-      // console.log("actual: ", momentoActual);
-      // console.log("Futura: ",lecturaFutura);      
+      const date1 = moment(momentoActual);
+      const date2 = moment(lecturaFutura);
+      const diff = date2.diff(date1);
+       (diff-750) > 0 ?  this.diferencia =  (diff-750):  this.diferencia = 300000;  
       let resultado = moment(momentoActual).isBefore(lecturaFutura, "minutes");
       // console.log(resultado);
       if (resultado) {
@@ -127,7 +133,7 @@ export class HomePage implements OnInit {
       } else {
         return this.util.devolverIconoEstado("incorrecto");
       }
-      //console.log(  moment("1999").isBefore("2000" ,"years")); // true    
+ 
     }
   }
 

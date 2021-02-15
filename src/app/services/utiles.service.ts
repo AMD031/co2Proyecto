@@ -78,5 +78,23 @@ export class UtilesService {
     return this.sanitaizer.bypassSecurityTrustStyle(`--variable: ${color}`);
   }
 
+  formatoFecha(fecha?: string, formato:string ='HH:mm'): string{
+    return moment( fecha).format(formato)
+  }
+
+
+  agregarElementoArr(pos, arr:any, elemento:string):Array<string> {
+   return arr.splice(pos, 0, elemento);
+  }
+
+  eliminarElementoArr(arr:any, id:number): Array<string> {
+    return arr.filter( (valor ,idx) =>{  return idx !== id } )
+  }
+
+  indiceElementoArr(ele: string, arr:any){
+      const autIndex = (element:any) => element ===  ele;
+      console.log(arr.findIndex(autIndex));
+  }
+
 
 }

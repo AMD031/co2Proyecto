@@ -29,7 +29,7 @@
       {{this.anchoPantalla }}
       {{this.tamMinPantalla}}
   </p> -->
-  
+
 
     <ion-row>
       <ion-col size="3">
@@ -37,23 +37,27 @@
           <ion-label>
             <div class="iconoDiv">
               <ion-icon slot="start" [src]="util.devolverIcono('CO2')"
-              [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              ></ion-icon>
-          </div>
+                [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}">
+              </ion-icon>
+            </div>
           </ion-label>
-    
+
         </ion-item>
       </ion-col>
-      
-      <ion-col size="3"  *ngIf="this.anchoPantalla > this.tamMinPantalla">
+
+      <ion-col size="3" *ngIf="this.anchoPantalla > this.tamMinPantalla">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}"><b>CO2</b> </ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            <b>CO2</b> </ion-label>
         </ion-item>
       </ion-col>
 
       <ion-col size="4">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">{{this.co2}}</ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            {{this.co2}}</ion-label>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -64,23 +68,27 @@
           <ion-label>
             <div class="iconoDiv">
               <ion-icon slot="start" [src]="util.devolverIcono('temp')"
-              [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              ></ion-icon>
-          </div>
+                [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}">
+              </ion-icon>
+            </div>
           </ion-label>
-    
+
         </ion-item>
       </ion-col>
-      
-      <ion-col size="3"  *ngIf="this.anchoPantalla > this.tamMinPantalla">
+
+      <ion-col size="3" *ngIf="this.anchoPantalla > this.tamMinPantalla">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}"><b>Temperatura</b> </ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            <b>Temperatura</b> </ion-label>
         </ion-item>
       </ion-col>
 
       <ion-col size="4">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">{{this.temp}}</ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            {{this.temp}}</ion-label>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -92,23 +100,27 @@
           <ion-label>
             <div class="iconoDiv">
               <ion-icon slot="start" [src]="util.devolverIcono('humid')"
-              [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              ></ion-icon>
-          </div>
+                [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}">
+              </ion-icon>
+            </div>
           </ion-label>
-    
+
         </ion-item>
       </ion-col>
-      
-      <ion-col size="3"  *ngIf="this.anchoPantalla > this.tamMinPantalla">
+
+      <ion-col size="3" *ngIf="this.anchoPantalla > this.tamMinPantalla">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}"><b>Humedad</b> </ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            <b>Humedad</b> </ion-label>
         </ion-item>
       </ion-col>
 
       <ion-col size="4">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">{{this.humid}}</ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            {{this.humid}}</ion-label>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -119,23 +131,27 @@
           <ion-label>
             <div class="iconoDiv">
               <ion-icon slot="start" [src]="util.devolverIcono('press')"
-              [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              ></ion-icon>
-          </div>
+                [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}">
+              </ion-icon>
+            </div>
           </ion-label>
-    
+
         </ion-item>
       </ion-col>
-      
-      <ion-col size="3"  *ngIf="this.anchoPantalla > this.tamMinPantalla">
+
+      <ion-col size="3" *ngIf="this.anchoPantalla > this.tamMinPantalla">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}"><b>Presión</b> </ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            <b>Presión</b> </ion-label>
         </ion-item>
       </ion-col>
 
       <ion-col size="4">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">{{this.press}}</ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            {{this.press}}</ion-label>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -146,23 +162,27 @@
           <ion-label>
             <div class="iconoDiv">
               <ion-icon slot="start" [src]="util.devolverIcono('noise')"
-              [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              ></ion-icon>
-          </div>
+                [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}">
+              </ion-icon>
+            </div>
           </ion-label>
-    
+
         </ion-item>
       </ion-col>
-      
-      <ion-col size="3"  *ngIf="this.anchoPantalla > this.tamMinPantalla">
+
+      <ion-col size="3" *ngIf="this.anchoPantalla > this.tamMinPantalla">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}"><b>Ruido</b> </ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            <b>Ruido</b> </ion-label>
         </ion-item>
       </ion-col>
 
       <ion-col size="4">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">{{this.noise}}</ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            {{this.noise}}</ion-label>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -173,39 +193,39 @@
           <ion-label>
             <div class="iconoDiv">
               <ion-icon slot="start" [src]="util.devolverIcono('date')"
-              [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              ></ion-icon>
-          </div>
+                [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}">
+              </ion-icon>
+            </div>
           </ion-label>
-    
+
         </ion-item>
       </ion-col>
-      
-      <ion-col size="3"  *ngIf="this.anchoPantalla > this.tamMinPantalla">
+
+      <ion-col size="3" *ngIf="this.anchoPantalla > this.tamMinPantalla">
         <ion-item lines="full">
-          <ion-label [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}"><b>Lectura</b> </ion-label>
+          <ion-label
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
+            <b>Lectura</b> </ion-label>
+
         </ion-item>
       </ion-col>
 
       <ion-col size="4">
         <ion-item lines="full">
-          <ion-label 
-            class="ion-text-wrap"
+          <ion-label class="ion-text-wrap"
             [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
-            {{ this.entrada?.time &&  util.fecha(this.entrada.time) }}
-        </ion-label>
+            <!-- {{ this.entrada?.time &&  util.fecha(this.entrada.time) }} -->
+            <span> <b>Día:</b> {{ this.entrada?.time && this.util.fecha(this.entrada.time).slice(0,10)}} </span>
+            <span> <b>Hora: </b> {{ this.entrada?.time && this.util.fecha(this.entrada.time).slice(11, 16)}}</span>
+          </ion-label>
         </ion-item>
       </ion-col>
-
-      
-      
-      
 
     </ion-row>
 
 
     <ion-row>
-   
+
       <ion-col size="12">
         <div style="text-align:center;">
           <ion-button (click)="borrarEntrada()">
@@ -213,125 +233,14 @@
             <ion-label> <b> Borrar entradas</b></ion-label>
           </ion-button>
         </div>
-   
-      </ion-col>
-    </ion-row> 
-
-
-
-
-
-
-
-    <!-- <ion-row>
-      <ion-col size="6">
-        <ion-item>
-          <ion-icon slot="start" src="assets/img/hot.svg"></ion-icon>
-          <ion-label><b>Temperatura</b></ion-label>
-        </ion-item>
-      </ion-col>
-      <ion-col size="6">
-        <ion-item>
-          <ion-label>{{this.temp}}</ion-label>
-        </ion-item>
 
       </ion-col>
-  
     </ion-row>
-    <ion-row>
-      <ion-col size="6">
-        <ion-item>
-          <ion-icon slot="start" src="assets/img/humedad.svg"></ion-icon>
-          <ion-label> <b>Humedad</b></ion-label>
-        </ion-item>
-
-      </ion-col>
-      <ion-col size="6">
-        <ion-item>
-          <ion-label>{{this.humid}}</ion-label>
-        </ion-item>
-      </ion-col>
-
-    </ion-row>
-    <ion-row>
-      <ion-col size="6">
-
-        <ion-item>
-          <ion-icon slot="start" src="assets/img/presion.svg"></ion-icon>
-          <ion-label> <b>Presión</b></ion-label>
-        </ion-item>
-
-      </ion-col>
-      <ion-col size="6">
-        <ion-item>
-          <ion-label> {{this.press}}</ion-label>
-        </ion-item>
-      </ion-col>
-
-    </ion-row>
-    <ion-row>
-      <ion-col size="6">
-
-
-        <ion-item>
-          <ion-icon slot="start" src="assets/img/ruido.svg"></ion-icon>
-          <ion-label> <b>Ruido</b> </ion-label>
-        </ion-item>
-
-
-      </ion-col>
-      <ion-col size="6">
-        <ion-item>
-          <ion-label> {{this.noise}}</ion-label>
-        </ion-item>
-      </ion-col>
-   
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="6">
-        <ion-item>
-          <ion-icon slot="start" src="assets/img/reloj.svg"></ion-icon>
-          <ion-label> <b>Lectura</b> </ion-label>
-        </ion-item>
-      </ion-col>
-      <ion-col size="6">
-        <ion-item>
-          <ion-label> {{ this.entrada?.time &&  util.fecha(this.entrada.time) }}</ion-label>
-        </ion-item>
-      </ion-col>
-
-    </ion-row>
-
-
-    <ion-row>
-   
-      <ion-col size="12">
-        <div style="text-align:center;">
-          <ion-button (click)="borrarEntrada()">
-            <ion-icon slot="start" src="assets/img/borrar.svg"></ion-icon>
-            <ion-label> <b> Borrar entradas</b></ion-label>
-          </ion-button>
-        </div>
-   
-      </ion-col>
-    </ion-row> -->
-
-
   </ion-grid>
 
-
-
-
-
   <div style="text-align: right; margin-bottom: 2%;">
-          <app-vistagrafica 
-          [mostarApmpliar]="true" 
-          (messageEvent)="ampliarRecibido($event)"
-          *ngIf="this.nombreEstacion && finCarga &&  this.ampliar "
-          [nombre]="this.nombreEstacion"
-          [ancho]="'82%'"
-          >
-      </app-vistagrafica>
+    <app-vistagrafica [mostarApmpliar]="true" (messageEvent)="ampliarRecibido($event)"
+      *ngIf="this.nombreEstacion && finCarga &&  this.ampliar " [nombre]="this.nombreEstacion" [ancho]="'82%'">
+    </app-vistagrafica>
   </div>
 </ion-content>
