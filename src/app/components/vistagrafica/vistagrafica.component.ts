@@ -712,7 +712,7 @@ export class VistagraficaComponent {
         this.corrigirPosicion();
       }).catch(
         (error) => {
-          this.confg.tamagnoPunto = 3;
+          this.confg.tamagnoFuente = 15;
         });
     // this.borraGrafica();
     // this.inicarGrafica();
