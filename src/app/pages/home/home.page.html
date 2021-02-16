@@ -2,6 +2,8 @@
   <ion-toolbar>
     <ion-title>
       Listado
+
+        <!-- {{this.diff}} -->
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -133,9 +135,9 @@
         <div style="text-align: center;">
 
           <p>
-            <ion-icon class="color-Icono" [style]="this.util.colorIcono(comprobarEstado(estacion.time)['color'])"
+            <ion-icon class="color-Icono" [style]="this.util.colorIcono(  comprobarId(estacion.station)['color'] )"
               [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxIcono : this.minIcono}"
-              slot="icon-only" [src]="comprobarEstado(estacion.time)['url']">
+              slot="icon-only" [src]="comprobarId(estacion.station)['url']">
             </ion-icon>
 
           </p>

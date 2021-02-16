@@ -14,7 +14,7 @@ export class LoginService implements CanActivate {
   init(){
     this.store.select('login')
     .subscribe( login => {
-        this.permiso = login.login;
+      this.permiso = login.login;
       this.permiso = true;
     });
   }

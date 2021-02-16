@@ -13,5 +13,4 @@ export class logOut implements Action {
     // constructor(public payload: any) { }
 }
 
-
 export type loginAcciones = login | logOut

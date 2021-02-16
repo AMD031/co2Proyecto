@@ -36,7 +36,7 @@ export class DetallesPage implements OnInit {
   public anchoPantalla: any;
   public tamMinPantalla = 639;
   public minFuente = '0.8em';
-  public maxFuente  = '1em';
+  public maxFuente = '1em';
   public maxIcono = '2.5em';
   public minIcono = '1.5em';
   public maxIconoSuperior = '2em';
@@ -97,7 +97,7 @@ export class DetallesPage implements OnInit {
               this.nombreEstacion = this.entrada.station;
 
               this.finCarga = !estacion.loading;
-       
+
             }
             estacion.error && this.mensaje.hideLoading();
             estacion.error && this.ocultarRefresh();
@@ -105,7 +105,7 @@ export class DetallesPage implements OnInit {
             !estacion.loading && estacion.loaded && this.ocultarRefresh();
             !estacion.loading && estacion.loaded && this.mensaje.hideLoading();
             (typeof this.loading !== 'undefined') && this.mensaje.hideLoading();
-            (typeof this.loading !== 'undefined') &&this.ocultarRefresh();
+            (typeof this.loading !== 'undefined') && this.ocultarRefresh();
           });
 
       } catch (error) {
@@ -173,28 +173,28 @@ export class DetallesPage implements OnInit {
         if (this.respBorrar) {
           await this.mensaje.presentLoading("Intentando borrar...");
           this.store.dispatch(new BorrarEntradasEstacion(this.nombreEstacion));
+
+
+          this.ob2$ = this.store.select('EntradasPaginadas').subscribe(
+            (estacion) => {
+
+              this.loadingBorrar = estacion.loading;
+              this.loadedBorrar = estacion.loaded;
+
+              if (estacion.error && this.respBorrar) {
+                this.errorBorrar = !estacion.error.ok;
+                this.errorBorrar && this.mensaje.hideLoading();
+                this.errorBorrar && this.ocultarRefresh();
+                this.errorBorrar && this.mensaje.presentToast("No se ha podido borrar las entradas", "danger");
+              }
+            });
+
+          this.errorBorrar && this.mensaje.hideLoading();
+          !this.loadingBorrar && this.mensaje.hideLoading();
+          !this.loadingBorrar && this.respBorrar && !this.errorBorrar && this.mensaje.cerrarModal("borrado");
+          (typeof this.loading !== 'undefined') && this.mensaje.hideLoading();
         }
-
-        this.ob2$ = this.store.select('EntradasPaginadas').subscribe(
-          (estacion) => {
-
-            this.loadingBorrar = estacion.loading;
-            this.loadedBorrar = estacion.loaded;
-
-            if (estacion.error && this.respBorrar) {
-              this.errorBorrar = !estacion.error.ok;
-              this.errorBorrar && this.mensaje.hideLoading();
-              this.errorBorrar && this.ocultarRefresh();
-              this.errorBorrar && this.mensaje.presentToast("No se ha podido borrar las entradas", "danger");
-            }
-          });
-
-        this.errorBorrar && this.mensaje.hideLoading();
-        !this.loadingBorrar && this.mensaje.hideLoading();
-        !this.loadingBorrar && this.respBorrar && !this.errorBorrar && this.mensaje.cerrarModal("borrado");
-        (typeof this.loading !== 'undefined') && this.mensaje.hideLoading();
-
-      }else{
+      } else {
         this.mensaje.presentToast("No se puede borrar una estación que no ha sido cargada", "danger");
       }
 

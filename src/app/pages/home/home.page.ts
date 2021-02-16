@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Co2Service } from 'src/app/services/co2.service';
 import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
 import { UtilesService } from 'src/app/services/utiles.service';
-import { CargarEstacionesAlllast } from 'src/store/actions';
+import { CargarEstacionesAllActive, CargarEstacionesAlllast } from 'src/store/actions';
 import { AppState } from 'src/store/app.reducer';
 import * as fromEstacion from '../../../store/actions'
 import { DetallesPage } from '../detalles/detalles.page';
@@ -27,7 +27,7 @@ export class HomePage implements OnInit {
   private error: any;
   private mostrar: boolean = true;
   private evento: any = null;
-  private ahora: Date = null;
+  private comprobacion: number = 5;
   private llamado = false;
 
   public anchoPantalla;
@@ -39,9 +39,9 @@ export class HomePage implements OnInit {
   public maxIconoSuperior = '2em';
   public minIconoSuperior = '1em';
   private diferencia = 300000;
-
-
-
+  private activas: any[];
+  diff: number;
+  private ids: any[];
 
   constructor(
     private co2: Co2Service,
@@ -52,24 +52,11 @@ export class HomePage implements OnInit {
     public platform: Platform,
     private router: Router
   ) {
-
-
   }
 
 
-
-
-  async ngOnInit() {
-    this.anchoPantalla = this.platform.width();
-    this.platform.resize.subscribe(async () => {
-      this.anchoPantalla = this.platform.width();
-      //  console.log(this.anchoPantalla);
-    });
+  async cargaInicialLastAll() {
     try {
-      this.store.dispatch(new CargarEstacionesAlllast());
-      if (this.mostrar && this.loading) {
-        await this.alerta.presentLoading('Cargando ...');
-      }
 
       this.store.select('estacionesLastAll').subscribe(
         async (estaciones) => {
@@ -84,58 +71,156 @@ export class HomePage implements OnInit {
             this.error && this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
           }
 
+          
+          
+          if(estaciones.loaded && !this.llamado){
+            this.comprobarEstado();
+            this.llamado = true;
+          }
+
+
           !this.loading && this.loaded && this.alerta.hideLoading();
           !this.loading && this.loaded && this.ocultarRefresh();
           this.error && this.alerta.hideLoading();
           (typeof this.loading !== 'undefined') && this.alerta.hideLoading();
         }
       )
+
+
     } catch (error) {
       this.alerta.presentToast("No se ha podido cargar las Estaciones, comprueba la conexión", "danger");
       this.alerta.hideLoading();
       this.ocultarRefresh()
+
+
+    }
+  }
+
+
+  async cargarInicialCurrentActive() {
+    try {
+
+      if (this.mostrar && this.loading) {
+        await this.alerta.presentLoading('Cargando ...');
+      }
+      this.store.dispatch(new CargarEstacionesAllActive());
+
+      this.store.select('estacionesAllActive').subscribe(
+        async (activas) => {
+          if (activas.Estaciones) {
+            this.activas = activas.Estaciones;
+            this.ids = this.activas.map(
+              (dato) => {          
+                return { id: dato.station }
+              });
+            this.store.dispatch(new CargarEstacionesAlllast());
+          }
+          activas.error && this.alerta.hideLoading();
+          (typeof this.loading !== 'undefined') && this.alerta.hideLoading();
+        });
+
+    } catch (error) {
+      this.alerta.hideLoading();
     }
 
-    setTimeout(() => {
-      this.actualizar();
-    }, 800);
-  }
-
-  actualizar() {
-
-
-    console.log(this.diferencia);
-    setInterval( async () => {
-      await this.alerta.presentLoading('Cargando ...')
-      this.store.dispatch(new CargarEstacionesAlllast());
-      console.log(this.diferencia);
-    },this.diferencia);
-
-
   }
 
 
+  async ngOnInit() {
+    this.anchoPantalla = this.platform.width();
+    this.platform.resize.subscribe(async () => {
+      this.anchoPantalla = this.platform.width();
+      //  console.log(this.anchoPantalla);
+    });
+
+    this.cargarInicialCurrentActive();
+    this.cargaInicialLastAll();
+
+  }
+
+  
+  
 
 
-  comprobarEstado(lectura: any): string {
-    
+  comprobarEstado() {
+    let lectura = null;
+    let lecturas: Array<string> = [];
+
+    if (this.estaciones) {
+      this.estaciones.forEach(elemento => {
+        lecturas.push(elemento.time);
+      });
+    }
+
+    lecturas = this.ordenarFechas(lecturas);
+    if (lecturas.length > 0) {
+      lectura = lecturas[0];
+    }
+
     if (lectura) {
       const momentoActual = this.util.fecha(moment().toISOString())
-      const lecturaFutura = this.util.fecha(moment(lectura).add(10, 'minutes').toISOString())
+      const lecturaFutura = this.util.fecha(moment(lectura).add(this.comprobacion, 'minutes').toISOString())
       const date1 = moment(momentoActual);
       const date2 = moment(lecturaFutura);
-      const diff = date2.diff(date1);
-       (diff-750) > 0 ?  this.diferencia =  (diff-750):  this.diferencia = 300000;  
-      let resultado = moment(momentoActual).isBefore(lecturaFutura, "minutes");
-      // console.log(resultado);
-      if (resultado) {
-        return this.util.devolverIconoEstado("correcto");
-      } else {
-        return this.util.devolverIconoEstado("incorrecto");
+      this.diff = date2.diff(date1);
+      (this.diff) > 0 ? this.diferencia = (this.diff) : this.diferencia = 300000;
+    }
+
+    console.log(this.diferencia);
+    setTimeout(() => {   
+    // this.store.dispatch(new CargarEstacionesAlllast());
+      this.store.dispatch(new CargarEstacionesAllActive());
+      this.comprobarEstado();
+    }, this.diferencia);
+  }
+
+  ordenarFechas(arr: Array<any>): Array<any> {
+    if (arr.length <= 0) {
+      return [];
+    }
+    return arr.sort((a: any, b: any) => {
+      a = this.util.fecha(moment(a).toISOString());
+      b = this.util.fecha(moment(b).toISOString());
+      if (moment(a).isAfter(b, "milliseconds")) {
+        return -1;
       }
- 
+      if (moment(a).isBefore(b, "milliseconds")) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  buscarId(arr: Array<any>, valor: any): boolean {
+
+    let encontrado = arr.find(obj => obj.id == valor);
+    if (typeof encontrado !== 'undefined' && encontrado) {
+      return true;
+    } else {
+      return false;
     }
   }
+
+
+
+  comprobarId(id: any) {
+    if (!this.ids) {
+      return { url: "", color: "" }
+    }
+    const resultado = this.buscarId(this.ids, id);
+    if (resultado) {
+      return this.util.devolverIconoEstado("correcto");
+    } else {
+      return this.util.devolverIconoEstado("incorrecto");
+    }
+
+
+  }
+
+
+
+
+
 
 
 
@@ -149,31 +234,33 @@ export class HomePage implements OnInit {
     this.mostrar = false;
     if ($event) {
       this.evento = $event;
-      await this.store.dispatch(new CargarEstacionesAlllast());
+      //await this.store.dispatch(new CargarEstacionesAlllast());
+      this.store.dispatch(new CargarEstacionesAllActive());
     }
   }
 
   async presentModal(id: any = -1) {
-  
-      const modal = await this.modal.create({
-        component: DetallesPage,
-        cssClass: 'fullscreen',
-        componentProps: {
-          'id': id,
-        }
-      });
 
-      modal.onDidDismiss()
-      .then( async(data) => {
+    const modal = await this.modal.create({
+      component: DetallesPage,
+      cssClass: 'fullscreen',
+      componentProps: {
+        'id': id,
+      }
+    });
+
+    modal.onDidDismiss()
+      .then(async (data) => {
         const mensaje = data['data']
-        if(mensaje ==='borrado'){
+        if (mensaje === 'borrado') {
           await this.alerta.presentLoading()
-          this.store.dispatch(new CargarEstacionesAlllast());
+          //this.store.dispatch(new CargarEstacionesAlllast());
+          this.store.dispatch(new CargarEstacionesAllActive());
         }
       });
 
-      return await modal.present();
- 
+    return await modal.present();
+
   }
 
 

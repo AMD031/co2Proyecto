@@ -117,9 +117,9 @@ export class VistagraficaComponent {
   }
 
 
-  async mostrarLoading(loading: boolean) {
-    await this.mensaje.presentLoading('Cargando datos grafica...')
-  }
+  // async mostrarLoading(loading: boolean) {
+  //   await this.mensaje.presentLoading('Cargando datos grafica...')
+  // }
 
 
   async iniciarCarga() {
@@ -643,7 +643,7 @@ export class VistagraficaComponent {
   async casillasVerificacion(): Promise<void> {
     this.confg.marcdos = await this.mensajeAlerta.presentAlertCheckbox("Parámetros", this.confg.elementos);
 
-    console.log("valores: ",this.confg.marcdos);
+   // console.log("valores: ",this.confg.marcdos);
     
     this.confg.elementos[0].checked = this.existe('CO2');
     this.confg.elementos[1].checked = this.existe('temp');

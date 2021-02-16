@@ -74,7 +74,8 @@ export class MensajesalertasService {
    */
   async presentLoading(msg: string = 'Cargando ...'): Promise<void> {
  
-  this.myloading && this.hideLoading();
+    this.myloading && this.hideLoading();
+
     this.myloading = await this.loadingController.create({
       cssClass: 'spinerOp',
       message: msg,
@@ -82,6 +83,8 @@ export class MensajesalertasService {
     });
     await this.myloading.present();
     
+
+
   }
 
 

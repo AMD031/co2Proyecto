@@ -46,6 +46,9 @@ export class UtilesService {
         return { url: "assets/img/correcto.svg" , color: "#008800"}
       case 'incorrecto':
         return {url: "assets/img/incorrecto3.svg", color: "#550000"};
+
+       case 'desconocido':
+         return   {url: "assets/img/incorrecto3.svg", color: "grey"};
     }
 
 
