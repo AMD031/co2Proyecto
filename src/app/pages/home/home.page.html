@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($event)"  >
   <ion-item>
     <ion-label></ion-label>
   </ion-item>

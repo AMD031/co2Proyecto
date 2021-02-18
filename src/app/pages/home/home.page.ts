@@ -12,7 +12,9 @@ import * as d3 from "d3";
 import *as moment from 'moment';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
-
+import { fromEvent } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +27,7 @@ export class HomePage implements OnInit {
   private loading: boolean = true;
   private loaded: boolean;
   private error: any;
-  private mostrar: boolean = true;
+  private mostrarLoading: boolean = true;
   private evento: any = null;
   private comprobacion: number = 1;
   private llamado = false;
@@ -43,7 +45,8 @@ export class HomePage implements OnInit {
   diff: number;
   private ids: any[];
   //num: number = 0;
-
+  private scrollpos;
+  private currentY = 0;
   constructor(
     private co2: Co2Service,
     private store: Store<AppState>,
@@ -52,34 +55,47 @@ export class HomePage implements OnInit {
     public util: UtilesService,
     public platform: Platform,
     private router: Router
+
   ) {
   }
 
 
-  async cargaInicialLastAll() {    
-    try {
 
+
+  mantenerPosicionScroll() {
+    document.addEventListener("DOMContentLoaded", (event) => {
+      this.scrollpos = sessionStorage.getItem('scrollpos');
+      if (this.scrollpos) {
+        window.scrollTo(0, this.scrollpos as number);
+        sessionStorage.removeItem('scrollpos');
+      }
+    });
+
+    window.addEventListener("beforeunload", (e) => {
+      sessionStorage.setItem('scrollpos', this.currentY.toString() );
+    });
+
+  }
+
+  logScrolling($event){
+    this.currentY = $event.detail.currentY;
+  }
+
+  async cargaInicialLastAll() {
+
+    try {
       this.store.select('estacionesLastAll').subscribe(
         async (estaciones) => {
-          // debugger;
-          // this.loading = estaciones.loading;
-          this.estaciones = estaciones.Estaciones;
-          // this.loaded = estaciones.loaded;
+          if (estaciones.Estaciones) {
+            this.estaciones = estaciones.Estaciones
+          }
 
-          // if (estaciones.error) {
-          //   this.error = !estaciones.error.ok;
-          //   this.error && this.ocultarRefresh();
-          //   this.error && this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
-          // }
-          
           if (estaciones.loaded && !this.llamado) {
             this.comprobarEstado();
             this.llamado = true;
+          
           }
 
-          //console.log(this.loading, " ", this.num++);
-         // console.log(estaciones.loading);
-          
           !estaciones.loading && this.alerta.hideLoading();
           !estaciones.loading && this.ocultarRefresh();
           estaciones.error && this.alerta.hideLoading();
@@ -100,7 +116,7 @@ export class HomePage implements OnInit {
 
   async cargarInicialCurrentActive() {
     try {
-      if (this.mostrar /*&& this.loading */) {
+      if (this.mostrarLoading /*&& this.loading */) {
         await this.alerta.presentLoading('Cargando ...');
       }
       this.store.dispatch(new CargarEstacionesAllActive());
@@ -113,14 +129,13 @@ export class HomePage implements OnInit {
               (dato) => {
                 return { id: dato.station }
               });
-            }
+          }
 
           activas.loaded && this.store.dispatch(new CargarEstacionesAlllast());
-          
           activas.error && this.alerta.hideLoading();
           activas.error && this.ocultarRefresh();
           activas.error && this.alerta.presentToast("No se ha podido cargar las Estaciones, comprueba la conexión", "danger");
-          (typeof  activas.loading !== 'undefined') && this.alerta.hideLoading();
+          (typeof activas.loading !== 'undefined') && this.alerta.hideLoading();
         });
 
     } catch (error) {
@@ -133,7 +148,7 @@ export class HomePage implements OnInit {
 
   async ngOnInit() {
     this.anchoPantalla = this.platform.width();
-    this.platform.resize.subscribe(async () => {
+    this.platform.resize.subscribe(async (e) => {
       this.anchoPantalla = this.platform.width();
       //  console.log(this.anchoPantalla);
     });
@@ -171,13 +186,11 @@ export class HomePage implements OnInit {
 
     setTimeout(async () => {
       // this.store.dispatch(new CargarEstacionesAlllast());
-     // await this.alerta.presentLoading('Cargando ...');
+      this.mostrarLoading && await this.alerta.presentLoading('Cargando ...');
       this.store.dispatch(new CargarEstacionesAllActive());
+      this.mantenerPosicionScroll();
       this.comprobarEstado();
-      this.mostrar = true;
-      //console.log(this.diferencia);
-
-    }, this.diferencia);
+    }, this.diferencia );
   }
 
   ordenarFechas(arr: Array<any>): Array<any> {
@@ -226,12 +239,13 @@ export class HomePage implements OnInit {
 
   ocultarRefresh() {
     if (this.evento) {
-       this.evento.target.complete();
+      this.evento.target.complete();
+      this.mostrarLoading = true;
     }
   }
 
   async doRefresh($event) {
-    this.mostrar = false;
+    this.mostrarLoading = false;
     if ($event) {
       this.evento = $event;
       //await this.store.dispatch(new CargarEstacionesAlllast());
@@ -240,7 +254,7 @@ export class HomePage implements OnInit {
   }
 
   async presentModal(id: any = -1) {
-
+    this.mostrarLoading = false;
     const modal = await this.modal.create({
       component: DetallesPage,
       cssClass: 'fullscreen',
@@ -251,6 +265,7 @@ export class HomePage implements OnInit {
 
     modal.onDidDismiss()
       .then(async (data) => {
+        this.mostrarLoading = true;
         const mensaje = data['data']
         if (mensaje === 'borrado') {
           //await this.alerta.presentLoading();
@@ -258,7 +273,7 @@ export class HomePage implements OnInit {
           this.store.dispatch(new CargarEstacionesAllActive());
         }
       });
-
+    
     return await modal.present();
 
   }
