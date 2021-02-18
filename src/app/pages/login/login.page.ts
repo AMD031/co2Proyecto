@@ -42,6 +42,7 @@ export class LoginPage implements OnInit {
       password: this.loginForm.get('password').value,
     };
     this.login.iniciarLogin(data)
+
     if (this.login.estaLogeado()) {
       setTimeout(() => {  
         this.router.navigate(['/home'], {replaceUrl:true});

@@ -8,14 +8,14 @@ import { AppState } from 'src/store/app.reducer';
   providedIn: 'root'
 })
 export class LoginService implements CanActivate {
-   private permiso;
+   private permiso = false;
   constructor(   private router: Router, private store: Store<AppState>) { }
 
   init(){
     this.store.select('login')
     .subscribe( login => {
       this.permiso = login.login;
-      this.permiso = true;
+     // this.permiso = true;
     });
   }
 
@@ -23,7 +23,6 @@ export class LoginService implements CanActivate {
     if (!this.permiso) {
       this.router.navigate(['login']);
       return false;
-
     }
      return true;
   }

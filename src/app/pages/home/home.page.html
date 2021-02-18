@@ -2,8 +2,7 @@
   <ion-toolbar>
     <ion-title>
       Listado
-
-        <!-- {{this.diff}} -->
+    
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -110,8 +109,8 @@
 
         <ion-item lines="none">
           <ion-label class="ion-text-wrap"
-            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente}">
-            {{estacion.id}}
+            [ngStyle]="{'font-size': this.anchoPantalla > this.tamMinPantalla  ? this.maxFuente : this.minFuente }">
+            {{estacion.station}}
           </ion-label>
         </ion-item>
       </ion-col>

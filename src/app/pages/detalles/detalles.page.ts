@@ -78,7 +78,7 @@ export class DetallesPage implements OnInit {
     if (this.id !== -1) {
       try {
 
-        if (this.mostrar && this.loading) {
+        if (this.mostrar /*&& this.loading*/) {
           await this.mensaje.presentLoading('Cargando ...');
         }
 
@@ -87,7 +87,6 @@ export class DetallesPage implements OnInit {
           async (estacion) => {
 
             if (estacion.Estacion && Object.keys(estacion.Estacion).length !== 0) {
-
               this.entrada = estacion.Estacion[0];
               this.co2 = this.entrada.data.CO2
               this.temp = this.entrada.data.temp
@@ -95,7 +94,6 @@ export class DetallesPage implements OnInit {
               this.press = this.entrada.data.press
               this.noise = this.entrada.data.noise
               this.nombreEstacion = this.entrada.station;
-
               this.finCarga = !estacion.loading;
 
             }
@@ -104,8 +102,8 @@ export class DetallesPage implements OnInit {
             estacion.error && this.mensaje.presentToast("No se ha podido cargar los datos de la estación", "danger");
             !estacion.loading && estacion.loaded && this.ocultarRefresh();
             !estacion.loading && estacion.loaded && this.mensaje.hideLoading();
-            (typeof this.loading !== 'undefined') && this.mensaje.hideLoading();
-            (typeof this.loading !== 'undefined') && this.ocultarRefresh();
+            (typeof estacion.loading !== 'undefined') && this.mensaje.hideLoading();
+            (typeof estacion.loading !== 'undefined') && this.ocultarRefresh();
           });
 
       } catch (error) {
@@ -136,7 +134,6 @@ export class DetallesPage implements OnInit {
 
     modal.onDidDismiss()
       .then(() => {
-
         this.ampliar = !this.ampliar;
       });
     return await modal.present();

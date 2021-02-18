@@ -27,7 +27,7 @@ export class HomePage implements OnInit {
   private error: any;
   private mostrar: boolean = true;
   private evento: any = null;
-  private comprobacion: number = 5;
+  private comprobacion: number = 1;
   private llamado = false;
 
   public anchoPantalla;
@@ -38,10 +38,11 @@ export class HomePage implements OnInit {
   public minIcono = '1.5em';
   public maxIconoSuperior = '2em';
   public minIconoSuperior = '1em';
-  private diferencia = 300000;
+  private diferencia = 60000;
   private activas: any[];
   diff: number;
   private ids: any[];
+  //num: number = 0;
 
   constructor(
     private co2: Co2Service,
@@ -55,72 +56,76 @@ export class HomePage implements OnInit {
   }
 
 
-  async cargaInicialLastAll() {
+  async cargaInicialLastAll() {    
     try {
 
       this.store.select('estacionesLastAll').subscribe(
         async (estaciones) => {
-
-          this.loading = estaciones.loading;
+          // debugger;
+          // this.loading = estaciones.loading;
           this.estaciones = estaciones.Estaciones;
-          this.loaded = estaciones.loaded;
+          // this.loaded = estaciones.loaded;
 
-          if (estaciones.error) {
-            this.error = !estaciones.error.ok;
-            this.error && this.ocultarRefresh();
-            this.error && this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
-          }
-
+          // if (estaciones.error) {
+          //   this.error = !estaciones.error.ok;
+          //   this.error && this.ocultarRefresh();
+          //   this.error && this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
+          // }
           
-          
-          if(estaciones.loaded && !this.llamado){
+          if (estaciones.loaded && !this.llamado) {
             this.comprobarEstado();
             this.llamado = true;
           }
 
-
-          !this.loading && this.loaded && this.alerta.hideLoading();
-          !this.loading && this.loaded && this.ocultarRefresh();
-          this.error && this.alerta.hideLoading();
-          (typeof this.loading !== 'undefined') && this.alerta.hideLoading();
+          //console.log(this.loading, " ", this.num++);
+         // console.log(estaciones.loading);
+          
+          !estaciones.loading && this.alerta.hideLoading();
+          !estaciones.loading && this.ocultarRefresh();
+          estaciones.error && this.alerta.hideLoading();
+          estaciones.error && this.ocultarRefresh();
+          estaciones.error && this.alerta.presentToast("No se ha podido cargar las Estaciones", "danger");
+          (typeof estaciones.loading !== 'undefined') && this.alerta.hideLoading();
         }
       )
 
 
     } catch (error) {
-      this.alerta.presentToast("No se ha podido cargar las Estaciones, comprueba la conexión", "danger");
       this.alerta.hideLoading();
       this.ocultarRefresh()
-
-
+      this.alerta.presentToast("No se ha podido cargar las Estaciones, comprueba la conexión", "danger");
     }
   }
 
 
   async cargarInicialCurrentActive() {
     try {
-
-      if (this.mostrar && this.loading) {
+      if (this.mostrar /*&& this.loading */) {
         await this.alerta.presentLoading('Cargando ...');
       }
       this.store.dispatch(new CargarEstacionesAllActive());
-
       this.store.select('estacionesAllActive').subscribe(
         async (activas) => {
           if (activas.Estaciones) {
+
             this.activas = activas.Estaciones;
             this.ids = this.activas.map(
-              (dato) => {          
+              (dato) => {
                 return { id: dato.station }
               });
-            this.store.dispatch(new CargarEstacionesAlllast());
-          }
+            }
+
+          activas.loaded && this.store.dispatch(new CargarEstacionesAlllast());
+          
           activas.error && this.alerta.hideLoading();
-          (typeof this.loading !== 'undefined') && this.alerta.hideLoading();
+          activas.error && this.ocultarRefresh();
+          activas.error && this.alerta.presentToast("No se ha podido cargar las Estaciones, comprueba la conexión", "danger");
+          (typeof  activas.loading !== 'undefined') && this.alerta.hideLoading();
         });
 
     } catch (error) {
       this.alerta.hideLoading();
+      this.alerta.presentToast("No se ha podido cargar las Estaciones, comprueba la conexión", "danger");
     }
 
   }
@@ -132,14 +137,12 @@ export class HomePage implements OnInit {
       this.anchoPantalla = this.platform.width();
       //  console.log(this.anchoPantalla);
     });
-
     this.cargarInicialCurrentActive();
     this.cargaInicialLastAll();
-
   }
 
-  
-  
+
+
 
 
   comprobarEstado() {
@@ -163,14 +166,17 @@ export class HomePage implements OnInit {
       const date1 = moment(momentoActual);
       const date2 = moment(lecturaFutura);
       this.diff = date2.diff(date1);
-      (this.diff) > 0 ? this.diferencia = (this.diff) : this.diferencia = 300000;
+      (this.diff) > 0 ? this.diferencia = (this.diff) : this.diferencia = 60000;
     }
 
-    console.log(this.diferencia);
-    setTimeout(() => {   
-    // this.store.dispatch(new CargarEstacionesAlllast());
+    setTimeout(async () => {
+      // this.store.dispatch(new CargarEstacionesAlllast());
+     // await this.alerta.presentLoading('Cargando ...');
       this.store.dispatch(new CargarEstacionesAllActive());
       this.comprobarEstado();
+      this.mostrar = true;
+      //console.log(this.diferencia);
+
     }, this.diferencia);
   }
 
@@ -204,8 +210,8 @@ export class HomePage implements OnInit {
 
 
   comprobarId(id: any) {
-    if (!this.ids) {
-      return { url: "", color: "" }
+    if (!this.ids || this.ids.length < 0) {
+      return this.util.devolverIconoEstado("desconocido");
     }
     const resultado = this.buscarId(this.ids, id);
     if (resultado) {
@@ -218,15 +224,9 @@ export class HomePage implements OnInit {
   }
 
 
-
-
-
-
-
-
   ocultarRefresh() {
     if (this.evento) {
-      !this.loading && this.evento.target.complete();
+       this.evento.target.complete();
     }
   }
 
@@ -253,7 +253,7 @@ export class HomePage implements OnInit {
       .then(async (data) => {
         const mensaje = data['data']
         if (mensaje === 'borrado') {
-          await this.alerta.presentLoading()
+          //await this.alerta.presentLoading();
           //this.store.dispatch(new CargarEstacionesAlllast());
           this.store.dispatch(new CargarEstacionesAllActive());
         }
