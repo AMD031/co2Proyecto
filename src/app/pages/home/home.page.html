@@ -1,13 +1,18 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Listado
-    
-    </ion-title>
+ 
+  
+    <ion-buttons slot="start">
+      <ion-title>
+        Listado
+      </ion-title>
+      <app-escudo titulo="Listado"></app-escudo>
+    </ion-buttons>    
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="logScrolling($event)"  >
+<!--  [scrollEvents]="true" (ionScroll)="logScrolling($event)" -->
+<ion-content [fullscreen]="true" >
   <ion-item>
     <ion-label></ion-label>
   </ion-item>

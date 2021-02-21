@@ -37,6 +37,7 @@ import { LoginService } from './services/login.service';
 import { MensajesalertasService } from './services/mensajesalertas.service';
 import { utils } from 'protractor';
 import { UtilesService } from './services/utiles.service';
+import { EscudoComponent } from './components/escudo/escudo.component';
 
 
 @NgModule({
@@ -48,6 +49,7 @@ import { UtilesService } from './services/utiles.service';
     DetallesPage,
     VistagraficaComponent,
     BotonAtrasComponent,
+    EscudoComponent
   ],
   entryComponents: [GraficaPage, DetallesPage],
   imports: [

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonContent, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Co2Service } from 'src/app/services/co2.service';
 import { MensajesalertasService } from 'src/app/services/mensajesalertas.service';
@@ -23,6 +23,8 @@ import { stringify } from '@angular/compiler/src/util';
 })
 export class HomePage implements OnInit {
 
+  @ViewChild(IonContent) theContent: IonContent;
+  
   public estaciones = [];
   private loading: boolean = true;
   private loaded: boolean;
@@ -45,8 +47,6 @@ export class HomePage implements OnInit {
   diff: number;
   private ids: any[];
   //num: number = 0;
-  private scrollpos;
-  private currentY = 0;
   constructor(
     private co2: Co2Service,
     private store: Store<AppState>,
@@ -59,30 +59,8 @@ export class HomePage implements OnInit {
   ) {
   }
 
-
-
-
-  mantenerPosicionScroll() {
-    document.addEventListener("DOMContentLoaded", (event) => {
-      this.scrollpos = sessionStorage.getItem('scrollpos');
-      if (this.scrollpos) {
-        window.scrollTo(0, this.scrollpos as number);
-        sessionStorage.removeItem('scrollpos');
-      }
-    });
-
-    window.addEventListener("beforeunload", (e) => {
-      sessionStorage.setItem('scrollpos', this.currentY.toString() );
-    });
-
-  }
-
-  logScrolling($event){
-    this.currentY = $event.detail.currentY;
-  }
-
+  
   async cargaInicialLastAll() {
-
     try {
       this.store.select('estacionesLastAll').subscribe(
         async (estaciones) => {
@@ -95,7 +73,7 @@ export class HomePage implements OnInit {
             this.llamado = true;
           
           }
-
+         
           !estaciones.loading && this.alerta.hideLoading();
           !estaciones.loading && this.ocultarRefresh();
           estaciones.error && this.alerta.hideLoading();
@@ -147,6 +125,7 @@ export class HomePage implements OnInit {
 
 
   async ngOnInit() {
+  
     this.anchoPantalla = this.platform.width();
     this.platform.resize.subscribe(async (e) => {
       this.anchoPantalla = this.platform.width();
@@ -188,7 +167,6 @@ export class HomePage implements OnInit {
       // this.store.dispatch(new CargarEstacionesAlllast());
       this.mostrarLoading && await this.alerta.presentLoading('Cargando ...');
       this.store.dispatch(new CargarEstacionesAllActive());
-      this.mantenerPosicionScroll();
       this.comprobarEstado();
     }, this.diferencia );
   }
@@ -255,6 +233,8 @@ export class HomePage implements OnInit {
 
   async presentModal(id: any = -1) {
     this.mostrarLoading = false;
+
+    
     const modal = await this.modal.create({
       component: DetallesPage,
       cssClass: 'fullscreen',
@@ -268,7 +248,6 @@ export class HomePage implements OnInit {
         this.mostrarLoading = true;
         const mensaje = data['data']
         if (mensaje === 'borrado') {
-          //await this.alerta.presentLoading();
           //this.store.dispatch(new CargarEstacionesAlllast());
           this.store.dispatch(new CargarEstacionesAllActive());
         }
